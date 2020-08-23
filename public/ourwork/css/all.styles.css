@@ -1,0 +1,90 @@
+body{
+    background-color: #e8e8e8;
+}
+.main-content .navbar-top {
+	position: sticky;
+	z-index: 99999999;
+}
+.pdt_lists_img {
+	width: 50px;
+}
+.pdt_list_tbl {
+	width: 100%;
+}
+.pdt_list_tbl th {
+	text-align: center;
+}
+.pdt_list_tbl th:first-child {
+	text-align: center;
+}
+.pdt_list_tbl td {
+	padding: 2px 4px;
+}
+.pdt_list_tbl td.tbl_image {
+	text-align: center;
+}
+.tbl_sl {
+	text-align: center;
+}
+#uploadImagePreview{
+	border: 1px solid gray;
+	margin-top: 5px;
+	width: 100%;
+	height: 200px;
+}
+.paddingLR0 {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.marginLR0 {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+.mL0 {
+	margin-left: 0px;
+}
+.mR0 {
+	margin-right: 0px;
+}
+.pL0 {
+	padding-left: 0px;
+}
+.pR0 {
+	padding-right: 0px;
+}
+
+.main-content .navbar-top {
+  background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%) !important;
+}
+.product-entry,
+.product-view {
+  position: relative;
+  padding-top: 30px;
+}
+.subres {
+  height: 45px;
+  text-align: center;
+}
+.subres button:first-child{
+  margin-right: 1.6rem;
+}
+.product-show {
+  border-left: 5px solid gray;
+}
+#saveBtn,
+#reset_cancel,
+#updateBtn,
+#update_cancel {
+	width: 200px;
+}
+#saveBtn,
+#updateBtn {
+	margin-right: 2rem
+}
+.msgAlert {
+	width: 500px;
+	position: fixed;
+	right: 40px;
+	top: 90px;
+	z-index: 99;
+}
