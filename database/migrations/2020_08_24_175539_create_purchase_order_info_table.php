@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePurchaseInfoTable extends Migration
+class CreatePurchaseOrderInfoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,19 @@ class CreatePurchaseInfoTable extends Migration
      */
     public function up()
     {
-        Schema::create('purchase_info', function (Blueprint $table) {
-            $table->id('purchase_id');
-            $table->foreignId('supplier');
+        Schema::create('purchase_order_info', function (Blueprint $table) {
+            $table->id('po_info_id');
+            $table->boolean('is_stored')->comment('0=By defaut, 1=else');
+            $table->foreignId('supplier_id');
+            $table->foreignId('product_info_id');
+            $table->string('purchase_invoice_no', 50);
+            $table->decimal('product_qty', 8, 0);
             $table->decimal('total_bill', 8, 2);
             $table->decimal('vat', 8, 2);
             $table->decimal('discount', 8, 2);
-            $table->decimal('paid_or_due', 8, 2);
+            $table->tinyInteger('paid_or_due')->comment('0=partial payment, 1=due, 2=paid');
             $table->decimal('paid_amount', 8, 2);
-            $table->decimal('due_amount', 8, 2);
+            $table->decimal('due_amount', 8, 2);            
             $table->date('purchased_date');
             $table->string('entry_by', 50);
             $table->timestamps();
@@ -35,6 +39,6 @@ class CreatePurchaseInfoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('purchase_info');
+        Schema::dropIfExists('purchase_order_info');
     }
 }

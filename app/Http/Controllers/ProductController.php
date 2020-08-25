@@ -25,7 +25,8 @@ class ProductController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+
+    public function product_info_entry()
     {      
       return view('product.product_info_entry');
     }
@@ -166,16 +167,15 @@ class ProductController extends Controller
     public function product_view()
     {
       $product_info = DB::table('product_info')
-                // ->orderByDesc('product_info_id') 
                 ->orderBy('product_info_id', 'desc')               
                 ->get();
-      return view('product.product_lists')->with('product_info', $product_info);
+      return view('product.product_info_lists')->with('product_info', $product_info);
     }
     public function product_update_process(Request $request) {
       $product_info_id = $request->id;
       $product_info_single = DB::table('product_info')               
                 ->where('product_info_id', $product_info_id)->first();
-      return view('product.product_update')->with("product_info_single", $product_info_single);
+      return view('product.product_info_update')->with("product_info_single", $product_info_single);
     }
     public function update_product(Request $request) {
       //update product
@@ -292,4 +292,156 @@ class ProductController extends Controller
             echo "Product is not update.";
           }
     }
+
+    //start purchase order
+      public function purchase_order_entry(){
+        $supplier_info = DB::table('supplier')
+                ->select('supplier_id', 'supplier_name')               
+                ->get();
+        $product_info = DB::table('product_info')
+                ->select('product_info_id', 'title')               
+                ->get();
+        return view('product.product_purchase_entry')
+                    ->with("supplier_info", $supplier_info)
+                    ->with("product_info", $product_info);
+      }
+      public function purchase_order_save(Request $request) {
+        $data = array();
+        $data['is_stored'] = 0;
+        $data['supplier_id'] = "";
+        $data['product_info_id'] = "";
+        $data['purchase_invoice_no'] = "";
+        $data['product_qty'] = "";
+        $data['total_bill'] = "";
+        $data['vat'] = "";
+        $data['discount'] = "";
+        $data['paid_or_due'] = "";
+        $data['paid_amount'] = "";
+        $data['due_amount'] = "";
+        $data['purchased_date'] = "";
+        $data['entry_by'] = "";
+
+        // $orgDate = $request->info_entry_date;
+        // $changeSeparator = str_replace('/', '-', $orgDate);  
+        // $newDate = date("Y-m-d", strtotime($changeSeparator));
+        $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $request->purchased_date)));
+
+        $data['supplier_id'] = $request->supplier_id;
+        $data['product_info_id'] = $request->product_info_id;
+        $data['purchase_invoice_no'] = $request->purchase_invoice_no;
+        $data['product_qty'] = $request->product_qty;
+        $data['total_bill'] = $request->total_bill;
+        $data['vat'] = $request->vat;
+        $data['discount'] = $request->discount;
+        $data['paid_or_due'] = $request->paid_or_due;
+        $data['paid_amount'] = $request->paid_amount;
+        $data['due_amount'] = $request->due_amount;
+        // $data['purchased_date'] = $request->purchased_date;
+        $data['purchased_date'] = $newDate;
+        $data['purchased_date'] = $newDate;
+        $data['entry_by'] = $request->entry_by;
+        
+        DB::table('purchase_order_info')
+                  ->insert($data);
+
+        Session::put('sucMsg', 'A Purchase Information Saved Successfully!');
+        return Redirect::to('/product/purchase_order/view');
+      }
+      public function purchase_order_view(){
+        $spplierArr = array();
+        $productArr = array();
+        $purchase_order_info = DB::table('purchase_order_info')
+                ->orderBy('po_info_id', 'desc')
+                ->get();
+        $supplier_info = DB::table('supplier')
+                ->select('supplier_id', 'supplier_name')  
+                ->get();
+        $product_info = DB::table('product_info')
+                ->select('product_info_id', 'title')  
+                ->get();
+        
+        foreach($supplier_info as $supplier) {
+          $spplierArr[$supplier->supplier_id] = $supplier->supplier_name;
+        }
+        foreach($product_info as $product) {
+          $productArr[$product->product_info_id] = $product->title;
+        }
+        // echo "<pre>";
+        // var_dump($spplierArr);
+        // echo $spplierArr['1'];
+        return view('product.product_purchase_lists')
+                    ->with("purchase_order_info", $purchase_order_info)
+                    ->with("spplierArr", $spplierArr)
+                    ->with("productArr", $productArr);
+      }
+    //end purchase order
+
+    //Start Store In
+      public function store_in_entry() {
+        $productArr = array();
+        $purchase_order_info = DB::table('purchase_order_info')
+                // ->select('po_info_id', 'product_info_id', 'purchase_invoice_no','product_qty','total_bill')
+                ->select('po_info_id', 'purchase_invoice_no', 'purchased_date')
+                ->orderBy('po_info_id', 'desc')
+                ->get();
+        $product_info = DB::table('product_info')
+                ->select('product_info_id', 'title')  
+                ->get();
+                
+        foreach($product_info as $product) {
+          $productArr[$product->product_info_id] = $product->title;
+        }
+        return view('product.store_in_entry')
+                    ->with("purchase_order_info", $purchase_order_info)
+                    ->with("product_info", $product_info);
+      }
+      public function store_in_entry_save(Request $request) {
+        $data = array();
+        $data['is_stored'] = '0';
+        $data['purchase_order_info_id'] = "";
+        $data['product_info_id'] = "";
+        $data['barcode'] = "";
+        $data['quantity'] = '1';
+        $data['buy_price'] = "";
+        $data['buy_date'] = "";
+        $data['entry_by'] = "";
+        $data['created_at'] = date('Y-m-d H:i:s');
+
+        
+        $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $request->buy_date)));
+
+        $data['purchase_order_info_id'] = $request->purchase_order_info_id;
+        $data['product_info_id'] = $request->product_info_id;
+        $data['barcode'] = $request->barcode;
+        $data['buy_price'] = $request->buy_price;
+        
+        // $data['buy_date'] = $request->buy_date;
+        $data['buy_date'] = $newDate;
+        $data['entry_by'] = $request->entry_by;
+        
+        DB::table('product_purchase_history')
+                  ->insert($data);
+
+        Session::put('sucMsg', 'A Product Stored Successfully!');
+        return Redirect::to('/product/store_in/view');
+      }
+      public function store_in_view() {
+        $pp_history = DB::table('product_purchase_history')
+                ->orderBy('pp_history_id', 'desc')
+                ->get();
+        $productArr = array();
+        $product_info = DB::table('product_info')
+                ->select('product_info_id', 'title')  
+                ->get();
+                
+        foreach($product_info as $product) {
+          $productArr[$product->product_info_id] = $product->title;
+        }
+        return view('product.store_in_lists')
+                  ->with("pp_history", $pp_history)
+                  ->with("productArr", $productArr);
+      }
+    // End Store In
+
+
 }

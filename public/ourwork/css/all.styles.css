@@ -74,7 +74,10 @@ body{
 #saveBtn,
 #reset_cancel,
 #updateBtn,
-#update_cancel {
+#update_cancel,
+#reset_cancel_supplier,
+#reset_cancel_purchase,
+#reset_cancel_store {
 	width: 200px;
 }
 #saveBtn,

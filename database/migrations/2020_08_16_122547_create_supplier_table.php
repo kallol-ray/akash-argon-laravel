@@ -13,14 +13,16 @@ class CreateSupplierTable extends Migration
      */
     public function up()
     {
-        Schema::create('supplier', function (Blueprint $table) {
-            $table->id('supplier_id');
-            $table->string('name', 50);
-            $table->string('phone', 13);
-            $table->string('address', 200);
-            $table->string('entry_by', 50);
-            $table->timestamps();
-        });
+      Schema::create('supplier', function (Blueprint $table) {
+        $table->id('supplier_id');
+        $table->string('supplier_name', 50);
+        $table->string('phone', 13);
+        $table->string('address', 200);
+        $table->string('comments', 200);
+        $table->string('supplier_entry_date', 200);
+        $table->string('entry_by', 50);
+        $table->timestamps();
+      });
     }
 
     /**

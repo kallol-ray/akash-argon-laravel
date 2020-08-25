@@ -113,17 +113,58 @@
                     </a>
 
                     <div class="collapse show" id="navbar-product">
-                        <ul class="nav nav-sm flex-column">
+                        <ul class="nav nav-sm flex-column">                            
                             <li class="nav-item">
-                                <!-- <a class="nav-link" href="{{ route('profile.edit') }}"> -->
+                                <a class="nav-link" href="{{ route('product.purchase_order.entry') }}">
+                                    {{ __('Purchase Order Entry') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('product.purchase_order.view') }}">
+                                    {{ __('Purchase Order View') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('product.store_in.entry') }}">
+                                    {{ __('Store In') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('product.store_in.view') }}">
+                                    {{ __('Store In Lists') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('product.entry') }}">
                                     {{ __('Product Entry') }}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <!-- <a class="nav-link" href="{{ route('user.index') }}"> -->
                                 <a class="nav-link" href="{{ route('product.view') }}">
                                     {{ __('Product Lists') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#navbar-supplier" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-supplier">
+                        <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
+                        <i class="ni ni-bus-front-12" style="color: #f4645f;"></i>
+
+                        <span class="nav-link-text" style="color: #f4645f;">{{ __('Supplier') }}</span>
+                    </a>
+
+                    <div class="collapse show" id="navbar-supplier">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('supplier.entry') }}">
+                                    {{ __('Supplier Entry') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('supplier.view') }}">
+                                    {{ __('Supplier Lists') }}
                                 </a>
                             </li>
                         </ul>
@@ -169,16 +210,6 @@
                         <i class="ni ni-spaceship"></i> Getting started
                     </a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard/docs/foundation/colors.html">
-                        <i class="ni ni-palette"></i> Foundation
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard/docs/components/alerts.html">
-                        <i class="ni ni-ui-04"></i> Components
-                    </a>
-                </li> -->
             </ul>
         </div>
     </div>
