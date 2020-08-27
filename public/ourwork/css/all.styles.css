@@ -91,3 +91,8 @@ body{
 	top: 90px;
 	z-index: 99;
 }
+.validationErr{
+	color: #F55;
+	font-size: 14px;
+	margin-bottom: 0px;
+}

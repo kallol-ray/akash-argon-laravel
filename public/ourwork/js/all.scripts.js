@@ -130,7 +130,7 @@ $("#reset_cancel_store").click(function(){
 
 $(document).on("change", "#purchase_order_info_id", function() {
 	// alert("a");
-	$("#product_name").val("bbbbbbbb");
+	// $("#product_name").val("bbbbbbbb");
 });
 
 

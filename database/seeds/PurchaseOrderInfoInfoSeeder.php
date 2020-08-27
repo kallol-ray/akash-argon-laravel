@@ -24,6 +24,7 @@ class PurchaseOrderInfoInfoSeeder extends Seeder
 	        'paid_amount' => '5000',
 	        'due_amount' => '4800',
 	        'purchased_date' => now(),
+	        'comments' => "no comments",
 	        'entry_by' => "Kallol Ray",
 	        'created_at' => now()
 		]);

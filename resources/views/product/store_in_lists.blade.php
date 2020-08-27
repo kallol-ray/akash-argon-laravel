@@ -30,12 +30,12 @@
 						<th>Buy Date</th>
 						<th>Stored</th>
 						<th>Product</th>
-						<!-- <th>Invoice No</th> -->
+						<th>Invoice No</th>
 						<th>Barcode</th>
 						<th>Buy Price</th>						
 						<th>Entry By</th>
-						<th width="70px">Edit</th>
-						<th width="80px">Delete</th>
+						<!-- <th width="70px">Edit</th>
+						<th width="80px">Delete</th> -->
 					</tr>
 					@foreach ($pp_history as $single_product)
 					  <tr data-id="{{ $single_product->pp_history_id  }}">
@@ -53,16 +53,7 @@
 							
 							<td class="tbl_qty">{{ $single_product->barcode }}</td>
 							<td class="tbl_total_bill">{{ $single_product->buy_price }}</td>
-							<td class="tbl_entry_by">{{ $single_product->entry_by }}</td>
-							<td>
-								<a class="btn btn-outline-success" href="/product/update/{{ $single_product->pp_history_id  }}">Edit</a>
-							</td>
-							<td>
-								{!! Form::open(['url' => 'product/entry/delete', 'method' => 'post']) !!}
-									<input type="hidden" name="pp_history_id" value="{{ $single_product->pp_history_id  }}">
-									<button type="submit" name="deleteBtn" value="Delete" class="btn btn-outline-danger">Delete</button>
-								{!! Form::close() !!}
-							</td>
+							<td class="tbl_entry_by">{{ $single_product->entry_by }}</td>							
 						</tr>
 					@endforeach
 				</table>

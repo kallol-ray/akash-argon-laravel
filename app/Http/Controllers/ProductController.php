@@ -32,6 +32,7 @@ class ProductController extends Controller
     }
     public function product_save(Request $request)
     {
+
         $data = array();
         $data['title'] = "";
         $data['description'] = "";
@@ -319,6 +320,7 @@ class ProductController extends Controller
         $data['paid_amount'] = "";
         $data['due_amount'] = "";
         $data['purchased_date'] = "";
+        $data['comments'] = "";
         $data['entry_by'] = "";
 
         // $orgDate = $request->info_entry_date;
@@ -338,7 +340,7 @@ class ProductController extends Controller
         $data['due_amount'] = $request->due_amount;
         // $data['purchased_date'] = $request->purchased_date;
         $data['purchased_date'] = $newDate;
-        $data['purchased_date'] = $newDate;
+        $data['comments'] = $request->comments;
         $data['entry_by'] = $request->entry_by;
         
         DB::table('purchase_order_info')
@@ -367,12 +369,85 @@ class ProductController extends Controller
           $productArr[$product->product_info_id] = $product->title;
         }
         // echo "<pre>";
-        // var_dump($spplierArr);
-        // echo $spplierArr['1'];
+        // var_dump($productArr);
+        // echo $productArr['1'];
+
         return view('product.product_purchase_lists')
                     ->with("purchase_order_info", $purchase_order_info)
                     ->with("spplierArr", $spplierArr)
                     ->with("productArr", $productArr);
+      }
+      public function purchase_order_delete(Request $request) {
+        $po_info_id = $request->po_info_id;
+        DB::table('purchase_order_info')
+                ->where('po_info_id', $po_info_id)
+                ->delete();
+
+        Session::put('sucMsg', 'A Purchase Order Info Deleted Successfully!');
+        return Redirect::to('/product/purchase_order/view');
+      }
+      public function purchase_order_update_process(Request $request) {
+        $po_info_id = $request->id;
+        $purchase_order_info_single = DB::table('purchase_order_info')
+                  ->where('po_info_id', $po_info_id)->first();
+        $supplier_info = DB::table('supplier')
+                ->select('supplier_id', 'supplier_name')  
+                ->get();
+        $product_info = DB::table('product_info')
+                ->select('product_info_id', 'title')  
+                ->get();
+
+        return view('product.product_purchase_update')
+                    ->with("purchase", $purchase_order_info_single)
+                    ->with("supplier_info", $supplier_info)
+                    ->with("product_info", $product_info);
+      }
+      public function update_purchase_order(Request $request) {
+        $data = array();        
+        $po_info_id = $request->po_info_id;
+
+        // $data['is_stored'] = 0;
+        $data['supplier_id'] = "";
+        $data['product_info_id'] = "";
+        $data['purchase_invoice_no'] = "";
+        $data['product_qty'] = "";
+        $data['total_bill'] = "";
+        $data['vat'] = "";
+        $data['discount'] = "";
+        $data['paid_or_due'] = "";
+        $data['paid_amount'] = "";
+        $data['due_amount'] = "";
+        $data['purchased_date'] = "";
+        $data['comments'] = "";
+        $data['entry_by'] = "";
+
+        // $orgDate = $request->info_entry_date;
+        // $changeSeparator = str_replace('/', '-', $orgDate);  
+        // $newDate = date("Y-m-d", strtotime($changeSeparator));
+        $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $request->purchased_date)));
+
+
+        $data['supplier_id'] = $request->supplier_id;
+        $data['product_info_id'] = $request->product_info_id;
+        $data['purchase_invoice_no'] = $request->purchase_invoice_no;
+        $data['product_qty'] = $request->product_qty;
+        $data['total_bill'] = $request->total_bill;
+        $data['vat'] = $request->vat;
+        $data['discount'] = $request->discount;
+        $data['paid_or_due'] = $request->paid_or_due;
+        $data['paid_amount'] = $request->paid_amount;
+        $data['due_amount'] = $request->due_amount;
+        // $data['purchased_date'] = $request->purchased_date;
+        $data['purchased_date'] = $newDate;
+        $data['comments'] = $request->comments;
+        $data['entry_by'] = $request->entry_by;
+        
+        DB::table('purchase_order_info')
+                  ->where('po_info_id', $po_info_id)
+                  ->update($data);
+
+        Session::put('sucMsg', 'A Purchase Information Updated Successfully!');
+        return Redirect::to('/product/purchase_order/view');
       }
     //end purchase order
 
@@ -396,34 +471,70 @@ class ProductController extends Controller
                     ->with("product_info", $product_info);
       }
       public function store_in_entry_save(Request $request) {
+        // echo "Hi";
+        // $validatedData = $request->validate([
+        //   'purchase_order_info_id' => 'required|numeric',
+        //   // 'product_info_id' => 'required|numeric',
+        //   'buy_price' => 'required|numeric',
+        //   'comments' => 'min:0|max:200|string',
+        //   'barcode' => 'min:5|max:100|string'
+        // ]);
+        // exit();
         $data = array();
         $data['is_stored'] = '0';
         $data['purchase_order_info_id'] = "";
-        $data['product_info_id'] = "";
+        $data['product_info_id'] = "0";
         $data['barcode'] = "";
         $data['quantity'] = '1';
         $data['buy_price'] = "";
         $data['buy_date'] = "";
+        $data['comment'] = "";
         $data['entry_by'] = "";
         $data['created_at'] = date('Y-m-d H:i:s');
 
         
         $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $request->buy_date)));
-
-        $data['purchase_order_info_id'] = $request->purchase_order_info_id;
-        $data['product_info_id'] = $request->product_info_id;
-        $data['barcode'] = $request->barcode;
-        $data['buy_price'] = $request->buy_price;
+        $purchase_order_info_id = $request->purchase_order_info_id;
+        $product_info_id = $request->product_info_id;
+        $barcode = $request->barcode;
+        $buy_price = $request->buy_price;
+        $buy_date = $request->buy_date;
+        $comment = $request->comment;
+        if($purchase_order_info_id != null) {
+          $data['purchase_order_info_id'] = $purchase_order_info_id;
+        }
+        if($product_info_id != null) {
+          $data['product_info_id'] = $product_info_id;
+        }
+        if($barcode != null) {
+          $data['barcode'] = $barcode;
+        }
+        if($buy_price != null) {
+          $data['buy_price'] = $buy_price;
+        }
+        if($buy_date != null) {
+          $data['buy_date'] = $buy_date;
+        }
+        if($comment != null) {
+          $data['comment'] = $comment;
+        }
+        echo "<pre>";
+        var_dump($data);
+        // $data['purchase_order_info_id'] = $request->purchase_order_info_id;
+        // // $data['product_info_id'] = $request->product_info_id;
+        // $data['barcode'] = $request->barcode;
+        // $data['buy_price'] = $request->buy_price;
         
-        // $data['buy_date'] = $request->buy_date;
-        $data['buy_date'] = $newDate;
-        $data['entry_by'] = $request->entry_by;
+        // // $data['buy_date'] = $request->buy_date;
+        // $data['buy_date'] = $newDate;
+        // $data['comment'] = $request->comment;
+        // // $data['entry_by'] = $request->entry_by;
         
-        DB::table('product_purchase_history')
-                  ->insert($data);
+        // DB::table('product_purchase_history')
+        //           ->insert($data);
 
-        Session::put('sucMsg', 'A Product Stored Successfully!');
-        return Redirect::to('/product/store_in/view');
+        // Session::put('sucMsg', 'A Product Stored Successfully!');
+        // return Redirect::to('/product/store_in/view');
       }
       public function store_in_view() {
         $pp_history = DB::table('product_purchase_history')
@@ -445,3 +556,5 @@ class ProductController extends Controller
 
 
 }
+
+

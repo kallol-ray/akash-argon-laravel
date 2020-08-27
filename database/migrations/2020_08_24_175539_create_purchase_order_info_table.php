@@ -27,6 +27,7 @@ class CreatePurchaseOrderInfoTable extends Migration
             $table->decimal('paid_amount', 8, 2);
             $table->decimal('due_amount', 8, 2);            
             $table->date('purchased_date');
+            $table->string('comments', 200);
             $table->string('entry_by', 50);
             $table->timestamps();
         });

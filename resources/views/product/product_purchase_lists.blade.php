@@ -48,7 +48,7 @@
 							<td scope="row" class="tbl_sl">{{ $loop->iteration }}</td>
 							<td class="tbl_date">{{ date("d/m/Y", strtotime(str_replace('-', '/',  $purchase->purchased_date))) }}</td>
 							<td class="tbl_supplier" date="{{ $purchase->supplier_id }}">{{ $spplierArr[$purchase->supplier_id] }}</td>
-							<td class="tbl_product" data="$spplierArr[$purchase->po_info_id]">{{ $productArr[$purchase->po_info_id] }}</td>
+							<td class="tbl_product" data="{{ $purchase->po_info_id }}">{{ $productArr[$purchase->product_info_id] }}</td>
 							<td class="tbl_invoice">{{ $purchase->purchase_invoice_no }}</td>
 							<td class="tbl_qty">{{ $purchase->product_qty }}</td>
 							<td class="tbl_total_bill">{{ $purchase->total_bill }}</td>
@@ -74,11 +74,11 @@
 							</td>
 							<td class="tbl_entry_by">{{ $purchase->entry_by }}</td>
 							<td>
-								<a class="btn btn-outline-success" href="/product/update/{{ $purchase->po_info_id  }}">Edit</a>
+								<a class="btn btn-outline-success" href="/product/purchase_order/update/{{ $purchase->po_info_id  }}">Edit</a>
 							</td>
 							<td>
-								{!! Form::open(['url' => 'product/entry/delete', 'method' => 'post']) !!}
-									<input type="hidden" name="product_del_id" value="{{ $purchase->po_info_id  }}">
+								{!! Form::open(['url' => 'product/purchase_order/delete', 'method' => 'post']) !!}
+									<input type="hidden" name="po_info_id" value="{{ $purchase->po_info_id  }}">
 									<button type="submit" name="deleteBtn" value="Delete" class="btn btn-outline-danger">Delete</button>
 								{!! Form::close() !!}
 							</td>
