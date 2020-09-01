@@ -56,5 +56,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('product/store_in/entry', ['as'=>'product.store_in.entry', 'uses'=>'ProductController@store_in_entry_save']);
 	Route::get('product/store_in/view', ['as'=>'product.store_in.view', 'uses'=>'ProductController@store_in_view']);
 
+
+	// ajax call
+	Route::post('/single-product-info', 'ProductController@get_single_product_info');
 });
 

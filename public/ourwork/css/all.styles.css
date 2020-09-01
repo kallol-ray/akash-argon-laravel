@@ -31,6 +31,7 @@ body{
 	margin-top: 5px;
 	width: 100%;
 	height: 200px;
+	border-radius: 5px;
 }
 .paddingLR0 {
 	padding-left: 0px;
@@ -64,6 +65,7 @@ body{
 .subres {
   height: 45px;
   text-align: center;
+  margin-top: 45px;
 }
 .subres button:first-child{
   margin-right: 1.6rem;
@@ -72,7 +74,7 @@ body{
   border-left: 5px solid gray;
 }
 #saveBtn,
-#reset_cancel,
+#reset_product_entry,
 #updateBtn,
 #update_cancel,
 #reset_cancel_supplier,
@@ -95,4 +97,86 @@ body{
 	color: #F55;
 	font-size: 14px;
 	margin-bottom: 0px;
+}
+.tbl_hr {
+	margin: 0px;
+}
+.order_input {
+	width: 100%;
+	border: 1px solid rgba(0,0,0,.05);
+	background-color: transparent;
+	padding: 0px 5px;
+	color: #8898aa;
+}
+.inp_additional_price,
+.inp_total_price {
+	background-color: #d5d5d58c;
+}
+.order_input_vat {
+	width: calc(100% - 20px);
+	border: 1px solid rgba(0,0,0,.05);
+	background-color: transparent;
+	padding: 0px 5px;
+	color: #8898aa;
+}
+.order_input:focus,
+.order_input_vat:focus {
+	background-color: lightgray;
+}
+.order_entry_tbl{
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0 10px;
+}
+.order_entry_tbl td {
+	padding: 0px 4px;
+}
+.order_entry_tbl th {
+	text-align: center;
+}
+.order_product_img {
+	width: 42px;
+}
+.delet-icon {
+	width: 20px;
+	position: relative;
+	top: -3px;
+	cursor: pointer;
+}
+.po_summary {
+	width: 400px;
+	/*height: 50px;*/
+	float: right;
+	margin-right: 60px;
+	/*border: 1px solid gray;*/
+}
+.k-control {
+	width: 100%;
+	float: left;
+	margin-bottom: 5px;
+}
+.k-label {
+	width: 60%;
+	float: left;
+	text-align: right;
+	padding: 2px 40px 2px 4px;
+}
+.k-field {
+	width: 40%;
+	border: 1px solid rgba(0,0,0,.05);
+	padding: 2px 4px;
+	float: left;
+	box-sizing: border-box;
+	color: #8898aa;
+	background-color: transparent;
+}
+.k-field-vat {
+	width: 40%;
+	/*border: 1px solid rgba(0,0,0,.05);*/
+	padding: 2px 0px;
+	float: left;
+	box-sizing: border-box;
+}
+#product_list_err {
+	color: #F55;
 }

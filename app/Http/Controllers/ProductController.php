@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Session;//it write kallol
 use Redirect;//it write kallol
 use DB;//it write kallol
@@ -27,45 +28,30 @@ class ProductController extends Controller
      */
 
     public function product_info_entry()
-    {      
+    {       
       return view('product.product_info_entry');
     }
     public function product_save(Request $request)
     {
-
-        $data = array();
-        $data['title'] = "";
-        $data['description'] = "";
-        $data['model'] = "";
-        $data['brand'] = "";
-        $data['info_entry_date'] = "";
-        $data['entry_by'] = "";
-        $data['created_at'] = "";
-
-        $save_update_txt = $request->save_update;
-        $before_img_name = $request->before_img_name;
-        $update_id = $request->update_id;
+        $data = array();        
         // $orgDate = $request->info_entry_date;
         // $changeSeparator = str_replace('/', '-', $orgDate);  
         // $newDate = date("Y-m-d", strtotime($changeSeparator));
-        $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $request->info_entry_date)));
+        // $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $request->info_entry_date)));
 
         $data['title'] = $request->title;
         $data['description'] = $request->description;
         $data['model'] = $request->model;
         $data['brand'] = $request->brand;
-        // $data['info_entry_date'] = $request->info_entry_date;
-        $data['info_entry_date'] = $newDate;
-        // $data['image'] = $request->image;        
-        $data['entry_by'] = $request->entry_by;        
-        
+        $data['info_entry_date'] = date("Y-m-d", strtotime(str_replace('/', '-', $request->info_entry_date)));   
+        $data['entry_by'] = Auth::user()->email;
+        $data['created_at'] = date('Y-m-d H:i:s');
         // echo "<pre>";
         // print_r($data);
         // var_dump($data);
         // echo "</pre>";
-        if($save_update_txt == "Save") {
-          $data['created_at'] = date('Y-m-d H:i:s');
-          //Start Image uploader
+        
+        //Start Image uploader
           if(!empty($_FILES['imageToUpload']['name'])) {
             $target_dir = "ourwork/img/product_image/";
             $image_base_name = basename($_FILES["imageToUpload"]["name"]);
@@ -132,13 +118,13 @@ class ProductController extends Controller
             $data['image'] = "";
           }
             
-          //End Image uploader
+        //End Image uploader
 
-          DB::table('product_info')
+        DB::table('product_info')
                   ->insert($data);
 
-          Session::put('sucMsg', 'New Product Information Saved Successfully!');
-        }
+        Session::put('sucMsg', 'New Product Information Saved Successfully!');
+
         return Redirect::to('/product/view');
     }
 
@@ -180,35 +166,22 @@ class ProductController extends Controller
     }
     public function update_product(Request $request) {
       //update product
-        $data = array();
-        $data['title'] = "";
-        $data['description'] = "";
-        $data['model'] = "";
-        $data['brand'] = "";
-        $data['info_entry_date'] = "";
-        $data['entry_by'] = "";
+        $data = array();       
         $before_img_name = $request->before_img_name;
         $update_id = $request->update_id;
-        // $orgDate = $request->info_entry_date;
-        // $changeSeparator = str_replace('/', '-', $orgDate);  
-        // $newDate = date("Y-m-d", strtotime($changeSeparator));
-        $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $request->info_entry_date)));
-
         $data['title'] = $request->title;
         $data['description'] = $request->description;
         $data['model'] = $request->model;
         $data['brand'] = $request->brand;
-        // $data['info_entry_date'] = $request->info_entry_date;
-        $data['info_entry_date'] = $newDate;
-        // $data['image'] = $request->image;
-        
-        $data['entry_by'] = $request->entry_by;        
-        
+        $data['info_entry_date'] = date("Y-m-d", strtotime(str_replace('/', '-', $request->info_entry_date)));;
+        // $data['image'] = $request->image;        
+        $data['updated_by'] = Auth::user()->email;        
+        $data['updated_at'] = date('Y-m-d H:i:s');
         // echo "<pre>";
         // print_r($data);
         // var_dump($data);
         // echo "</pre>";
-          $data['updated_at'] = date('Y-m-d H:i:s');
+          
           if(empty($_FILES['imageToUpload']['name'])) {
             //If image is not upload
             $data['image'] = $before_img_name;
@@ -290,7 +263,7 @@ class ProductController extends Controller
             Session::put('sucMsg', 'A Product Information Updated Successfully!');
             return Redirect::to('/product/view');
           } else {
-            echo "Product is not update.";
+            echo "The Product is not updated.";
           }
     }
 
@@ -300,82 +273,106 @@ class ProductController extends Controller
                 ->select('supplier_id', 'supplier_name')               
                 ->get();
         $product_info = DB::table('product_info')
-                ->select('product_info_id', 'title')               
+                ->select('product_info_id', 'title', 'image')               
                 ->get();
         return view('product.product_purchase_entry')
                     ->with("supplier_info", $supplier_info)
                     ->with("product_info", $product_info);
       }
       public function purchase_order_save(Request $request) {
+        $auto_invoice = DB::table('purchase_order_info')
+          ->max('auto_invoice_no');
+        $new_invoice_no = "POI-". (preg_replace('/[^0-9]/', '', $auto_invoice) + 1);
+
         $data = array();
+        $data['auto_invoice_no'] = $new_invoice_no;
         $data['is_stored'] = 0;
-        $data['supplier_id'] = "";
-        $data['product_info_id'] = "";
-        $data['purchase_invoice_no'] = "";
-        $data['product_qty'] = "";
-        $data['total_bill'] = "";
-        $data['vat'] = "";
-        $data['discount'] = "";
-        $data['paid_or_due'] = "";
-        $data['paid_amount'] = "";
-        $data['due_amount'] = "";
-        $data['purchased_date'] = "";
-        $data['comments'] = "";
-        $data['entry_by'] = "";
-
-        // $orgDate = $request->info_entry_date;
-        // $changeSeparator = str_replace('/', '-', $orgDate);  
-        // $newDate = date("Y-m-d", strtotime($changeSeparator));
-        $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $request->purchased_date)));
-
+        $data['purchased_date'] = date("Y-m-d", strtotime(str_replace('/', '-', $request->purchased_date)));;
         $data['supplier_id'] = $request->supplier_id;
-        $data['product_info_id'] = $request->product_info_id;
-        $data['purchase_invoice_no'] = $request->purchase_invoice_no;
-        $data['product_qty'] = $request->product_qty;
-        $data['total_bill'] = $request->total_bill;
-        $data['vat'] = $request->vat;
-        $data['discount'] = $request->discount;
-        $data['paid_or_due'] = $request->paid_or_due;
-        $data['paid_amount'] = $request->paid_amount;
-        $data['due_amount'] = $request->due_amount;
-        // $data['purchased_date'] = $request->purchased_date;
-        $data['purchased_date'] = $newDate;
-        $data['comments'] = $request->comments;
-        $data['entry_by'] = $request->entry_by;
+        // $data['product_info_id'] = $request->product_info_id;
         
+        $data['buyer_adnl_cost'] = $request->buyer_addtional_costs;
+        $data['supplier_adnl_cost'] = $request->supplier_additional_cost;
+        $data['paid_or_due'] = $request->paid_or_due;
+
+        $data['purchase_invoice_no'] = $request->purchase_invoice_no;
+        $data['paid_amount'] = $request->paid_amount;
+        $data['due_amount']  = $request->due_amount;
+        $data['discount']  = 0;
+
+        $data['sub_total']   = $request->sub_total;
+        $data['vat_percent'] = $request->vat_percent;
+        $data['vat_amount']  = $request->vat_amount;
+        $data['grand_total'] = $request->grand_total;
+        $data['entry_by']    = Auth::user()->email;
+        $data['created_at']  = date('Y-m-d H:i:s');
+
+        // Array
+        $product_info_id_arr  = $request->product_info_id;
+        $quantity_arr         = $request->quantity;
+        $unit_price_arr       = $request->unit_price;
+        $additional_price_arr = $request->additional_price;
+        $sale_price_arr       = $request->sale_price;
+        $total_price_arr      = $request->total_price;
+
+        // echo "<pre>";
+        // // print_r(count($product_info_id_arr));
+        // print_r($quantity_arr);
+        // echo "</pre>";
+        
+       
         DB::table('purchase_order_info')
                   ->insert($data);
+
+        foreach($product_info_id_arr as $key => $value) {
+          $item = array();
+          $item['product_info_id'] = $value;
+          $item['auto_invoice_no'] = $new_invoice_no;
+          $item['product_qty'] = $quantity_arr[$key];
+          $item['unit_price'] = $unit_price_arr[$key];
+          $item['unit_adnl_price'] = $additional_price_arr[$key];
+          $item['sell_price'] = $sale_price_arr[$key];
+          $item['total_price'] = $total_price_arr[$key];
+          $item['created_at'] = date('Y-m-d H:i:s');
+          // echo "<pre>";
+          // var_dump($key."=".$value);
+          // var_dump($item);
+          // echo "</pre>";
+          DB::table('po_info_item')
+                  ->insert($item);
+        }
+
 
         Session::put('sucMsg', 'A Purchase Information Saved Successfully!');
         return Redirect::to('/product/purchase_order/view');
       }
       public function purchase_order_view(){
         $spplierArr = array();
-        $productArr = array();
+        // $productArr = array();
         $purchase_order_info = DB::table('purchase_order_info')
                 ->orderBy('po_info_id', 'desc')
                 ->get();
         $supplier_info = DB::table('supplier')
                 ->select('supplier_id', 'supplier_name')  
                 ->get();
-        $product_info = DB::table('product_info')
-                ->select('product_info_id', 'title')  
-                ->get();
+        // $product_info = DB::table('product_info')
+        //         ->select('product_info_id', 'title')  
+        //         ->get();
         
         foreach($supplier_info as $supplier) {
           $spplierArr[$supplier->supplier_id] = $supplier->supplier_name;
         }
-        foreach($product_info as $product) {
-          $productArr[$product->product_info_id] = $product->title;
-        }
+        // foreach($product_info as $product) {
+        //   $productArr[$product->product_info_id] = $product->title;
+        // }
         // echo "<pre>";
         // var_dump($productArr);
         // echo $productArr['1'];
 
         return view('product.product_purchase_lists')
                     ->with("purchase_order_info", $purchase_order_info)
-                    ->with("spplierArr", $spplierArr)
-                    ->with("productArr", $productArr);
+                    ->with("spplierArr", $spplierArr);
+                    // ->with("productArr", $productArr);
       }
       public function purchase_order_delete(Request $request) {
         $po_info_id = $request->po_info_id;
@@ -555,6 +552,14 @@ class ProductController extends Controller
     // End Store In
 
 
+
+      public function get_single_product_info(Request $req) {
+        $single_product_info = DB::table('product_info')
+                ->where('product_info_id', $req->product_info_id)
+                ->get();
+                
+        return $single_product_info;
+      }
 }
 
 

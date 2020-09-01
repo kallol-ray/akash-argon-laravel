@@ -26,34 +26,27 @@
 	    	<h2 class="text-center">Product Purchase Order</h2>
 	    	<table border="1px" class="pdt_list_tbl">
 					<tr>
-						<th>SN</th>
-						<th>Entry Date</th>
-						<th>Supplier</th>
-						<th>Product</th>
-						<th>Invoice No</th>
-						<th>Qty</th>
-						<th>Total Bill</th>
+						<th>PO Number</th>
+						<th>Supplier Name</th>
+						<th>Supplier Cost</th>
+						<th>Company Cost</th>
+						<th>Product Cost</th>
 						<th>Vat</th>
-						<th>Discount</th>
-						<th>Payment Type</th>
-						<th>Paid</th>
-						<th>Due</th>
-						<th>Stored</th>
-						<th>Entry By</th>
-						<th width="70px">Edit</th>
-						<th width="80px">Delete</th>
+						<th>Total</th>
+						<th width="182px">Action</th>
+						<!-- <th width="80px">Delete</th> -->
 					</tr>
 					@foreach ($purchase_order_info as $purchase)
 					  <tr data-id="{{ $purchase->po_info_id  }}">
-							<td scope="row" class="tbl_sl">{{ $loop->iteration }}</td>
-							<td class="tbl_date">{{ date("d/m/Y", strtotime(str_replace('-', '/',  $purchase->purchased_date))) }}</td>
+							<!-- <td scope="row" class="tbl_sl">{{ $loop->iteration }}</td> -->
+							<!-- <td class="tbl_date">{{ date("d/m/Y", strtotime(str_replace('-', '/',  $purchase->purchased_date))) }}</td> -->
+							<td class="tbl_date">{{ $purchase->auto_invoice_no }}</td>
 							<td class="tbl_supplier" date="{{ $purchase->supplier_id }}">{{ $spplierArr[$purchase->supplier_id] }}</td>
-							<td class="tbl_product" data="{{ $purchase->po_info_id }}">{{ $productArr[$purchase->product_info_id] }}</td>
-							<td class="tbl_invoice">{{ $purchase->purchase_invoice_no }}</td>
-							<td class="tbl_qty">{{ $purchase->product_qty }}</td>
-							<td class="tbl_total_bill">{{ $purchase->total_bill }}</td>
-							<td class="tbl_vat">{{ $purchase->vat }}</td>
-							<td class="tbl_discount">{{ $purchase->discount }}</td>
+							<td class="tbl_qty">{{ $purchase->supplier_adnl_cost }}</td>
+							<td class="tbl_qty">{{ $purchase->buyer_adnl_cost }}</td>
+							<td class="tbl_total_bill">{{ $purchase->sub_total }}</td>
+							<td class="tbl_vat">{{ $purchase->vat_amount }}</td>
+							<td class="tbl_discount">{{ $purchase->grand_total }}</td><!-- 
 							<td class="tbl_paid_or_due" data="{{ $purchase->paid_or_due }}">
 								@if ($purchase->paid_or_due == 0)
 									Partial Paid
@@ -62,26 +55,27 @@
 								@else
 								  Full Paid
 								@endif
-							</td>
-							<td class="tbl_brand">{{ $purchase->paid_amount }}</td>
-							<td class="tbl_brand">{{ $purchase->due_amount }}</td>
-							<td class="tbl_brand" data="{{ $purchase->is_stored }}">
+							</td> -->
+							<!-- <td class="tbl_brand">{{ $purchase->paid_amount }}</td>
+							<td class="tbl_brand">{{ $purchase->due_amount }}</td> -->
+							<!-- <td class="tbl_brand" data="{{ $purchase->is_stored }}">
 								@if ($purchase->is_stored == 0)
 									No
 								@else
 								  Yes
 								@endif
 							</td>
-							<td class="tbl_entry_by">{{ $purchase->entry_by }}</td>
+							<td class="tbl_entry_by">{{ $purchase->entry_by }}</td> -->
 							<td>
+								<button class="btn btn-outline-primary">Details</button>
 								<a class="btn btn-outline-success" href="/product/purchase_order/update/{{ $purchase->po_info_id  }}">Edit</a>
 							</td>
-							<td>
-								{!! Form::open(['url' => 'product/purchase_order/delete', 'method' => 'post']) !!}
+							<!-- <td> -->
+								<!-- {!! Form::open(['url' => 'product/purchase_order/delete', 'method' => 'post']) !!}
 									<input type="hidden" name="po_info_id" value="{{ $purchase->po_info_id  }}">
-									<button type="submit" name="deleteBtn" value="Delete" class="btn btn-outline-danger">Delete</button>
-								{!! Form::close() !!}
-							</td>
+									<button type="submit" name="deleteBtn" value="Delete" class="btn btn-outline-danger">Delete</button> -->
+								<!-- {!! Form::close() !!} -->
+							<!-- </td> -->
 						</tr>
 					@endforeach
 				</table>

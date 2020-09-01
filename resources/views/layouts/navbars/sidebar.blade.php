@@ -109,7 +109,7 @@
                         <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
                         <i class="ni ni-app" style="color: #f4645f;"></i>
 
-                        <span class="nav-link-text" style="color: #f4645f;">{{ __('Product') }}</span>
+                        <span class="nav-link-text" style="color: #f4645f;">{{ __('Product In') }}</span>
                     </a>
 
                     <div class="collapse show" id="navbar-product">

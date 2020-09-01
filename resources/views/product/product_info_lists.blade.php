@@ -1,4 +1,4 @@
-@extends('layouts.app',['title' => 'Product View'])
+@extends('layouts.app',['title' => 'Product List View'])
 @section('content')
 	<div class="msgAlert">
 		@if(Session::has('sucMsg'))
@@ -33,7 +33,7 @@
 						<th>Brand</th>
 						<th>Image</th>
 						<th>Entry Date</th>
-						<th>Entry By</th>
+						<th>Entry/Update By</th>
 						<th width="70px">Edit</th>
 						<th width="80px">Delete</th>
 					</tr>
@@ -48,7 +48,15 @@
 								<img src="/ourwork/img/product_image/{{ $product->image }}" class="pdt_lists_img" img-name="{{ $product->image }}" alt="Not Found" />
 							</td>
 							<td class="tbl_entry_date">{{ date("d/m/Y", strtotime(str_replace('-', '/',  $product->info_entry_date))) }}</td>
-							<td class="tbl_entry_by">{{ $product->entry_by }}</td>
+							<td class="tbl_entry_by">
+								{{ $product->entry_by }}
+								<hr class="tbl_hr">
+								@if($product->updated_by == "")
+									Not Updated
+								@else
+									{{ $product->updated_by }}
+								@endif								
+							</td>
 							<td>
 								<a class="btn btn-outline-success" href="/product/update/{{ $product->product_info_id }}">Edit</a>
 							</td>

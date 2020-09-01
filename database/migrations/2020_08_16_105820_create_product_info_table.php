@@ -22,6 +22,7 @@ class CreateProductInfoTable extends Migration
             $table->dateTime('info_entry_date');
             $table->string('image', 100);
             $table->string('entry_by', 50);
+            $table->string('updated_by', 50);
             $table->timestamps();
         });
     }
