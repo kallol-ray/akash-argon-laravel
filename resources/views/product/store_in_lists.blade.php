@@ -1,4 +1,4 @@
-@extends('layouts.app',['title' => 'Product Purchase Order'])
+@extends('layouts.app',['title' => 'Product Purchase History List'])
 @section('content')
 	<div class="msgAlert">
 		@if(Session::has('sucMsg'))

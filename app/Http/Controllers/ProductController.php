@@ -473,7 +473,7 @@ class ProductController extends Controller
         $productArr = array();
         $purchase_order_info = DB::table('purchase_order_info')
                 // ->select('po_info_id', 'product_info_id', 'purchase_invoice_no','product_qty','total_bill')
-                ->select('po_info_id', 'purchase_invoice_no', 'purchased_date')
+                ->select('po_info_id', 'auto_invoice_no', 'purchased_date')
                 ->orderBy('po_info_id', 'desc')
                 ->get();
         $product_info = DB::table('product_info')

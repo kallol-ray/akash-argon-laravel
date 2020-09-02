@@ -15,7 +15,7 @@ class CreatePurchaseOrderInfoTable extends Migration
     {
         Schema::create('purchase_order_info', function (Blueprint $table) {
             $table->id('po_info_id');
-            $table->string('auto_invoice_no', 50);
+            $table->string('auto_invoice_no', 50)->unique();
             $table->boolean('is_stored')->comment('0=By defaut, 1=else');
             $table->foreignId('supplier_id');
             $table->string('purchase_invoice_no', 50)->nullable();
