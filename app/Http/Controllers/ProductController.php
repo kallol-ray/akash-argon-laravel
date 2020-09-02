@@ -309,6 +309,7 @@ class ProductController extends Controller
 
         // Array
         $product_info_id_arr  = $request->product_info_id;
+        $image_arr            = $request->image;
         $quantity_arr         = $request->quantity;
         $unit_price_arr       = $request->unit_price;
         $additional_price_arr = $request->additional_price;
@@ -327,11 +328,12 @@ class ProductController extends Controller
         foreach($product_info_id_arr as $key => $value) {
           $item = array();
           $item['product_info_id'] = $value;
+          $item['image'] = $image_arr[$key];
           $item['auto_invoice_no'] = $new_invoice_no;
           $item['product_qty'] = $quantity_arr[$key];
           $item['unit_price'] = $unit_price_arr[$key];
           $item['unit_adnl_price'] = $additional_price_arr[$key];
-          $item['sell_price'] = $sale_price_arr[$key];
+          $item['sale_price'] = $sale_price_arr[$key];
           $item['total_price'] = $total_price_arr[$key];
           $item['created_at'] = date('Y-m-d H:i:s');
           // echo "<pre>";
@@ -379,25 +381,43 @@ class ProductController extends Controller
         DB::table('purchase_order_info')
                 ->where('po_info_id', $po_info_id)
                 ->delete();
-
         Session::put('sucMsg', 'A Purchase Order Info Deleted Successfully!');
         return Redirect::to('/product/purchase_order/view');
       }
       public function purchase_order_update_process(Request $request) {
-        $po_info_id = $request->id;
+        $auto_invoice_no = $request->auto_invoice_no;
+        $productArr = array();
+
         $purchase_order_info_single = DB::table('purchase_order_info')
-                  ->where('po_info_id', $po_info_id)->first();
+                  ->where('auto_invoice_no', $auto_invoice_no)
+                  ->first();
+        $po_info_item = DB::table('po_info_item')
+                  ->where('auto_invoice_no', $auto_invoice_no)
+                  ->get();
         $supplier_info = DB::table('supplier')
-                ->select('supplier_id', 'supplier_name')  
-                ->get();
+                  ->select('supplier_id', 'supplier_name')  
+                  ->get();
         $product_info = DB::table('product_info')
-                ->select('product_info_id', 'title')  
-                ->get();
+                  ->select('product_info_id', 'title', 'image')
+                  ->get();
+        foreach($product_info as $product) {
+          $productArr[$product->product_info_id] = $product->title;
+        }
+
+        // echo "<pre>";
+        // var_dump($purchase_order_info_single);
+        // var_dump($po_info_item);
+        // var_dump($supplier_info);
+        // var_dump($product_info);
+        // echo "</pre>";
+
 
         return view('product.product_purchase_update')
                     ->with("purchase", $purchase_order_info_single)
                     ->with("supplier_info", $supplier_info)
-                    ->with("product_info", $product_info);
+                    ->with("product_info", $product_info)
+                    ->with("po_info_item", $po_info_item)
+                    ->with("productArr", $productArr);
       }
       public function update_purchase_order(Request $request) {
         $data = array();        

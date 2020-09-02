@@ -154,6 +154,7 @@ $(document).on("change", "#product_info_id", function() {
 	                  '<td>'+image+'</td>'+
 	                  '<td>'+
 	                  	'<input type="hidden" name="product_info_id[]" value="'+product_info_id+'">'+
+	                  	'<input type="hidden" name="image[]" value="'+image+'">'+
 	                        // pattern="[0-9]+([.,][0-9]+)?"
 	                  	'<input type="text" name="quantity[]" id="qty_'+i+'" step="1" required placeholder="Quantity" class="order_input inp_quantity allowNumbersOnly" min="1">'+
 	                  '</td>'+
@@ -349,4 +350,10 @@ function removeItemOnce(arr, value) {
     arr.splice(index, 1);
   }
   return arr;
+}
+function close_po() {
+	$("#purchase_order_details").hide();
+}
+function order_details(auto_invoice) {
+	$("#purchase_order_details").show();
 }

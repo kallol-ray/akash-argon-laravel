@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('product/purchase_order/entry', ['as'=>'product.purchase_order.entry', 'uses'=>'ProductController@purchase_order_entry']);
 	Route::post('product/purchase_order/entry', ['as'=>'product.purchase_order.entry', 'uses'=>'ProductController@purchase_order_save']);
 	Route::get('product/purchase_order/view', ['as'=>'product.purchase_order.view', 'uses'=>'ProductController@purchase_order_view']);
-	Route::get('product/purchase_order/update/{id}', ['as'=>'product.purchase_order.update', 'uses'=>'ProductController@purchase_order_update_process']);
+	Route::get('product/purchase_order/update/{auto_invoice_no}', ['as'=>'product.purchase_order.update', 'uses'=>'ProductController@purchase_order_update_process']);
 	Route::post('product/purchase_order/update', ['as'=>'product.purchase_order.update', 'uses'=>'ProductController@update_purchase_order']);
 	Route::post('product/purchase_order/delete', ['as'=>'product.purchase_order.delete', 'uses'=>'ProductController@purchase_order_delete']);
 

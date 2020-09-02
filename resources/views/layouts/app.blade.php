@@ -34,6 +34,65 @@
             @include('layouts.navbars.navbar')
             @yield('content')
         </div>
+        <div class="popupCon" id="purchase_order_details">
+            <div class="order-details">
+                <h2 class="text-center">Purchase Order Details</h2>
+                <button type="button" class="close close-order-details" aria-label="Close" onclick="close_po()">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="pofield_set">
+                    <div class="bar"></div>
+                    <div class="po-head">
+                        <div class="po-labels">Supplier Name</div>
+                        <div class="po-labels" id="po-supplier-name">xxx</div>
+                        <div class="po-labels">Supplier Cost</div>
+                        <div class="po-labels" id="po-supplier-cost">25.00</div>
+
+                        <div class="po-labels">Invoice Number</div>
+                        <div class="po-labels" id="po-invoice-no">1445</div>
+                        <div class="po-labels">Buyer Cost</div>
+                        <div class="po-labels" id="po-buyer-cost">45</div>
+
+                        
+                        <div class="po-labels">Purchase Date</div>
+                        <div class="po-labels" id="po-purchase-date">12/12/20</div>
+                        <div class="po-labels">Product Cost</div>
+                        <div class="po-labels" id="po-product-cost">4545</div>
+                        <div class="po-labels">Total Product Quantity</div>
+                        <div class="po-labels" id="po-total-quantity">454</div>
+                        <div class="po-labels">Total Cost</div>
+                        <div class="po-labels" id="po-total-cost">4545</div>
+                    </div>
+                    <div class="po-table">
+                        <table class="po-details-tbl">
+                            <thead>
+                                <tr>
+                                    <th>Product Title</th>
+                                    <th>Quantity</th>
+                                    <th>Product Price</th>
+                                    <th>With Additional Cost</th>
+                                    <th>Sale Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Product Title</td>
+                                    <td>Quantity</td>
+                                    <td>Product Price</td>
+                                    <td>Witd Additional Cost</td>
+                                    <td>Sale Price</td>
+                                    <td>Total</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="po-footer">
+                            <button type="button" class="btn btn-outline-danger po-close-btn" onclick="close_po()">Close</button>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+        </div>
 
         @guest()
             @include('layouts.footers.guest')

@@ -4,6 +4,7 @@ body{
 .main-content .navbar-top {
 	position: sticky;
 	z-index: 99999999;
+	z-index: 1;
 }
 .pdt_lists_img {
 	width: 50px;
@@ -180,3 +181,72 @@ body{
 #product_list_err {
 	color: #F55;
 }
+.popupCon {
+	position: fixed;
+	top: 0px;
+	padding-left: 250px;
+	/*padding-bottom: 250px;*/
+	/*width: calc(100% - 250px);*/
+	width: 100%;
+	height: 100%;
+	/*border: 1px solid red;*/
+	overflow-y: scroll;
+	z-index: 9;
+	background-color: rgba(0,0,0,.3);
+	display: none;
+}
+.order-details {
+	position: relative;
+	top: 80px;
+	width: 80%;
+	/*border: 1px solid red;*/
+	border-radius: 5px;
+	margin: 0px auto 150px;
+	/*background-color: #FFF;*/
+	background-color: #E8E8E8;
+	padding: 20px;
+}
+.pofield_set {
+	border: 1px solid gray;
+	border-radius: 5px;
+	min-height: 200px;
+	margin-top: 50px;
+}
+.bar {
+	background-color: gray;
+	border-radius: 5px 5px 0px 0px;
+	height: 30px;
+}
+.po-head {
+	padding: 0px 15px;
+	height: 175px;
+}
+.po-table {
+	padding: 0px 15px 15px;
+}
+.po-labels {
+	width: 25%;
+	float: left;
+	margin-top: 15px;
+	height: 24px;
+}
+.po-details-tbl{
+	width: 100%;
+	margin-bottom: 40px;
+}
+.po-details-tbl tr th {
+	/*text-align: center;*/
+}
+.close-order-details {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+}
+.po-close-btn {
+	float: right;
+	height: 41px;
+}
+.po-footer{
+ 	text-align: right;
+ 	height: 42px;po-footer
+ }

@@ -33,6 +33,7 @@
 						<th>Product Cost</th>
 						<th>Vat</th>
 						<th>Total</th>
+						<th>Is Stored</th>
 						<th width="182px">Action</th>
 						<!-- <th width="80px">Delete</th> -->
 					</tr>
@@ -46,36 +47,18 @@
 							<td class="tbl_qty">{{ $purchase->buyer_adnl_cost }}</td>
 							<td class="tbl_total_bill">{{ $purchase->sub_total }}</td>
 							<td class="tbl_vat">{{ $purchase->vat_amount }}</td>
-							<td class="tbl_discount">{{ $purchase->grand_total }}</td><!-- 
-							<td class="tbl_paid_or_due" data="{{ $purchase->paid_or_due }}">
-								@if ($purchase->paid_or_due == 0)
-									Partial Paid
-								@elseif($purchase->paid_or_due == 1)
-									Full Due
-								@else
-								  Full Paid
-								@endif
-							</td> -->
-							<!-- <td class="tbl_brand">{{ $purchase->paid_amount }}</td>
-							<td class="tbl_brand">{{ $purchase->due_amount }}</td> -->
-							<!-- <td class="tbl_brand" data="{{ $purchase->is_stored }}">
+							<td class="tbl_discount">{{ $purchase->grand_total }}</td>
+							<td class="tbl_brand" data="{{ $purchase->is_stored }}">
 								@if ($purchase->is_stored == 0)
 									No
 								@else
 								  Yes
 								@endif
 							</td>
-							<td class="tbl_entry_by">{{ $purchase->entry_by }}</td> -->
 							<td>
-								<button class="btn btn-outline-primary">Details</button>
-								<a class="btn btn-outline-success" href="/product/purchase_order/update/{{ $purchase->po_info_id  }}">Edit</a>
+								<button class="btn btn-outline-primary" onclick="order_details('{{ $purchase->auto_invoice_no }}')">Details</button>
+								<a class="btn btn-outline-success" href="/product/purchase_order/update/{{ $purchase->auto_invoice_no  }}">Edit</a>
 							</td>
-							<!-- <td> -->
-								<!-- {!! Form::open(['url' => 'product/purchase_order/delete', 'method' => 'post']) !!}
-									<input type="hidden" name="po_info_id" value="{{ $purchase->po_info_id  }}">
-									<button type="submit" name="deleteBtn" value="Delete" class="btn btn-outline-danger">Delete</button> -->
-								<!-- {!! Form::close() !!} -->
-							<!-- </td> -->
 						</tr>
 					@endforeach
 				</table>
