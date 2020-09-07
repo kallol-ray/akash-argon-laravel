@@ -53,7 +53,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label for="purchase_invoice_no">Purchase Invoice Number</label>
-                <input type="text" class="form-control" id="purchase_invoice_no" name="purchase_invoice_no" placeholder="Purchase Invoice Number">
+                <input type="text" class="form-control" id="purchase_invoice_no" name="purchase_invoice_no" placeholder="Purchase Invoice Number" value="N/A">
               </div>
               <div class="form-group">
                 <label for="paid_amount">Supplier Paid Amount</label>

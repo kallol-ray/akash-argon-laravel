@@ -75,14 +75,17 @@ $("#imageToUpload").change(function() {
 	readURL(this);
 });
 
-
+function msgAlertAutoHide() {
+	if($(".msgAlert .alert").is(":visible")) {
+      setTimeout(function(){
+          $(".msgAlert .alert").fadeOut("slow");
+      }, 4000);
+  }
+}
 $( document ).ready(function() {
-    if($(".msgAlert .alert").is(":visible")) {
-        setTimeout(function(){
-            $(".msgAlert .alert").fadeOut("slow");
-        }, 4000);
-    }
+   msgAlertAutoHide(); 
 });
+
 
 function set_supply_entry_date() {
 	$("#supplier_entry_date").datepicker({
@@ -128,14 +131,9 @@ $("#reset_cancel_purchase").click(function(){
 	$("#entry_by").val("");
 });
 $("#reset_cancel_store").click(function(){
-	$("#purchase_order_info_id").val("");
-	$("#buy_date").val("");
-	$("#product_name").val("");
+	$("#po_auto_invoice").val("");
 	$("#product_info_id").val("");
-	$("#product_qty").val("");
-	$("#comments").val("");
 	$("#barcode").val("");
-	$("#entry_by").val("");
 });
 
 $(document).on("change", "#product_info_id", function() {
@@ -290,60 +288,6 @@ $(document).on("input", "#supplier_additional_cost", function(){
 	}
 });
 
-
-// $.ajaxSetup({
-// 	headers: {
-// 		'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
-// 	}
-// });
-// $.ajax({
-// 	url: "/single-product-info",
-// 	type: "POST",
-// 	cache: false,
-// 	data: {product_info_id : product_info_id},
-// 	// dataType: "html"
-// 	success: function(data, textStatus, xhr){
-// 		console.log(data[0].title);
-// 		let html = '<tr>' +
-//                 '<td data-product-info-id="'+data[0].product_info_id+'" align="center"><img src="/ourwork/img/product_image/'+data[0].image+'" class="order_product_img"></td>'+
-//                 '<td>'+data[0].title+'</td>'+
-//                 '<td>'+data[0].model+'</td>'+
-//                 '<td>'+
-//                 	'<input type="hidden" name="product_info_id[]" value="'+data[0].product_info_id+'">'+
-//                 	'<input type="text" name="quantity[]" class="order_input inp_quantity allowNumbersOnly">'+
-//                 '</td>'+
-//                 '<td><input type="text" name="unit_price[]" class="order_input inp_unit_price allowNumbersOnly"></td>'+
-//                 '<td><input type="text" name="additional_price[]" class="order_input inp_additional_price allowNumbersOnly"></td>'+
-//                 '<td><input type="text" name="sale_price[]" class="order_input inp_sale_price allowNumbersOnly"></td>'+
-//                 '<td><input type="text" name="total_price[]" class="order_input inp_total_price allowNumbersOnly"></td>'+
-//                 '<td align="center"><img src="/ourwork/img/icon/delete-icon.png" class="delet-icon" onclick="remove_list(this, event)"></td>'+
-//               '</tr>';
-// 		if(xhr.status) {
-// 			console.log("aa");
-// 			$("#order_entry_item tbody").append(html);
-// 		}
-// 	},
-// 	error: function (jqXHR, exception) {
-// 		var msg = '';
-// 		if (jqXHR.status === 0) {
-// 		    msg = 'Not connect.\n Verify Network.';
-// 		} else if (jqXHR.status == 404) {
-// 		    msg = 'Requested page not found. [404]';
-// 		} else if (jqXHR.status == 500) {
-// 		    msg = 'Internal Server Error [500].';
-// 		} else if (exception === 'parsererror') {
-// 		    msg = 'Requested JSON parse failed.';
-// 		} else if (exception === 'timeout') {
-// 		    msg = 'Time out error.';
-// 		} else if (exception === 'abort') {
-// 		    msg = 'Ajax request aborted.';
-// 		} else {
-// 		    msg = 'Uncaught Error.\n' + jqXHR.responseText;
-// 		}
-// 		console.log(msg);
-// 	},
-// });
-
 function removeItemOnce(arr, value) {
   var index = arr.indexOf(value);
   if (index > -1) {
@@ -357,3 +301,200 @@ function close_po() {
 function order_details(auto_invoice) {
 	$("#purchase_order_details").show();
 }
+$(document).on("change", "#po_auto_invoice", function() {	
+	// console.log($(this).val());
+	let auto_invoice = $(this).val();
+	$("#productNotFoundErr").html("");	
+	if(auto_invoice == "") {
+		$('#product_info_id option').filter(function() {
+		  return $.trim(this.value).length != 0;
+		  // return !this.value || $.trim(this.value).length == 0 || $.trim(this.text).length == 0;
+		}).remove();
+	} else {
+		$("#invoiceNoErr").html("");
+		$('#product_info_id option').filter(function() {
+		  return $.trim(this.value).length != 0;
+		  // return !this.value || $.trim(this.value).length == 0 || $.trim(this.text).length == 0;
+		}).remove();
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+			}
+		});
+		// console.log("auto_invoice = ", auto_invoice);
+		$.ajax({
+			url: "/invoice-wise-product",
+			type: "POST",
+			cache: false,
+			data: {auto_invoice : auto_invoice},
+			// dataType: "html"
+			success: function(data, textStatus, xhr){				
+				if(xhr.status) {
+					// console.log("data", data);
+					// console.log("length", data.length);
+					if(data.length != 0) {
+						$.each(data, function( k, v ) {
+						  // console.log( "Key: " + k + ", Value: " + v );
+							let option = '<option value="'+k+'">'+ v +'</option>';
+							$("#product_info_id").append(option);
+						});
+					} else {
+						$("#productNotFoundErr").html("No product found this voucher.");
+					}					
+				}
+			},
+			error: function (jqXHR, exception) {
+				var msg = '';
+				if (jqXHR.status === 0) {
+				    msg = 'Not connect.\n Verify Network.';
+				} else if (jqXHR.status == 404) {
+				    msg = 'Requested page not found. [404]';
+				} else if (jqXHR.status == 500) {
+				    msg = 'Internal Server Error [500].';
+				} else if (exception === 'parsererror') {
+				    msg = 'Requested JSON parse failed.';
+				} else if (exception === 'timeout') {
+				    msg = 'Time out error.';
+				} else if (exception === 'abort') {
+				    msg = 'Ajax request aborted.';
+				} else {
+				    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+				}
+				console.log(msg);
+			},
+		});
+	}
+});
+
+function barcode_entry_product(from_where, event) {
+	// console.log("from_where", from_where);
+	var code = event.keyCode || event.which;
+	if(from_where == "comment") {
+		if(code == 13) {
+			event.preventDefault();
+		}
+	} else if(from_where == "barcode") {
+		// console.log(event.which);		
+		if(code == 13) {
+			if($(event.target).val() != "") {
+				event.preventDefault();
+				let po_auto_invoice = $("#po_auto_invoice").val();
+				let product_info_id = $("#product_info_id").val();
+				let comment = $("#comment").val();
+				let barcode = $("#barcode").val();
+				$.ajaxSetup({
+					headers: {
+						'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+					}
+				});
+				// console.log("auto_invoice = ", auto_invoice);
+				$.ajax({
+					url: "/product/store_in/entry",
+					type: "POST",
+					cache: false,
+					data: {
+						po_auto_invoice : po_auto_invoice,
+						product_info_id : product_info_id,
+						comment 				: comment,
+						barcode 				: barcode
+					},
+					// dataType: "html"
+					success: function(data, textStatus, xhr){				
+						if(xhr.status) {
+							// console.log("data", data);
+							// console.log("data.status", data.status);
+							$("#barcode").val("").focus();
+							if(data.status) {
+								let html = '<div class="alert alert-success alert-dismissible fade show" role="alert">'
+					          + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
+					          + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
+					          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+					              + '<span aria-hidden="true">&times;</span>'
+					          + '</button>'
+					      	+ '</div>';
+					      $(".msgAlert").append(html);
+							} else {
+								let html = '<div class="alert alert-danger alert-dismissible fade show" role="alert">'
+					          + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
+					          + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
+					          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+					              + '<span aria-hidden="true">&times;</span>'
+					          + '</button>'
+					      	+ '</div>';
+					      $(".msgAlert").append(html);
+							}							
+							
+							msgAlertAutoHide();
+						}
+					},
+					error: function (jqXHR, exception) {
+						var msg = '';
+						if (jqXHR.status === 0) {
+						    msg = 'Not connect.\n Verify Network.';
+						} else if (jqXHR.status == 404) {
+						    msg = 'Requested page not found. [404]';
+						} else if (jqXHR.status == 500) {
+						    msg = 'Internal Server Error [500].';
+						} else if (exception === 'parsererror') {
+						    msg = 'Requested JSON parse failed.';
+						} else if (exception === 'timeout') {
+						    msg = 'Time out error.';
+						} else if (exception === 'abort') {
+						    msg = 'Ajax request aborted.';
+						} else {
+						    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+						}
+						console.log("msg",msg);
+					},
+				});
+			} else {
+				event.preventDefault();
+			}
+		}
+	}
+}
+
+function barcode_entry_validation() {
+	console.log("Form Validation");
+	let invoice_no = false;
+	let product_name = false;
+	let comment = false;
+	let barcode = false;
+	
+	if($("#po_auto_invoice").val() != "") {
+		invoice_no = true;
+		$("#invoiceNoErr").html("");
+	} else {
+		$("#invoiceNoErr").html("Select Invoice No.");
+	}
+	if($("#product_info_id").val() != "") {
+		product_name = true;
+		$("#productNotFoundErr").html("");
+	} else {
+		$("#productNotFoundErr").html("Select Product Name.");
+	}
+	if($("#comment").val() != "") {
+		comment = true;
+		$("#commentErr").html("");
+	} else {
+		$("#commentErr").html("Input a Comment Like 'N/A'.");
+	}
+	if($("#barcode").val() != "") {
+		barcode = true;
+		$("#barcodeErr").html("");
+	} else {
+		$("#barcodeErr").html("Barcode Not Found.");
+	}
+	if(invoice_no && product_name && comment && barcode) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+
+
+
+
+

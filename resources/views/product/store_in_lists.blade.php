@@ -38,7 +38,7 @@
 						<th width="80px">Delete</th> -->
 					</tr>
 					@foreach ($pp_history as $single_product)
-					  <tr data-id="{{ $single_product->pp_history_id  }}">
+						<tr data-id="{{ $single_product->pp_history_id  }}">
 							<td scope="row" class="tbl_sl">{{ $loop->iteration }}</td>
 							<td class="tbl_date">{{ date("d/m/Y", strtotime(str_replace('-', '/',  $single_product->buy_date))) }}</td>
 							<td class="tbl_brand" data="{{ $single_product->is_stored }}">
@@ -48,12 +48,10 @@
 								  Yes
 								@endif
 							</td>
-
-							<td class="tbl_supplier" date="{{ $single_product->product_info_id }}">{{ $productArr[$single_product->product_info_id] }}</td>							
-							
+							<td class="tbl_supplier" date="{{ $single_product->product_info_id }}">{{ $productArr[$single_product->product_info_id] }}</td>
 							<td class="tbl_qty">{{ $single_product->barcode }}</td>
 							<td class="tbl_total_bill">{{ $single_product->buy_price }}</td>
-							<td class="tbl_entry_by">{{ $single_product->entry_by }}</td>							
+							<td class="tbl_entry_by">{{ $single_product->entry_by }}</td>
 						</tr>
 					@endforeach
 				</table>

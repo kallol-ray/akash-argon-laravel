@@ -175,7 +175,7 @@ class ProductController extends Controller
         $data['brand'] = $request->brand;
         $data['info_entry_date'] = date("Y-m-d", strtotime(str_replace('/', '-', $request->info_entry_date)));;
         // $data['image'] = $request->image;        
-        $data['updated_by'] = Auth::user()->email;        
+        $data['updated_by'] = Auth::user()->email;
         $data['updated_at'] = date('Y-m-d H:i:s');
         // echo "<pre>";
         // print_r($data);
@@ -282,6 +282,7 @@ class ProductController extends Controller
       public function purchase_order_save(Request $request) {
         $auto_invoice = DB::table('purchase_order_info')
           ->max('auto_invoice_no');
+
         $new_invoice_no = "POI-". (preg_replace('/[^0-9]/', '', $auto_invoice) + 1);
 
         $data = array();
@@ -320,14 +321,25 @@ class ProductController extends Controller
         // // print_r(count($product_info_id_arr));
         // print_r($quantity_arr);
         // echo "</pre>";
-        
-       
         DB::table('purchase_order_info')
                   ->insert($data);
+
+        $purchase_order_info = DB::table('purchase_order_info')
+                ->select('po_info_id')
+                ->where('auto_invoice_no', $new_invoice_no)          
+                ->get();
+        $po_info_id = "";
+        foreach($purchase_order_info as $po_onfo) {
+          $po_info_id = $po_onfo->po_info_id;
+        }
+        
 
         foreach($product_info_id_arr as $key => $value) {
           $item = array();
           $item['product_info_id'] = $value;
+
+          $item['po_info_id'] = $po_info_id;
+
           $item['image'] = $image_arr[$key];
           $item['auto_invoice_no'] = $new_invoice_no;
           $item['product_qty'] = $quantity_arr[$key];
@@ -488,70 +500,84 @@ class ProductController extends Controller
                     ->with("product_info", $product_info);
       }
       public function store_in_entry_save(Request $request) {
-        // echo "Hi";
-        // $validatedData = $request->validate([
-        //   'purchase_order_info_id' => 'required|numeric',
-        //   // 'product_info_id' => 'required|numeric',
-        //   'buy_price' => 'required|numeric',
-        //   'comments' => 'min:0|max:200|string',
-        //   'barcode' => 'min:5|max:100|string'
-        // ]);
-        // exit();
         $data = array();
         $data['is_stored'] = '0';
-        $data['purchase_order_info_id'] = "";
-        $data['product_info_id'] = "0";
-        $data['barcode'] = "";
+        $data['po_info_id'] = "";
+        $data['auto_invoice_no'] = $request->po_auto_invoice;
+        $data['product_info_id'] = $request->product_info_id;
+        $data['barcode'] = $request->barcode;
         $data['quantity'] = '1';
         $data['buy_price'] = "";
+        $data['sale_price'] = "";
         $data['buy_date'] = "";
-        $data['comment'] = "";
-        $data['entry_by'] = "";
+        $data['comment'] = $request->comment;
+        $data['entry_by'] = Auth::user()->email;
         $data['created_at'] = date('Y-m-d H:i:s');
 
-        
-        $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $request->buy_date)));
-        $purchase_order_info_id = $request->purchase_order_info_id;
-        $product_info_id = $request->product_info_id;
-        $barcode = $request->barcode;
-        $buy_price = $request->buy_price;
-        $buy_date = $request->buy_date;
-        $comment = $request->comment;
-        if($purchase_order_info_id != null) {
-          $data['purchase_order_info_id'] = $purchase_order_info_id;
+        // echo "<pre>";
+        // var_dump($data);
+        $barcodesFromDb = DB::table('product_purchase_history')
+                ->select('barcode')
+                ->orderBy('barcode', 'asc')
+                ->get();        
+        $po_info_item = DB::table('po_info_item')
+                ->select('po_info_item_id', 'product_info_id', 'po_info_id', 'auto_invoice_no', 'unit_price', 'sale_price')
+                ->where('auto_invoice_no', $request->po_auto_invoice)
+                ->where('product_info_id', $request->product_info_id)
+                ->get();
+        if(count($po_info_item) > 0) {
+          foreach($po_info_item as $item) {
+            $data['po_info_id'] = $item->po_info_id;
+            $data['buy_price'] = $item->unit_price;
+            $data['sale_price'] = $item->sale_price;
+          }
         }
-        if($product_info_id != null) {
-          $data['product_info_id'] = $product_info_id;
+        $purchase_order_info = DB::table('purchase_order_info')
+                ->select('po_info_id', 'auto_invoice_no', 'purchased_date')
+                ->where('po_info_id', $data['po_info_id'])
+                ->get();
+        if(count($po_info_item) > 0) {
+          foreach($purchase_order_info as $date) {
+            $data['buy_date'] = $date->purchased_date;
+          }
         }
-        if($barcode != null) {
-          $data['barcode'] = $barcode;
-        }
-        if($buy_price != null) {
-          $data['buy_price'] = $buy_price;
-        }
-        if($buy_date != null) {
-          $data['buy_date'] = $buy_date;
-        }
-        if($comment != null) {
-          $data['comment'] = $comment;
-        }
-        echo "<pre>";
-        var_dump($data);
-        // $data['purchase_order_info_id'] = $request->purchase_order_info_id;
-        // // $data['product_info_id'] = $request->product_info_id;
-        // $data['barcode'] = $request->barcode;
-        // $data['buy_price'] = $request->buy_price;
-        
-        // // $data['buy_date'] = $request->buy_date;
-        // $data['buy_date'] = $newDate;
-        // $data['comment'] = $request->comment;
-        // // $data['entry_by'] = $request->entry_by;
-        
-        // DB::table('product_purchase_history')
-        //           ->insert($data);
 
-        // Session::put('sucMsg', 'A Product Stored Successfully!');
-        // return Redirect::to('/product/store_in/view');
+        // echo "<pre>";
+        //   var_dump($data);
+        // echo "</pre>";
+        
+
+        $isBarcodeExist = false;
+        if(count($barcodesFromDb) > 0) {
+          foreach($barcodesFromDb as $barcode) {
+            // echo $barcode->barcode;
+            if($barcode->barcode == $data['barcode']) {
+              // echo $barcode->barcode;
+              // echo "<br/>";
+              $isBarcodeExist = true;
+            }
+          }
+        }
+        
+        $returnArr = array();
+        if(!$isBarcodeExist) {
+
+          DB::table('product_purchase_history')
+                    ->insert($data);
+
+          // Session::put('sucMsg', 'A Product Stored Successfully!');
+          // return Redirect::to('/product/store_in/view');
+          
+          $returnArr['status'] = true;
+          $returnArr['message'] = "A product Saved Successfully.";
+          // return "A product Saved Successfully.";
+          return $returnArr;
+        } else {
+          $returnArr['status'] = false;
+          $returnArr['message'] = "This Product is Already Added.<br/> Barcode = '".$data['barcode']."'.";
+          return $returnArr;
+          // return "This Product is Already Added, Barcode = '".$data['barcode']."'.";
+        }
       }
       public function store_in_view() {
         $pp_history = DB::table('product_purchase_history')
@@ -579,6 +605,25 @@ class ProductController extends Controller
                 ->get();
                 
         return $single_product_info;
+      }
+      public function get_invoice_wise_product(Request $req) {
+        $product_info_id = DB::table('po_info_item')
+                ->select('product_info_id')
+                ->where('auto_invoice_no', $req->auto_invoice)
+                ->get();
+        $product_info = DB::table('product_info')
+                ->select('product_info_id', 'title')
+                ->get();
+        $optionArr = array();
+        foreach($product_info_id as $id) {
+          foreach($product_info as $product) {
+            if($id->product_info_id == $product->product_info_id) {
+              $optionArr[$product->product_info_id] = $product->title;
+            }
+          }
+        }
+        // var_dump($product_info_id);
+        return $optionArr;
       }
 }
 

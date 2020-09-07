@@ -59,5 +59,6 @@ Route::group(['middleware' => 'auth'], function () {
 
 	// ajax call
 	Route::post('/single-product-info', 'ProductController@get_single_product_info');
+	Route::post('/invoice-wise-product', 'ProductController@get_invoice_wise_product');
 });
 

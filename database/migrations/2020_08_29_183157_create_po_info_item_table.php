@@ -16,6 +16,7 @@ class CreatePoInfoItemTable extends Migration
         Schema::create('po_info_item', function (Blueprint $table) {
             $table->id('po_info_item_id');
             $table->foreignId('product_info_id');
+            $table->foreignId('po_info_id');
             $table->string('auto_invoice_no', 50);
             $table->string('image', 200);
             $table->integer('product_qty');
