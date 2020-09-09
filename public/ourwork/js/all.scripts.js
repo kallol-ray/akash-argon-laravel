@@ -649,6 +649,12 @@ $(document).on("change", "#auto_history_invoice_stock", function() {
 	}
 });
 
+$("#reset_cancel_customer").click(function() {
+	$("#customer_name").val("");
+	$("#company_name").val("");
+	$("#phone").val("");
+	$("#address").val("");
+});
 
 
 

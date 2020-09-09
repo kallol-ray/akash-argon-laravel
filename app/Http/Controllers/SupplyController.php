@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Session;//it write kallol
 use Redirect;//it write kallol
 use DB;//it write kallol
@@ -26,7 +27,7 @@ class SupplyController extends Controller
     $data['address'] = "";
     $data['comments'] = "";
     $data['supplier_entry_date'] = "";
-    $data['entry_by'] = "";
+    $data['entry_by'] = Auth::user()->email;;
     $data['created_at'] = "";
 
     
@@ -40,8 +41,7 @@ class SupplyController extends Controller
     $data['address'] = $request->address;
     $data['comments'] = $request->comments;
     // $data['supplier_entry_date'] = $request->supplier_entry_date;
-    $data['supplier_entry_date'] = $newDate;     
-    $data['entry_by'] = $request->entry_by;
+    $data['supplier_entry_date'] = $newDate;
     $data['created_at'] = date('Y-m-d H:i:s');
 
     DB::table('supplier')

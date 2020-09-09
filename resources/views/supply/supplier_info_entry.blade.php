@@ -18,20 +18,16 @@
               <div class="form-group">
                 <label for="phone">Phone</label>
                 <input type="text" class="form-control" id="phone" name="phone" placeholder="phone">
-              </div>
-              <div class="form-group">
-                <label for="address">Address</label>
-                <textarea class="form-control" id="address" rows="5" name="address" placeholder="Supplier address"></textarea>
-              </div>
+              </div>              
             </div>
             <div class="col-md-6">              
               <div class="form-group">
                 <label for="comments">Comments</label>
-                <textarea class="form-control" id="comments" rows="5" name="comments" placeholder="Supplier comments"></textarea>
+                <textarea class="form-control" id="comments" rows="3" name="comments" placeholder="Supplier comments"></textarea>
               </div>
               <div class="form-group">
-                <label for="entry_by">Entry By</label>
-                <input type="text" class="form-control" id="entry_by" name="entry_by" placeholder="Entry By">
+                <label for="address">Address</label>
+                <textarea class="form-control" id="address" rows="3" name="address" placeholder="Supplier address"></textarea>
               </div>
             </div>
             <div class="col-md-12">              

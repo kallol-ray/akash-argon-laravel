@@ -60,6 +60,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 
 	Route::get('customer/entry', ['as'=>'customer.entry', 'uses'=>'CustomerController@ready_entry']);
+	Route::post('customer/entry', ['as'=>'customer.entry', 'uses'=>'CustomerController@save_entry']);
 	Route::get('customer/view', ['as'=>'customer.view', 'uses'=>'CustomerController@view_entry']);
 
 
