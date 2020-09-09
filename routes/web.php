@@ -42,8 +42,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('product/purchase_order/entry', ['as'=>'product.purchase_order.entry', 'uses'=>'ProductController@purchase_order_entry']);
 	Route::post('product/purchase_order/entry', ['as'=>'product.purchase_order.entry', 'uses'=>'ProductController@purchase_order_save']);
 	Route::get('product/purchase_order/view', ['as'=>'product.purchase_order.view', 'uses'=>'ProductController@purchase_order_view']);
-	Route::get('product/purchase_order/update/{auto_invoice_no}', ['as'=>'product.purchase_order.update', 'uses'=>'ProductController@purchase_order_update_process']);
+	Route::get('product/purchase_order/update/{po_info_id}', ['as'=>'product.purchase_order.update', 'uses'=>'ProductController@purchase_order_update_process']);
 	Route::post('product/purchase_order/update', ['as'=>'product.purchase_order.update', 'uses'=>'ProductController@update_purchase_order']);
+	Route::get('product/purchase_order/stop_entry/{po_info_id}', ['as'=>'product.purchase_order.stop_entry', 'uses'=>'ProductController@po_stop_entry']);
 	Route::post('product/purchase_order/delete', ['as'=>'product.purchase_order.delete', 'uses'=>'ProductController@purchase_order_delete']);
 
 
@@ -57,8 +58,24 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('product/store_in/view', ['as'=>'product.store_in.view', 'uses'=>'ProductController@store_in_view']);
 
 
+
+	Route::get('customer/entry', ['as'=>'customer.entry', 'uses'=>'CustomerController@ready_entry']);
+	Route::get('customer/view', ['as'=>'customer.view', 'uses'=>'CustomerController@view_entry']);
+
+
+	Route::get('order_place/entry', ['as'=>'order_place.entry', 'uses'=>'SaleController@order_entry']);
+	Route::get('order_place/view', ['as'=>'order_place.view', 'uses'=>'SaleController@order_view']);
+
+	
+
 	// ajax call
 	Route::post('/single-product-info', 'ProductController@get_single_product_info');
 	Route::post('/invoice-wise-product', 'ProductController@get_invoice_wise_product');
+	Route::post('/invoice-product-count', 'ProductController@get_product_count');
+	Route::get('/invoice-product-count/{auto_invoice}', 'ProductController@get_product_count');
+
+	Route::post('/entry-count', 'ProductController@get_entry_count');
+	Route::get('/entry-count/{invoice}/{product_id}', 'ProductController@get_entry_count');
+
 });
 

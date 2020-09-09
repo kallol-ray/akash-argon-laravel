@@ -2,28 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0c89ed8e-31d6-41f0-857c-591f6a2af683" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Akash-router-App.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Akash-router-App.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ProductController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ProductController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_16_105820_create_product_info_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_08_16_105820_create_product_info_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_24_175539_create_purchase_order_info_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_08_24_175539_create_purchase_order_info_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeds/ProductInfoSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/ProductInfoSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeds/PurchaseOrderInfoInfoSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/PurchaseOrderInfoInfoSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ourwork/css/all.styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/ourwork/css/all.styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ourwork/img/product_image/default@1598295452.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/public/ourwork/img/product_image/default@1598295452.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ourwork/js/all.scripts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ourwork/js/all.scripts.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/navbars/sidebar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/navbars/sidebar.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/product/product_info_entry.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/product/product_info_entry.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/product/product_info_lists.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/product/product_info_lists.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/product/product_info_update.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/product/product_info_update.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/product/product_purchase_entry.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/product/product_purchase_entry.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
@@ -177,6 +165,7 @@
       <option name="presentableId" value="Default" />
       <updated>1598800441903</updated>
       <workItem from="1598800452306" duration="5476000" />
+      <workItem from="1599493595454" duration="702000" />
     </task>
     <servers />
   </component>

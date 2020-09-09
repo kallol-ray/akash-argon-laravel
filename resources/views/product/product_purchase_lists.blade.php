@@ -24,6 +24,8 @@
 	  <div class="row">
 	    <div class="col-md-12">	    	
 	    	<h2 class="text-center">Product Purchase Order</h2>
+	    	
+	    	
 	    	<table border="1px" class="pdt_list_tbl">
 					<tr>
 						<th>PO Number</th>
@@ -56,8 +58,12 @@
 								@endif
 							</td>
 							<td>
-								<button class="btn btn-outline-primary" onclick="order_details('{{ $purchase->auto_invoice_no }}')">Details</button>
-								<a class="btn btn-outline-success" href="/product/purchase_order/update/{{ $purchase->auto_invoice_no  }}">Edit</a>
+								<button class="btn-outline-primary" onclick="order_details('{{ $purchase->auto_invoice_no }}', '{{ $purchase->po_info_id }}')">Details</button>
+								@if ($purchase->is_stored == 0)
+									<a class="btn-outline-success" href="/product/purchase_order/update/{{ $purchase->po_info_id  }}">Edit</a>
+									<br>
+									<a class="btn-outline-success" href="/product/purchase_order/stop_entry/{{ $purchase->po_info_id  }}">Stop Entry</a>
+								@endif							
 							</td>
 						</tr>
 					@endforeach

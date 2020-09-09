@@ -18,6 +18,7 @@ class CreateInventoryTable extends Migration
             $table->foreignId('product_info_id');
             $table->string('barcode', 200)->unique();
             $table->bigInteger('Qty');
+            $table->string('entry_by', 50);
             $table->timestamps();
         });
     }

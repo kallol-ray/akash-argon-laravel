@@ -282,6 +282,9 @@ class ProductController extends Controller
       public function purchase_order_save(Request $request) {
         $auto_invoice = DB::table('purchase_order_info')
           ->max('auto_invoice_no');
+        echo "<pre>";
+        var_dump($auto_invoice);
+        echo "</pre>";
 
         $new_invoice_no = "POI-". (preg_replace('/[^0-9]/', '', $auto_invoice) + 1);
 
@@ -364,6 +367,7 @@ class ProductController extends Controller
         $spplierArr = array();
         // $productArr = array();
         $purchase_order_info = DB::table('purchase_order_info')
+                ->where('is_stored', '0')
                 ->orderBy('po_info_id', 'desc')
                 ->get();
         $supplier_info = DB::table('supplier')
@@ -397,39 +401,39 @@ class ProductController extends Controller
         return Redirect::to('/product/purchase_order/view');
       }
       public function purchase_order_update_process(Request $request) {
-        $auto_invoice_no = $request->auto_invoice_no;
-        $productArr = array();
-
+        $po_info_id = $request->po_info_id;
         $purchase_order_info_single = DB::table('purchase_order_info')
-                  ->where('auto_invoice_no', $auto_invoice_no)
-                  ->first();
-        $po_info_item = DB::table('po_info_item')
-                  ->where('auto_invoice_no', $auto_invoice_no)
+                  ->where('is_stored', '0')
+                  ->where('po_info_id', $po_info_id)
                   ->get();
-        $supplier_info = DB::table('supplier')
-                  ->select('supplier_id', 'supplier_name')  
-                  ->get();
-        $product_info = DB::table('product_info')
-                  ->select('product_info_id', 'title', 'image')
-                  ->get();
-        foreach($product_info as $product) {
-          $productArr[$product->product_info_id] = $product->title;
-        }
-
-        // echo "<pre>";
-        // var_dump($purchase_order_info_single);
-        // var_dump($po_info_item);
-        // var_dump($supplier_info);
-        // var_dump($product_info);
-        // echo "</pre>";
-
-
-        return view('product.product_purchase_update')
-                    ->with("purchase", $purchase_order_info_single)
-                    ->with("supplier_info", $supplier_info)
-                    ->with("product_info", $product_info)
-                    ->with("po_info_item", $po_info_item)
-                    ->with("productArr", $productArr);
+        if(count($purchase_order_info_single) == 1) {
+          $productArr = array();
+          // echo "<pre>";
+            // var_dump($auto_invoice_no = $purchase_order_info_single[0]->auto_invoice_no);
+            // var_dump($purchase_order_info_single);
+          // echo "</pre>";
+          $auto_invoice_no = $purchase_order_info_single[0]->auto_invoice_no;
+          $po_info_item = DB::table('po_info_item')
+                    ->where('auto_invoice_no', $auto_invoice_no)
+                    ->get();
+          $supplier_info = DB::table('supplier')
+                    ->select('supplier_id', 'supplier_name')  
+                    ->get();
+          $product_info = DB::table('product_info')
+                    ->select('product_info_id', 'title', 'image')
+                    ->get();
+          foreach($product_info as $product) {
+            $productArr[$product->product_info_id] = $product->title;
+          }
+          return view('product.product_purchase_update')
+                      ->with("purchase", $purchase_order_info_single)
+                      ->with("supplier_info", $supplier_info)
+                      ->with("product_info", $product_info)
+                      ->with("po_info_item", $po_info_item)
+                      ->with("productArr", $productArr);
+        } else {
+          return Redirect::to('/product/purchase_order/view');
+        }        
       }
       public function update_purchase_order(Request $request) {
         $data = array();        
@@ -478,6 +482,17 @@ class ProductController extends Controller
         Session::put('sucMsg', 'A Purchase Information Updated Successfully!');
         return Redirect::to('/product/purchase_order/view');
       }
+      public function po_stop_entry(Request $request) {
+        $po_info_id = $request->po_info_id;
+        $data = array();
+        $data['is_stored'] = "1";
+        DB::table('purchase_order_info')
+                  ->where('po_info_id', $po_info_id)
+                  ->update($data);
+
+        Session::put('sucMsg', 'A Purchase Order Entry Stop Successfully!');
+        return Redirect::to('/product/purchase_order/view');
+      }
     //end purchase order
 
     //Start Store In
@@ -486,6 +501,7 @@ class ProductController extends Controller
         $purchase_order_info = DB::table('purchase_order_info')
                 // ->select('po_info_id', 'product_info_id', 'purchase_invoice_no','product_qty','total_bill')
                 ->select('po_info_id', 'auto_invoice_no', 'purchased_date')
+                ->where('is_stored', '1')
                 ->orderBy('po_info_id', 'desc')
                 ->get();
         $product_info = DB::table('product_info')
@@ -561,10 +577,9 @@ class ProductController extends Controller
         
         $returnArr = array();
         if(!$isBarcodeExist) {
-
+          
           DB::table('product_purchase_history')
                     ->insert($data);
-
           // Session::put('sucMsg', 'A Product Stored Successfully!');
           // return Redirect::to('/product/store_in/view');
           
@@ -583,9 +598,15 @@ class ProductController extends Controller
         $pp_history = DB::table('product_purchase_history')
                 ->orderBy('pp_history_id', 'desc')
                 ->get();
+        $pp_invoice = DB::table('product_purchase_history')
+                      ->select('auto_invoice_no', 'buy_date')
+                      ->orderBy('auto_invoice_no', 'desc')
+                      ->distinct()
+                      ->get(['auto_invoice_no']);
+
         $productArr = array();
         $product_info = DB::table('product_info')
-                ->select('product_info_id', 'title')  
+                ->select('product_info_id', 'title')
                 ->get();
                 
         foreach($product_info as $product) {
@@ -593,6 +614,7 @@ class ProductController extends Controller
         }
         return view('product.store_in_lists')
                   ->with("pp_history", $pp_history)
+                  ->with("pp_invoice", $pp_invoice)
                   ->with("productArr", $productArr);
       }
     // End Store In
@@ -623,7 +645,63 @@ class ProductController extends Controller
           }
         }
         // var_dump($product_info_id);
+        $option_total_entry = array();
+        $option_total_entry['option'] = $optionArr;
+
         return $optionArr;
+      }
+      public function get_product_count(Request $req) {
+        $auto_invoice = $req->auto_invoice;
+        $total_qty = DB::table('po_info_item')
+                ->select(DB::raw('SUM(product_qty) as total_qty'))
+                ->groupBy('auto_invoice_no')
+                ->where('auto_invoice_no', $auto_invoice)
+                ->get();
+        $total_entry = DB::table('product_purchase_history')
+                ->select(DB::raw('SUM(quantity) as entry'))
+                ->groupBy('auto_invoice_no')
+                ->where('auto_invoice_no', $auto_invoice)
+                ->get();
+        $total_and_entry = array();
+        $total_and_entry['total_qty'] = $total_qty[0]->total_qty;
+        $total_and_entry['total_entry'] = $total_entry[0]->entry;
+
+        // echo "<pre>";
+        //   var_dump($total_qty[0]->total_qty);
+        // echo "</pre>";
+        // return response()->json(['success'=>'Got Simple Ajax Request.']);
+        // return response()->json($total_qty);
+        return $total_and_entry;
+      }
+      public function get_entry_count(Request $req) {
+        $auto_invoice = $req->invoice;
+        $product_info_id = $req->product_id;
+        $total_item = DB::table('po_info_item')
+                ->select('product_qty')
+                ->where('auto_invoice_no', $auto_invoice)
+                ->where('product_info_id', $product_info_id)
+                ->get();
+        $entry_item = DB::table('product_purchase_history')
+                ->select(DB::raw('SUM(quantity) as entry_item'))
+                ->groupBy('auto_invoice_no')
+                ->where('auto_invoice_no', $auto_invoice)
+                ->where('product_info_id', $product_info_id)
+                ->get();
+        $total_and_item = array();
+        $total_and_item['total_item'] = $total_item[0]->product_qty;
+        if(count($entry_item) == 0) {
+          $total_and_item['entry_item'] = "0";
+        } else {
+          $total_and_item['entry_item'] = $entry_item[0]->entry_item;
+        }
+        
+        // echo "<pre>";        
+        //   // var_dump($total_item[0]->product_qty);
+        //   // var_dump($entry_item[0]->entry_item);
+        //   var_dump($total_and_item);
+        // echo "</pre>";
+       
+        return $total_and_item;
       }
 }
 

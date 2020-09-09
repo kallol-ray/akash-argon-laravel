@@ -23,37 +23,48 @@
 	<div class="container-fluid product-view">
 	  <div class="row">
 	    <div class="col-md-12">	    	
-	    	<h2 class="text-center">Product Purchase History List</h2>
-	    	<table border="1px" class="pdt_list_tbl">
-					<tr>
-						<th>SN</th>
-						<th>Buy Date</th>
-						<th>Stored</th>
-						<th>Product</th>
-						<th>Invoice No</th>
-						<th>Barcode</th>
-						<th>Buy Price</th>						
-						<th>Entry By</th>
-						<!-- <th width="70px">Edit</th>
-						<th width="80px">Delete</th> -->
-					</tr>
-					@foreach ($pp_history as $single_product)
-						<tr data-id="{{ $single_product->pp_history_id  }}">
-							<td scope="row" class="tbl_sl">{{ $loop->iteration }}</td>
-							<td class="tbl_date">{{ date("d/m/Y", strtotime(str_replace('-', '/',  $single_product->buy_date))) }}</td>
-							<td class="tbl_brand" data="{{ $single_product->is_stored }}">
-								@if ($single_product->is_stored == 0)
-									No
-								@else
-								  Yes
-								@endif
-							</td>
-							<td class="tbl_supplier" date="{{ $single_product->product_info_id }}">{{ $productArr[$single_product->product_info_id] }}</td>
-							<td class="tbl_qty">{{ $single_product->barcode }}</td>
-							<td class="tbl_total_bill">{{ $single_product->buy_price }}</td>
-							<td class="tbl_entry_by">{{ $single_product->entry_by }}</td>
+	    	<h2 class="text-center">Stock History List</h2>
+	    	<div class="form-group col-md-4 paddingLR0">
+		      <label for="auto_history_invoice_stock">Invoice No</label>
+		      <select id="auto_history_invoice_stock" class="form-control">
+		        <option value="">Select one...</option>
+		        @foreach ($pp_invoice as $invoive)
+							<option value="{{ $invoive->auto_invoice_no }}">{{ $invoive->auto_invoice_no }} ({{ date("d/m/Y", strtotime(str_replace('-', '/',  $invoive->buy_date)))}})</option>
+						@endforeach
+		      </select>
+		    </div>
+		    <div class="form-group col-md-4">
+		    	
+		    </div>
+	    	<table id="stock_history_tbl" border="1px" class="pdt_list_tbl">
+	    		<thead>
+						<tr>
+							<th>SN</th>
+							<th>Buy Date</th>
+							<th>Product</th>
+							<th>Image</th>
+							<th>Invoice No</th>
+							<th>Barcode</th>
+							<th>Buy Price</th>						
+							<th>Sale Price</th>						
+							<th>Entry By</th>
 						</tr>
-					@endforeach
+	    		</thead>
+	    		<tbody>
+						@foreach ($pp_history as $single_product)
+							<tr data-id="{{ $single_product->pp_history_id }}">
+								<td scope="row" class="tbl_sl">{{ $loop->iteration }}</td>
+								<td>{{ date("d/m/Y", strtotime(str_replace('-', '/',  $single_product->buy_date))) }}</td>
+								<td>{{ $productArr[$single_product->product_info_id] }}</td>
+								<td></td>
+								<td>{{ $single_product->auto_invoice_no }}</td>
+								<td>{{ $single_product->barcode }}</td>
+								<td>{{ $single_product->buy_price }}</td>
+								<td>{{ $single_product->sale_price }}</td>
+								<td>{{ $single_product->entry_by }}</td>
+							</tr>
+						@endforeach
+					</tbody>
 				</table>
 	    </div>
 	  </div>

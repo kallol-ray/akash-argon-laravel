@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 02, 2020 at 04:52 AM
+-- Generation Time: Sep 09, 2020 at 09:04 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -29,7 +29,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `customer` (
   `customer_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `phone` varchar(13) COLLATE utf8mb4_unicode_ci NOT NULL,
   `address` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
   `entry_by` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -63,6 +64,7 @@ CREATE TABLE `inventory` (
   `product_info_id` bigint(20) UNSIGNED NOT NULL,
   `barcode` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Qty` bigint(20) NOT NULL,
+  `entry_by` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -84,18 +86,18 @@ CREATE TABLE `migrations` (
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(261, '2014_10_12_000000_create_users_table', 1),
-(262, '2014_10_12_100000_create_password_resets_table', 1),
-(263, '2019_08_19_000000_create_failed_jobs_table', 1),
-(264, '2020_08_16_105820_create_product_info_table', 1),
-(265, '2020_08_16_111637_create_product_purchase_history_table', 1),
-(266, '2020_08_16_120153_create_sale_info_table', 1),
-(267, '2020_08_16_121127_create_sale_item_table', 1),
-(268, '2020_08_16_121833_create_inventory_table', 1),
-(269, '2020_08_16_122236_create_customer_table', 1),
-(270, '2020_08_16_122547_create_supplier_table', 1),
-(271, '2020_08_24_175539_create_purchase_order_info_table', 1),
-(272, '2020_08_29_183157_create_po_info_item_table', 1);
+(345, '2014_10_12_000000_create_users_table', 1),
+(346, '2014_10_12_100000_create_password_resets_table', 1),
+(347, '2019_08_19_000000_create_failed_jobs_table', 1),
+(348, '2020_08_16_105820_create_product_info_table', 1),
+(349, '2020_08_16_111637_create_product_purchase_history_table', 1),
+(350, '2020_08_16_120153_create_sale_info_table', 1),
+(351, '2020_08_16_121127_create_sale_item_table', 1),
+(352, '2020_08_16_121833_create_inventory_table', 1),
+(353, '2020_08_16_122236_create_customer_table', 1),
+(354, '2020_08_16_122547_create_supplier_table', 1),
+(355, '2020_08_24_175539_create_purchase_order_info_table', 1),
+(356, '2020_08_29_183157_create_po_info_item_table', 1);
 
 -- --------------------------------------------------------
 
@@ -118,6 +120,7 @@ CREATE TABLE `password_resets` (
 CREATE TABLE `po_info_item` (
   `po_info_item_id` bigint(20) UNSIGNED NOT NULL,
   `product_info_id` bigint(20) UNSIGNED NOT NULL,
+  `po_info_id` bigint(20) UNSIGNED NOT NULL,
   `auto_invoice_no` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `image` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
   `product_qty` int(11) NOT NULL,
@@ -154,8 +157,8 @@ CREATE TABLE `product_info` (
 --
 
 INSERT INTO `product_info` (`product_info_id`, `title`, `description`, `model`, `brand`, `info_entry_date`, `image`, `entry_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(1, 'TP Link Router R8', 'No Description', '216E0', 'TP-Link', '2020-09-01 18:57:25', 'default@1598295452.jpg', 'admin@argon.com', '', '2020-09-01 12:57:25', NULL),
-(2, 'Tenda Router', 'No Description', '454545', 'Tenda', '2020-09-01 18:57:25', 'default@1598295453.jpg', 'admin@argon.com', '', '2020-09-01 12:57:25', NULL);
+(1, 'TP Link Router R8', 'No Description', '216E0', 'TP-Link', '2020-09-09 06:49:09', 'default@1598295452.jpg', 'admin@argon.com', '', '2020-09-09 00:49:09', NULL),
+(2, 'Tenda Router', 'No Description', '454545', 'Tenda', '2020-09-09 06:49:09', 'default@1598295453.jpg', 'admin@argon.com', '', '2020-09-09 00:49:09', NULL);
 
 -- --------------------------------------------------------
 
@@ -165,11 +168,13 @@ INSERT INTO `product_info` (`product_info_id`, `title`, `description`, `model`, 
 
 CREATE TABLE `product_purchase_history` (
   `pp_history_id` bigint(20) UNSIGNED NOT NULL,
-  `purchase_order_info_id` bigint(20) UNSIGNED NOT NULL,
+  `po_info_id` bigint(20) UNSIGNED NOT NULL,
   `product_info_id` bigint(20) UNSIGNED NOT NULL,
+  `auto_invoice_no` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `barcode` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `quantity` tinyint(4) NOT NULL COMMENT '1=defaut and always',
   `buy_price` decimal(8,2) NOT NULL,
+  `sale_price` decimal(8,2) NOT NULL,
   `buy_date` date NOT NULL,
   `is_stored` tinyint(1) NOT NULL,
   `entry_by` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -211,7 +216,7 @@ CREATE TABLE `purchase_order_info` (
 --
 
 INSERT INTO `purchase_order_info` (`po_info_id`, `auto_invoice_no`, `is_stored`, `supplier_id`, `purchase_invoice_no`, `buyer_adnl_cost`, `supplier_adnl_cost`, `vat_percent`, `vat_amount`, `discount`, `paid_or_due`, `paid_amount`, `due_amount`, `sub_total`, `grand_total`, `purchased_date`, `entry_by`, `created_at`, `updated_at`) VALUES
-(1, 'POI-100001', 0, 1, 'A012451', '50.00', '50.00', '5.00', '100.00', '100.00', 0, '5000.00', '4800.00', '10000.00', '10000.00', '2020-09-01', 'Kallol Ray', '2020-09-01 12:57:26', NULL);
+(1, 'POI-100001', 0, 1, 'A012451', '50.00', '50.00', '5.00', '100.00', '100.00', 0, '5000.00', '4800.00', '10000.00', '10000.00', '2020-09-09', 'Kallol Ray', '2020-09-09 00:49:09', NULL);
 
 -- --------------------------------------------------------
 
@@ -228,9 +233,10 @@ CREATE TABLE `sale_info` (
   `paid_or_due` decimal(8,2) NOT NULL,
   `paid_amount` decimal(8,2) NOT NULL,
   `due_amount` decimal(8,2) NOT NULL,
-  `entry_by` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_delivered` tinyint(1) NOT NULL,
   `saled_date` date NOT NULL,
+  `entry_by` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `update_by` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -247,7 +253,7 @@ CREATE TABLE `sale_item` (
   `product_info_id` bigint(20) UNSIGNED NOT NULL,
   `sale_price` decimal(8,2) NOT NULL,
   `inventory_id` bigint(20) UNSIGNED NOT NULL,
-  `Entry_by` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `entry_by` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -275,7 +281,7 @@ CREATE TABLE `supplier` (
 --
 
 INSERT INTO `supplier` (`supplier_id`, `supplier_name`, `phone`, `address`, `comments`, `supplier_entry_date`, `entry_by`, `created_at`, `updated_at`) VALUES
-(1, 'Tp Link Dealer', '01727379068', '216, East Rampura, Dhaka-1219', 'No comments', '2020-09-01 18:57:25', 'Kallol Ray', '2020-09-01 12:57:25', NULL);
+(1, 'Tp Link Dealer', '01727379068', '216, East Rampura, Dhaka-1219', 'No comments', '2020-09-09 06:49:09', 'Kallol Ray', '2020-09-09 00:49:09', NULL);
 
 -- --------------------------------------------------------
 
@@ -299,7 +305,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin Ray', 'admin@argon.com', '2020-09-01 12:57:25', '$2y$10$BteutiFbKC6Vc6oLt5wYSuKkxzgRJEhsE7Pcn9vT.zJaQKTkCqJre', NULL, '2020-09-01 12:57:25', '2020-09-01 12:57:25');
+(1, 'Admin Ray', 'admin@argon.com', '2020-09-09 00:49:08', '$2y$10$ryoTXj/6NFyv05IPKQPmluASfdo4Lj4fi1F/gpRBAGcuiB17GCJ7S', NULL, '2020-09-09 00:49:09', '2020-09-09 00:49:09');
 
 --
 -- Indexes for dumped tables
@@ -359,7 +365,8 @@ ALTER TABLE `product_purchase_history`
 -- Indexes for table `purchase_order_info`
 --
 ALTER TABLE `purchase_order_info`
-  ADD PRIMARY KEY (`po_info_id`);
+  ADD PRIMARY KEY (`po_info_id`),
+  ADD UNIQUE KEY `purchase_order_info_auto_invoice_no_unique` (`auto_invoice_no`);
 
 --
 -- Indexes for table `sale_info`
@@ -412,7 +419,7 @@ ALTER TABLE `inventory`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=273;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=357;
 
 --
 -- AUTO_INCREMENT for table `po_info_item`

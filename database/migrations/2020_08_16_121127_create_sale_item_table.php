@@ -19,7 +19,7 @@ class CreateSaleItemTable extends Migration
             $table->foreignId('product_info_id');
             $table->decimal('sale_price', 8, 2);
             $table->foreignId('inventory_id');
-            $table->string('Entry_by', 50);
+            $table->string('entry_by', 50);
             $table->timestamps();
         });
     }

@@ -96,11 +96,11 @@
                                     {{ __('User profile') }}
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a class="nav-link" href="{{ route('user.index') }}">
                                     {{ __('User Management') }}
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                 </li>
@@ -126,12 +126,12 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('product.store_in.entry') }}">
-                                    {{ __('Store In') }}
+                                    {{ __('Stock Entry') }}
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('product.store_in.view') }}">
-                                    {{ __('Store In Lists') }}
+                                    {{ __('Stock Lists') }}
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -144,6 +144,30 @@
                                     {{ __('Product Lists') }}
                                 </a>
                             </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#navbar-product-out" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-product-out">
+                        <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
+                        <i class="ni ni-cart" style="color: #f4645f;"></i>
+
+
+                        <span class="nav-link-text" style="color: #f4645f;">{{ __('Product Out') }}</span>
+                    </a>
+
+                    <div class="collapse show" id="navbar-product-out">
+                        <ul class="nav nav-sm flex-column">                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('order_place.entry') }}">
+                                    {{ __('Order Place') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('order_place.view') }}">
+                                    {{ __('Order List') }}
+                                </a>
+                            </li>                            
                         </ul>
                     </div>
                 </li>
@@ -165,6 +189,29 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('supplier.view') }}">
                                     {{ __('Supplier Lists') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#navbar-customer" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-customer">
+                        <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
+                        <i class="ni ni-badge" style="color: #f4645f;"></i>
+
+                        <span class="nav-link-text" style="color: #f4645f;">{{ __('Customer') }}</span>
+                    </a>
+
+                    <div class="collapse show" id="navbar-customer">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('customer.entry') }}">
+                                    {{ __('Customer Entry') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('customer.view') }}">
+                                    {{ __('Customer Lists') }}
                                 </a>
                             </li>
                         </ul>

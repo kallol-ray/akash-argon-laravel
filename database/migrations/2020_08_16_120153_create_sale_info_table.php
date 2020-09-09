@@ -22,9 +22,10 @@ class CreateSaleInfoTable extends Migration
             $table->decimal('paid_or_due', 8, 2);
             $table->decimal('paid_amount', 8, 2);
             $table->decimal('due_amount', 8, 2);
-            $table->string('entry_by', 50);
             $table->boolean('is_delivered');
-            $table->date('saled_date');            
+            $table->date('saled_date');
+            $table->string('entry_by', 50); 
+            $table->string('update_by', 50);
             $table->timestamps();
         });
     }

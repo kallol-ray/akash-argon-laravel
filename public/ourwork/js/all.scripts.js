@@ -119,21 +119,36 @@ set_purchased_date();
 $("#reset_cancel_purchase").click(function(){
 	set_purchased_date();
 	$("#supplier_id").val("");
-	$("#purchase_invoice_no").val("");
-	$("#product_qty").val("");
-	$("#comments").val("");
-	$("#total_bill").val("");
-	$("#vat").val("");
-	$("#discount").val("");
-	$("#paid_or_due").val("");
-	$("#paid_amount").val("");
-	$("#due_amount").val("");
-	$("#entry_by").val("");
+	$("#product_info_id").val("");
+	$("#buyer_addtional_costs").val("0");
+	$("#supplier_additional_cost").val("0");
+	$("#paid_or_due").val("");	
+	$("#purchase_invoice_no").val("N/A");
+	$("#paid_amount").val("0");
+	$("#due_amount").val("0");
+
+	$("#sub_total").val("0.00");
+	$("#vat_amount").val("0.00");
+	$("#suppliercost_final").text("0.00");
+	$("#companycost_final").text("0.00");
+	$("#grand_total").val("0.00");	
+	$("#order_entry_item").find("tr.itemRow").remove();
+	scannedItem = [];
 });
 $("#reset_cancel_store").click(function(){
-	$("#po_auto_invoice").val("");
-	$("#product_info_id").val("");
+	$("#po_auto_invoice").val("");	
+	$("#invoiceNoErr").text("");
+	$("#productNotFoundErr").text("");
 	$("#barcode").val("");
+	$("#current_item_entry").text("0");
+	$("#total_current_item_no").text("0");
+	$("#entry_no_now").text("0");
+	$("#total_product_no").text("0");
+	$('#product_info_id_frm_stock option').filter(function() {
+	  return $.trim(this.value).length != 0;
+	  // return !this.value || $.trim(this.value).length == 0 || $.trim(this.text).length == 0;
+	}).remove();
+	$("#product_info_id_frm_stock").val("");
 });
 
 $(document).on("change", "#product_info_id", function() {
@@ -163,6 +178,7 @@ $(document).on("change", "#product_info_id", function() {
 	                  '<td align="center"><img src="/ourwork/img/icon/delete-icon.png" class="delet-icon" onclick="remove_list(this, event)"></td>'+
 	                '</tr>';
 	        $("#order_entry_item tbody").append(html);
+	        $(this).val("");
 		} else {
 			$("#product_list_err").text("The item already added.");
 		}		
@@ -306,13 +322,17 @@ $(document).on("change", "#po_auto_invoice", function() {
 	let auto_invoice = $(this).val();
 	$("#productNotFoundErr").html("");	
 	if(auto_invoice == "") {
-		$('#product_info_id option').filter(function() {
+		$('#product_info_id_frm_stock option').filter(function() {
 		  return $.trim(this.value).length != 0;
 		  // return !this.value || $.trim(this.value).length == 0 || $.trim(this.text).length == 0;
 		}).remove();
+		$("#total_product_no").text("0");
+		$("#entry_no_now").text("0");
+		$("#current_item_entry").text("0");
+		$("#total_current_item_no").text("0");
 	} else {
 		$("#invoiceNoErr").html("");
-		$('#product_info_id option').filter(function() {
+		$('#product_info_id_frm_stock option').filter(function() {
 		  return $.trim(this.value).length != 0;
 		  // return !this.value || $.trim(this.value).length == 0 || $.trim(this.text).length == 0;
 		}).remove();
@@ -336,10 +356,50 @@ $(document).on("change", "#po_auto_invoice", function() {
 						$.each(data, function( k, v ) {
 						  // console.log( "Key: " + k + ", Value: " + v );
 							let option = '<option value="'+k+'">'+ v +'</option>';
-							$("#product_info_id").append(option);
+							$("#product_info_id_frm_stock").append(option);
 						});
 					} else {
 						$("#productNotFoundErr").html("No product found this voucher.");
+					}					
+				}
+			},
+			error: function (jqXHR, exception) {
+				var msg = '';
+				if (jqXHR.status === 0) {
+				    msg = 'Not connect.\n Verify Network.';
+				} else if (jqXHR.status == 404) {
+				    msg = 'Requested page not found. [404]';
+				} else if (jqXHR.status == 500) {
+				    msg = 'Internal Server Error [500].';
+				} else if (exception === 'parsererror') {
+				    msg = 'Requested JSON parse failed.';
+				} else if (exception === 'timeout') {
+				    msg = 'Time out error.';
+				} else if (exception === 'abort') {
+				    msg = 'Ajax request aborted.';
+				} else {
+				    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+				}
+				console.log(msg);
+			},
+		});
+
+		//Product Count
+		$.ajax({
+			url: "/invoice-product-count",
+			type: "POST",
+			cache: false,
+			data: {auto_invoice : auto_invoice},
+			// dataType: "html"
+			success: function(data, textStatus, xhr){				
+				if(xhr.status) {
+					// console.log("data", data);
+					// console.log("length", data.length);
+					if(data.length != 0) {
+						$("#total_product_no").text(data.total_qty);
+						$("#entry_no_now").text(data.total_entry);
+					} else {
+						console.log("Item count unsuccessful");
 					}					
 				}
 			},
@@ -372,83 +432,112 @@ function barcode_entry_product(from_where, event) {
 	if(from_where == "comment") {
 		if(code == 13) {
 			event.preventDefault();
+			$("#barcode").val("").focus();
 		}
 	} else if(from_where == "barcode") {
 		// console.log(event.which);		
 		if(code == 13) {
-			if($(event.target).val() != "") {
+			let po_auto_invoice = $("#po_auto_invoice").val();
+			let product_info_id_frm_stock = $("#product_info_id_frm_stock").val();
+			let comment = $("#comment").val();
+			let barcode = $("#barcode").val();
+			if($(event.target).val() != "" && po_auto_invoice != "" && product_info_id_frm_stock != "" && comment != "")
+			{
 				event.preventDefault();
-				let po_auto_invoice = $("#po_auto_invoice").val();
-				let product_info_id = $("#product_info_id").val();
-				let comment = $("#comment").val();
-				let barcode = $("#barcode").val();
-				$.ajaxSetup({
-					headers: {
-						'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
-					}
-				});
-				// console.log("auto_invoice = ", auto_invoice);
-				$.ajax({
-					url: "/product/store_in/entry",
-					type: "POST",
-					cache: false,
-					data: {
-						po_auto_invoice : po_auto_invoice,
-						product_info_id : product_info_id,
-						comment 				: comment,
-						barcode 				: barcode
-					},
-					// dataType: "html"
-					success: function(data, textStatus, xhr){				
-						if(xhr.status) {
-							// console.log("data", data);
-							// console.log("data.status", data.status);
-							$("#barcode").val("").focus();
-							if(data.status) {
-								let html = '<div class="alert alert-success alert-dismissible fade show" role="alert">'
-					          + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
-					          + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
-					          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
-					              + '<span aria-hidden="true">&times;</span>'
-					          + '</button>'
-					      	+ '</div>';
-					      $(".msgAlert").append(html);
+				let entry_item = parseInt($("#current_item_entry").text());
+				let total_item = parseInt($("#total_current_item_no").text());
+				
+				if(total_item > entry_item) {
+					$.ajaxSetup({
+						headers: {
+							'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+						}
+					});
+					$.ajax({
+						url: "/product/store_in/entry",
+						type: "POST",
+						cache: false,
+						data: {
+							po_auto_invoice : po_auto_invoice,
+							product_info_id : product_info_id_frm_stock,
+							comment 				: comment,
+							barcode 				: barcode
+						},
+						// dataType: "html"
+						success: function(data, textStatus, xhr){				
+							if(xhr.status) {
+								// console.log("data", data);
+								// console.log("data.status", data.status);
+								$("#barcode").val("").focus();
+								if(data.status) {
+									$("#current_item_entry").text(parseInt($("#current_item_entry").text()) + 1);
+									$("#entry_no_now").text(parseInt($("#entry_no_now").text()) + 1);
+									let html = '<div class="alert alert-success alert-dismissible fade show" role="alert">'
+						          + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
+						          + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
+						          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+						              + '<span aria-hidden="true">&times;</span>'
+						          + '</button>'
+						      	+ '</div>';
+						      $(".msgAlert").append(html);
+								} else {
+									let html = '<div class="alert alert-danger alert-dismissible fade show" role="alert">'
+						          + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
+						          + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
+						          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+						              + '<span aria-hidden="true">&times;</span>'
+						          + '</button>'
+						      	+ '</div>';
+						      $(".msgAlert").append(html);
+								}
+							}
+						},
+						error: function (jqXHR, exception) {
+							var msg = '';
+							if (jqXHR.status === 0) {
+							    msg = 'Not connect.\n Verify Network.';
+							} else if (jqXHR.status == 404) {
+							    msg = 'Requested page not found. [404]';
+							} else if (jqXHR.status == 500) {
+							    msg = 'Internal Server Error [500].';
+							} else if (exception === 'parsererror') {
+							    msg = 'Requested JSON parse failed.';
+							} else if (exception === 'timeout') {
+							    msg = 'Time out error.';
+							} else if (exception === 'abort') {
+							    msg = 'Ajax request aborted.';
 							} else {
-								let html = '<div class="alert alert-danger alert-dismissible fade show" role="alert">'
-					          + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
-					          + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
-					          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
-					              + '<span aria-hidden="true">&times;</span>'
-					          + '</button>'
-					      	+ '</div>';
-					      $(".msgAlert").append(html);
-							}							
-							
-							msgAlertAutoHide();
-						}
-					},
-					error: function (jqXHR, exception) {
-						var msg = '';
-						if (jqXHR.status === 0) {
-						    msg = 'Not connect.\n Verify Network.';
-						} else if (jqXHR.status == 404) {
-						    msg = 'Requested page not found. [404]';
-						} else if (jqXHR.status == 500) {
-						    msg = 'Internal Server Error [500].';
-						} else if (exception === 'parsererror') {
-						    msg = 'Requested JSON parse failed.';
-						} else if (exception === 'timeout') {
-						    msg = 'Time out error.';
-						} else if (exception === 'abort') {
-						    msg = 'Ajax request aborted.';
-						} else {
-						    msg = 'Uncaught Error.\n' + jqXHR.responseText;
-						}
-						console.log("msg",msg);
-					},
-				});
+							    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+							}
+							console.log("msg",msg);
+						},
+					});
+				} else if(total_item < entry_item) {
+					console.log("Nothing to do.");
+				} else if(total_item == entry_item){
+					let html = '<div class="alert alert-danger alert-dismissible fade show" role="alert">'
+						          + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
+						          + '<span class="alert-text"><strong>'+'Item Entry Finished of Purchase Order.'+'</strong></span>'
+						          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+						              + '<span aria-hidden="true">&times;</span>'
+						          + '</button>'
+						      	+ '</div>';
+						      $(".msgAlert").append(html);
+				}
+				msgAlertAutoHide();
+				
 			} else {
 				event.preventDefault();
+				if(po_auto_invoice == "") {
+					$("#invoiceNoErr").text("Required!");
+				} else {
+					$("#invoiceNoErr").text("");
+				}
+				if(product_info_id_frm_stock == "") {
+					$("#productNotFoundErr").text("Required!");
+				} else {
+					$("#productNotFoundErr").text("");
+				}
 			}
 		}
 	}
@@ -491,6 +580,75 @@ function barcode_entry_validation() {
 		return false;
 	}
 }
+$(document).on("change", "#product_info_id_frm_stock", function() {
+	$("#productNotFoundErr").text("");
+	let invoice = $("#po_auto_invoice").val();
+	let product_id = $(this).val();
+	// console.log(invoice, product_id);
+	if(product_id == "") {
+		$("#current_item_entry").text("0");
+		$("#total_current_item_no").text("0");
+	} else {
+		$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+		}
+	});
+	$.ajax({
+		url: "/entry-count",
+		type: "POST",
+		cache: false,
+		data: {
+			invoice : invoice,
+			product_id : product_id
+		},
+		// dataType: "html"
+		success: function(data, textStatus, xhr){				
+			if(xhr.status) {
+				// console.log("data", data);
+				// console.log("data.status", data.status);
+				if(data.length != 0) {
+					// console.log("xx", data.total_item);
+					// console.log("xx", data.entry_item);
+					$("#current_item_entry").text(data.entry_item);
+					$("#total_current_item_no").text(data.total_item);
+				} else {
+					console.log("Item count unsuccessful");
+				}		
+			}
+		},
+		error: function (jqXHR, exception) {
+			var msg = '';
+			if (jqXHR.status === 0) {
+			    msg = 'Not connect.\n Verify Network.';
+			} else if (jqXHR.status == 404) {
+			    msg = 'Requested page not found. [404]';
+			} else if (jqXHR.status == 500) {
+			    msg = 'Internal Server Error [500].';
+			} else if (exception === 'parsererror') {
+			    msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+			    msg = 'Time out error.';
+			} else if (exception === 'abort') {
+			    msg = 'Ajax request aborted.';
+			} else {
+			    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+			}
+			console.log("msg",msg);
+		},
+	});
+	}
+	
+});
+$(document).on("change", "#auto_history_invoice_stock", function() {
+	let stock_invoice = $(this).val();
+	if(stock_invoice == "") {
+		$("#stock_history_tbl").find("tbody").find("tr").remove();
+	} else {
+		// $("#stock_history_tbl").find("tbody").find("tr").remove();
+	}
+});
+
 
 
 
