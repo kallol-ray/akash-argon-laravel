@@ -23,7 +23,11 @@
                 <label for="brand">Brand</label>
                 <select class="form-control" id="brand" name="brand">
                   <option value="">Select one..</option>
-                  <option value="TP-Link">TP-Link</option>
+                  
+                  @foreach ($brand_info as $brand)
+                    <option value="{{ $brand->brand_name }}">{{ $brand->brand_name }}</option>
+                  @endforeach    
+                  <!-- <option value="TP-Link">TP-Link</option>
                   <option value="Tenda">Tenda</option>
                   <option value="D-Link">D-Link</option>
                   <option value="Mikrotik">Mikrotik</option>
@@ -35,7 +39,7 @@
                   <option value="Belkin">Belkin</option>
                   <option value="Cisco">Cisco</option>
                   <option value="TRENDnet">TRENDnet</option>
-                  <option value="Others">Others</option>
+                  <option value="Others">Others</option> -->
                 </select>
               </div>              
             </div>

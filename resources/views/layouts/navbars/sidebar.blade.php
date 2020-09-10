@@ -191,6 +191,11 @@
                                     {{ __('Supplier Lists') }}
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('brand.entry') }}">
+                                    {{ __('Brand') }}
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

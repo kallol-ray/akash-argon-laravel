@@ -23,7 +23,10 @@
                 <label for="brand">Brand</label>
                 <select class="form-control" id="brand" name="brand">
                   <option value="">Select one..</option>
-                  <option value="TP-Link" @if($product_info_single->brand =='TP-Link') selected @endif>TP-Link</option>
+                   @foreach ($brand_info as $brand)
+                    <option value="{{ $brand->brand_name }}"  @if($product_info_single->brand == $brand->brand_name) selected @endif>{{ $brand->brand_name }}</option>
+                  @endforeach   
+                  <!-- <option value="TP-Link" @if($product_info_single->brand =='TP-Link') selected @endif>TP-Link</option>
                   <option value="Tenda" @if($product_info_single->brand =='Tenda') selected @endif>Tenda</option>
                   <option value="D-Link" @if($product_info_single->brand =='D-Link') selected @endif>D-Link</option>
                   <option value="Mikrotik" @if($product_info_single->brand =='Mikrotik') selected @endif>Mikrotik</option>
@@ -35,7 +38,7 @@
                   <option value="Belkin" @if($product_info_single->brand =='Belkin') selected @endif>Belkin</option>
                   <option value="Cisco" @if($product_info_single->brand =='Cisco') selected @endif>Cisco</option>
                   <option value="TRENDnet" @if($product_info_single->brand =='TRENDnet') selected @endif>TRENDnet</option>
-                  <option value="Others" @if($product_info_single->brand =='Others') selected @endif>Others</option>
+                  <option value="Others" @if($product_info_single->brand =='Others') selected @endif>Others</option> -->
                 </select>
               </div>              
             </div>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 09, 2020 at 09:04 AM
+-- Generation Time: Sep 10, 2020 at 10:50 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -24,6 +24,38 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `brand`
+--
+
+CREATE TABLE `brand` (
+  `brand_id` bigint(20) UNSIGNED NOT NULL,
+  `brand_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `entry_by` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `brand`
+--
+
+INSERT INTO `brand` (`brand_id`, `brand_name`, `entry_by`, `created_at`, `updated_at`) VALUES
+(1, 'Tp-Link', 'admin@argon.com', '2020-09-10 00:29:11', NULL),
+(2, 'Tenda', 'admin@argon.com', '2020-09-10 00:29:48', NULL),
+(3, 'D-Link', 'admin@argon.com', '2020-09-10 00:33:18', NULL),
+(4, 'Mikrotik', 'admin@argon.com', '2020-09-10 00:36:57', NULL),
+(5, 'Xiaomi', 'admin@argon.com', '2020-09-10 00:37:12', NULL),
+(6, 'Netgear', 'admin@argon.com', '2020-09-10 00:37:19', NULL),
+(7, 'Huawei', 'admin@argon.com', '2020-09-10 00:37:23', NULL),
+(8, 'Asus', 'admin@argon.com', '2020-09-10 00:37:28', NULL),
+(9, 'Linksys', 'admin@argon.com', '2020-09-10 00:37:39', NULL),
+(10, 'Belkin', 'admin@argon.com', '2020-09-10 00:37:45', NULL),
+(11, 'Cisco', 'admin@argon.com', '2020-09-10 00:37:49', NULL),
+(12, 'TRENDnet', 'admin@argon.com', '2020-09-10 00:37:55', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `customer`
 --
 
@@ -37,6 +69,13 @@ CREATE TABLE `customer` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `customer`
+--
+
+INSERT INTO `customer` (`customer_id`, `customer_name`, `company_name`, `phone`, `address`, `entry_by`, `created_at`, `updated_at`) VALUES
+(1, 'kallol customer', 'N/A', '01727379068', 'N/A', 'admin@argon.com', '2020-09-10 02:33:30', NULL);
 
 -- --------------------------------------------------------
 
@@ -86,18 +125,19 @@ CREATE TABLE `migrations` (
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(345, '2014_10_12_000000_create_users_table', 1),
-(346, '2014_10_12_100000_create_password_resets_table', 1),
-(347, '2019_08_19_000000_create_failed_jobs_table', 1),
-(348, '2020_08_16_105820_create_product_info_table', 1),
-(349, '2020_08_16_111637_create_product_purchase_history_table', 1),
-(350, '2020_08_16_120153_create_sale_info_table', 1),
-(351, '2020_08_16_121127_create_sale_item_table', 1),
-(352, '2020_08_16_121833_create_inventory_table', 1),
-(353, '2020_08_16_122236_create_customer_table', 1),
-(354, '2020_08_16_122547_create_supplier_table', 1),
-(355, '2020_08_24_175539_create_purchase_order_info_table', 1),
-(356, '2020_08_29_183157_create_po_info_item_table', 1);
+(370, '2014_10_12_000000_create_users_table', 1),
+(371, '2014_10_12_100000_create_password_resets_table', 1),
+(372, '2019_08_19_000000_create_failed_jobs_table', 1),
+(373, '2020_08_16_105820_create_product_info_table', 1),
+(374, '2020_08_16_111637_create_product_purchase_history_table', 1),
+(375, '2020_08_16_120153_create_sale_info_table', 1),
+(376, '2020_08_16_121127_create_sale_item_table', 1),
+(377, '2020_08_16_121833_create_inventory_table', 1),
+(378, '2020_08_16_122236_create_customer_table', 1),
+(379, '2020_08_16_122547_create_supplier_table', 1),
+(380, '2020_08_24_175539_create_purchase_order_info_table', 1),
+(381, '2020_08_29_183157_create_po_info_item_table', 1),
+(382, '2020_09_10_052655_create_brand_table', 1);
 
 -- --------------------------------------------------------
 
@@ -157,8 +197,8 @@ CREATE TABLE `product_info` (
 --
 
 INSERT INTO `product_info` (`product_info_id`, `title`, `description`, `model`, `brand`, `info_entry_date`, `image`, `entry_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(1, 'TP Link Router R8', 'No Description', '216E0', 'TP-Link', '2020-09-09 06:49:09', 'default@1598295452.jpg', 'admin@argon.com', '', '2020-09-09 00:49:09', NULL),
-(2, 'Tenda Router', 'No Description', '454545', 'Tenda', '2020-09-09 06:49:09', 'default@1598295453.jpg', 'admin@argon.com', '', '2020-09-09 00:49:09', NULL);
+(1, 'TP Link Router R8', 'No Description', '216E0', 'TP-Link', '2020-09-10 06:08:53', 'default@1598295452.jpg', 'admin@argon.com', '', '2020-09-10 00:08:53', NULL),
+(2, 'Tenda Router', 'No Description', '454545', 'Tenda', '2020-09-10 06:08:53', 'default@1598295453.jpg', 'admin@argon.com', '', '2020-09-10 00:08:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -216,7 +256,7 @@ CREATE TABLE `purchase_order_info` (
 --
 
 INSERT INTO `purchase_order_info` (`po_info_id`, `auto_invoice_no`, `is_stored`, `supplier_id`, `purchase_invoice_no`, `buyer_adnl_cost`, `supplier_adnl_cost`, `vat_percent`, `vat_amount`, `discount`, `paid_or_due`, `paid_amount`, `due_amount`, `sub_total`, `grand_total`, `purchased_date`, `entry_by`, `created_at`, `updated_at`) VALUES
-(1, 'POI-100001', 0, 1, 'A012451', '50.00', '50.00', '5.00', '100.00', '100.00', 0, '5000.00', '4800.00', '10000.00', '10000.00', '2020-09-09', 'Kallol Ray', '2020-09-09 00:49:09', NULL);
+(1, 'POI-100001', 0, 1, 'A012451', '50.00', '50.00', '5.00', '100.00', '100.00', 0, '5000.00', '4800.00', '10000.00', '10000.00', '2020-09-10', 'Kallol Ray', '2020-09-10 00:08:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -281,7 +321,7 @@ CREATE TABLE `supplier` (
 --
 
 INSERT INTO `supplier` (`supplier_id`, `supplier_name`, `phone`, `address`, `comments`, `supplier_entry_date`, `entry_by`, `created_at`, `updated_at`) VALUES
-(1, 'Tp Link Dealer', '01727379068', '216, East Rampura, Dhaka-1219', 'No comments', '2020-09-09 06:49:09', 'Kallol Ray', '2020-09-09 00:49:09', NULL);
+(1, 'Tp Link Dealer', '01727379068', '216, East Rampura, Dhaka-1219', 'No comments', '2020-09-10 06:08:53', 'Kallol Ray', '2020-09-10 00:08:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -305,11 +345,17 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin Ray', 'admin@argon.com', '2020-09-09 00:49:08', '$2y$10$ryoTXj/6NFyv05IPKQPmluASfdo4Lj4fi1F/gpRBAGcuiB17GCJ7S', NULL, '2020-09-09 00:49:09', '2020-09-09 00:49:09');
+(1, 'Admin Ray', 'admin@argon.com', '2020-09-10 00:08:53', '$2y$10$RByB2bk7rx.uWTSEkQNu3eq4yS3FyJ3bI0vFUiMiecycBPoNDqj6y', NULL, '2020-09-10 00:08:53', '2020-09-10 00:08:53');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `brand`
+--
+ALTER TABLE `brand`
+  ADD PRIMARY KEY (`brand_id`);
 
 --
 -- Indexes for table `customer`
@@ -398,10 +444,16 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `brand`
+--
+ALTER TABLE `brand`
+  MODIFY `brand_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `customer_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `customer_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -419,7 +471,7 @@ ALTER TABLE `inventory`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=357;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=383;
 
 --
 -- AUTO_INCREMENT for table `po_info_item`

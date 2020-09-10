@@ -28,8 +28,12 @@ class ProductController extends Controller
      */
 
     public function product_info_entry()
-    {       
-      return view('product.product_info_entry');
+    { 
+      $brand_info = DB::table('brand')
+                ->orderBy('brand_id', 'desc')
+                ->get();
+      return view('product.product_info_entry')
+              ->with('brand_info', $brand_info);
     }
     public function product_save(Request $request)
     {
@@ -162,7 +166,12 @@ class ProductController extends Controller
       $product_info_id = $request->id;
       $product_info_single = DB::table('product_info')               
                 ->where('product_info_id', $product_info_id)->first();
-      return view('product.product_info_update')->with("product_info_single", $product_info_single);
+      $brand_info = DB::table('brand')
+                ->orderBy('brand_id', 'desc')
+                ->get();
+      return view('product.product_info_update')
+                  ->with("product_info_single", $product_info_single)
+                  ->with("brand_info", $brand_info);
     }
     public function update_product(Request $request) {
       //update product
@@ -275,6 +284,7 @@ class ProductController extends Controller
         $product_info = DB::table('product_info')
                 ->select('product_info_id', 'title', 'image')               
                 ->get();
+
         return view('product.product_purchase_entry')
                     ->with("supplier_info", $supplier_info)
                     ->with("product_info", $product_info);
@@ -282,9 +292,9 @@ class ProductController extends Controller
       public function purchase_order_save(Request $request) {
         $auto_invoice = DB::table('purchase_order_info')
           ->max('auto_invoice_no');
-        echo "<pre>";
-        var_dump($auto_invoice);
-        echo "</pre>";
+        // echo "<pre>";
+        // var_dump($auto_invoice);
+        // echo "</pre>";
 
         $new_invoice_no = "POI-". (preg_replace('/[^0-9]/', '', $auto_invoice) + 1);
 

@@ -83,7 +83,8 @@ body{
 #reset_cancel_purchase,
 #reset_cancel_store,
 #saveBtnCustomer,
-#reset_cancel_customer {
+#reset_cancel_customer,
+#reset_cancel_sale {
 	width: 200px;
 }
 #saveBtn,
@@ -266,4 +267,17 @@ body{
 	border: 1px solid #9400FF7D;
 	border-radius: 5px;
 	padding-top: 1.5rem;
+}
+.brand-head {
+	text-align: center;
+	border-bottom: 2px solid #5e72e4;
+}
+.brand_tbl {
+	width: 100%;
+}
+.brand_tbl th {
+	text-align: center;
+}
+.brand_tbl td {
+	padding: 0px 4px;
 }

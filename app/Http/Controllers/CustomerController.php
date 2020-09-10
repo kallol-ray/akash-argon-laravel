@@ -49,12 +49,12 @@ class CustomerController extends Controller
   }
   public function view_entry()
   {
-  	DB::table('customer')->insert($data);
-  	$customer = DB::table('customer')
-                ->orderBy('customer_id', 'desc')               
+  	
+  	$customer_info = DB::table('customer')
+                ->orderBy('customer_id', 'desc')
                 ->get();
     
     return view('customer.customer_lists')
-    				->with('customer', $customer);
+    				->with('customer_info', $customer_info);
   }
 }

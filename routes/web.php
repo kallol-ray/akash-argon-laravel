@@ -65,7 +65,11 @@ Route::group(['middleware' => 'auth'], function () {
 
 
 	Route::get('order_place/entry', ['as'=>'order_place.entry', 'uses'=>'SaleController@order_entry']);
+	Route::post('order_place/entry', ['as'=>'order_place.entry', 'uses'=>'SaleController@order_save']);
 	Route::get('order_place/view', ['as'=>'order_place.view', 'uses'=>'SaleController@order_view']);
+
+	Route::get('brand/entry', ['as'=>'brand.entry', 'uses'=>'BrandController@brand_entry_form']);
+	Route::post('brand/entry', ['as'=>'brand.entry', 'uses'=>'BrandController@brand_save']);
 
 	
 
