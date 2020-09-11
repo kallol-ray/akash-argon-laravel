@@ -1,7 +1,8 @@
 <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white" id="sidenav-main">
     <div class="container-fluid">
         <!-- Toggler -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main"
+            aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <!-- Brand -->
@@ -11,10 +12,12 @@
         <!-- User -->
         <ul class="nav align-items-center d-md-none">
             <li class="nav-item dropdown">
-                <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
                     <div class="media align-items-center">
                         <span class="avatar avatar-sm rounded-circle">
-                        <img alt="Image placeholder" src="{{ asset('argon') }}/img/theme/team-1-800x800.jpg">
+                            <img alt="Image placeholder"
+                                src="{{ asset('argon') }}/img/theme/team-1-800x800.jpg">
                         </span>
                     </div>
                 </a>
@@ -58,7 +61,9 @@
                         </a>
                     </div>
                     <div class="col-6 collapse-close">
-                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle sidenav">
+                        <button type="button" class="navbar-toggler" data-toggle="collapse"
+                            data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false"
+                            aria-label="Toggle sidenav">
                             <span></span>
                             <span></span>
                         </button>
@@ -68,7 +73,8 @@
             <!-- Form -->
             <form class="mt-4 mb-3 d-md-none">
                 <div class="input-group input-group-rounded input-group-merge">
-                    <input type="search" class="form-control form-control-rounded form-control-prepended" placeholder="{{ __('Search') }}" aria-label="Search">
+                    <input type="search" class="form-control form-control-rounded form-control-prepended"
+                        placeholder="{{ __('Search') }}" aria-label="Search">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
                             <span class="fa fa-search"></span>
@@ -84,12 +90,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#navbar-user" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-user">
+                    <a class="nav-link" href="#navbar-user" data-toggle="collapse" role="button" aria-expanded="false"
+                        aria-controls="navbar-user">
                         <i class="ni ni-circle-08" style="color: #f4645f;"></i>
                         <span class="nav-link-text" style="color: #f4645f;">{{ __('User') }}</span>
                     </a>
 
-                    <div class="collapse show" id="navbar-user">
+                    <div class="collapse" id="navbar-user">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('profile.edit') }}">
@@ -105,17 +112,20 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#navbar-product" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-product">
+                    <a class="nav-link" href="#navbar-product" data-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="navbar-product">
                         <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
                         <i class="ni ni-app" style="color: #f4645f;"></i>
 
-                        <span class="nav-link-text" style="color: #f4645f;">{{ __('Product In') }}</span>
+                        <span class="nav-link-text"
+                            style="color: #f4645f;">{{ __('Product In') }}</span>
                     </a>
 
-                    <div class="collapse show" id="navbar-product">
-                        <ul class="nav nav-sm flex-column">                            
+                    <div class="collapse" id="navbar-product">
+                        <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('product.purchase_order.entry') }}">
+                                <a class="nav-link"
+                                    href="{{ route('product.purchase_order.entry') }}">
                                     {{ __('Purchase Order Entry') }}
                                 </a>
                             </li>
@@ -148,16 +158,18 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#navbar-product-out" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-product-out">
+                    <a class="nav-link" href="#navbar-product-out" data-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="navbar-product-out">
                         <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
                         <i class="ni ni-cart" style="color: #f4645f;"></i>
 
 
-                        <span class="nav-link-text" style="color: #f4645f;">{{ __('Product Out') }}</span>
+                        <span class="nav-link-text"
+                            style="color: #f4645f;">{{ __('Product Out') }}</span>
                     </a>
 
-                    <div class="collapse show" id="navbar-product-out">
-                        <ul class="nav nav-sm flex-column">                            
+                    <div class="collapse" id="navbar-product-out">
+                        <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('order_place.entry') }}">
                                     {{ __('Order Place') }}
@@ -167,19 +179,21 @@
                                 <a class="nav-link" href="{{ route('order_place.view') }}">
                                     {{ __('Order List') }}
                                 </a>
-                            </li>                            
+                            </li>
                         </ul>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#navbar-supplier" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-supplier">
+                    <a class="nav-link " href="#navbar-supplier" data-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="navbar-supplier">
                         <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
                         <i class="ni ni-bus-front-12" style="color: #f4645f;"></i>
 
-                        <span class="nav-link-text" style="color: #f4645f;">{{ __('Supplier') }}</span>
+                        <span class="nav-link-text"
+                            style="color: #f4645f;">{{ __('Supplier') }}</span>
                     </a>
 
-                    <div class="collapse show" id="navbar-supplier">
+                    <div class="collapse" id="navbar-supplier">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('supplier.entry') }}">
@@ -200,14 +214,16 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#navbar-customer" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-customer">
+                    <a class="nav-link " href="#navbar-customer" data-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="navbar-customer">
                         <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
                         <i class="ni ni-badge" style="color: #f4645f;"></i>
 
-                        <span class="nav-link-text" style="color: #f4645f;">{{ __('Customer') }}</span>
+                        <span class="nav-link-text"
+                            style="color: #f4645f;">{{ __('Customer') }}</span>
                     </a>
 
-                    <div class="collapse show" id="navbar-customer">
+                    <div class="collapse" id="navbar-customer">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('customer.entry') }}">
@@ -258,7 +274,8 @@
 
             <ul class="navbar-nav mb-md-3">
                 <li class="nav-item">
-                    <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard/docs/getting-started/overview.html">
+                    <a class="nav-link"
+                        href="https://demos.creative-tim.com/argon-dashboard/docs/getting-started/overview.html">
                         <i class="ni ni-spaceship"></i> Getting started
                     </a>
                 </li>
