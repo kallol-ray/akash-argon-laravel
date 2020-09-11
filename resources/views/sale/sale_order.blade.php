@@ -22,27 +22,57 @@
               </div>
             </div>
             <div class="col-md-4">
-              <button class="btn btn-outline-primary" style="float: right; margin-top: 35px;">Add Customer</button>
+              <button type="button" class="btn btn-outline-primary" style="float: right; margin-top: 35px;">Add Customer</button>
             </div>
             <div class="col-md-4">
             </div>
-            <table class="order_entry_tbl" id="order_entry_item">
+            <table class="order_entry_tbl" id="sale_entry_item">
               <thead>
                 <tr>
-                  <th width="50px">#</th>
-                  <th width="50px">Product</th>
-                  <th>Quantity</th>
-                  <th>Unit Price</th>
-                  <th>Total Price</th>
-                  <th width="70px"></th>
+                  <th width="5%">#</th>
+                  <th width="25%">Product</th>
+                  <th width="5%">Image</th>
+                  <th width="10%">Model</th>
+                  <th width="10%">Brand</th>
+                  <th width="15%">Quantity</th>
+                  <th width="15%">Unit Price</th>
+                  <th width="10%">Total Price</th>
+                  <th width="5%"></th>
                 </tr>
               </thead>
               <tbody>
+                <tr>
+                  <td class="text-center">1</td>
+                  <td class="name">
+                    <input type="hidden" name="product_id[]" value="" class="product_id">
+                    <input type="text" name="product_name[]" placeholder="Product Name" class="order_input">
+                  </td>
+                  <td class="text-center img">
+                    <!-- <img src="/ourwork/img/product_image/default@1598295452.jpg" class="order_product_img"> -->
+                    <img src="#" class="order_product_img">
+                  </td>
+                  <td class="model">Model</td>
+                  <td class="brand">Brand</td>
+                  <td class="quantity">
+                    <input type="text" name="quantity[]" placeholder="Quantity" class="order_input">
+                  </td>
+                  <td class="unit_price">
+                    <input type="text" name="unit_price[]" placeholder="Unit Price" class="order_input">
+                  </td>
+                  <td class="total_price">
+                    <input type="text" name="total_price[]" placeholder="Total Price" class="order_input">
+                  </td>
+                  <td class="text-center">
+                    <img src="/ourwork/img/icon/delete-icon.png" class="delet-icon" onclick="remove_order_list(this, event)">
+                  </td>
+                </tr>
                 <!-- Dynamic Items Placed Here -->
               </tbody>
             </table>
-            <button class="btn btn-outline-primary">Add Row</button>
-            <div class="col-md-12" style="margin-top: 50px;">
+            <div class="col-md-12" style="margin-top: 10px;">
+              <button type="button" class="btn btn-outline-default btn-sm" onclick="sale_row_add()">Add Row</button>
+            </div>            
+            <div class="col-md-12" style="margin-top: 40px;">
               <div class="po_summary">
                 <div class="k-control">
                   <div class="k-label">Sub Total:</div>

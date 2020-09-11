@@ -163,8 +163,8 @@ $(document).on("change", "#product_info_id", function() {
 	 		let image = $(this).find('option:selected').attr("image");
 			let html = '<tr class="itemRow" data-product-info-id="'+product_info_id+'">' +
 	                  '<td align="center"><img src="/ourwork/img/product_image/'+image+'" class="order_product_img"></td>'+
+	                  '<td></td>'+
 	                  '<td>'+title+'</td>'+
-	                  '<td>'+image+'</td>'+
 	                  '<td>'+
 	                  	'<input type="hidden" name="product_info_id[]" value="'+product_info_id+'">'+
 	                  	'<input type="hidden" name="image[]" value="'+image+'">'+
@@ -658,6 +658,29 @@ $("#reset_cancel_customer").click(function() {
 
 
 
+function remove_order_list(elm, event) {
+	$(elm).closest('tr').remove();
+}
+
+function sale_row_add() {
+	let html = '<tr class="itemRow" data-product-info-id="'+product_info_id+'">' +
+            '<td align="center"><img src="/ourwork/img/product_image/'+image+'" class="order_product_img"></td>'+
+            '<td></td>'+
+            '<td>'+title+'</td>'+
+            '<td>'+
+            	'<input type="hidden" name="product_info_id[]" value="'+product_info_id+'">'+
+            	'<input type="hidden" name="image[]" value="'+image+'">'+
+                  // pattern="[0-9]+([.,][0-9]+)?"
+            	'<input type="text" name="quantity[]" id="qty_'+i+'" step="1" required placeholder="Quantity" class="order_input inp_quantity allowNumbersOnly" min="1">'+
+            '</td>'+
+            '<td><input type="text" name="unit_price[]" id="purchaseprice_'+i+'" onblur="setpurchasePrice('+i+',this)" pattern="[0-9]+([\.,][0-9]+)?" step="0.01" min="1" required placeholder="Unit Price"  class="order_input inp_unit_price allowNumbersOnly"></td>'+
+            '<td><input type="text" name="additional_price[]" id="withadditional_'+i+'" class="order_input inp_additional_price allowNumbersOnly" placeholder="Additional Price" required></td>'+
+            '<td><input type="text" name="sale_price[]" class="order_input inp_sale_price allowNumbersOnly" placeholder="Sale Price" required></td>'+
+            '<td><input type="text" name="total_price[]" id="total_'+i+'" class="order_input inp_total_price allowNumbersOnly" placeholder="Total Price" required></td>'+
+            '<td align="center"><img src="/ourwork/img/icon/delete-icon.png" class="delet-icon" onclick="remove_list(this, event)"></td>'+
+          '</tr>';
+  $("#sale_entry_item tbody").append(html);
+}
 
 
 
