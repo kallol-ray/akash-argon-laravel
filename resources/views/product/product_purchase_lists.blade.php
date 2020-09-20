@@ -22,7 +22,7 @@
 	</div>
 	<div class="container-fluid product-view">
 	  <div class="row">
-	    <div class="col-md-12">	    	
+	    <div class="col-md-12 product-in">	    	
 	    	<h2 class="text-center">Product Purchase Order</h2>
 	    	
 	    	
@@ -62,7 +62,7 @@
 								@if ($purchase->is_stored == 0)
 									<a class="btn-outline-success" href="/product/purchase_order/update/{{ $purchase->po_info_id  }}">Edit</a>
 									<br>
-									<a class="btn-outline-success" href="/product/purchase_order/stop_entry/{{ $purchase->po_info_id  }}">Stop Entry</a>
+									<a class="btn-outline-success" href="/product/purchase_order/stop_entry/{{ $purchase->po_info_id  }}">Start Stock Entry</a>
 								@endif							
 							</td>
 						</tr>
@@ -70,5 +70,6 @@
 				</table>
 	    </div>
 	  </div>
+	  @include('layouts.footers.auth')
 	</div>
 @endsection

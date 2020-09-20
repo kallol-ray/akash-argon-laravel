@@ -22,7 +22,7 @@
 	</div>
 	<div class="container-fluid product-view">
 	  <div class="row">
-	    <div class="col-md-12">	    	
+	    <div class="col-md-12 product-in">	    	
 	    	<h2 class="text-center">Stock History List</h2>
 	    	<div class="form-group col-md-4 paddingLR0">
 		      <label for="auto_history_invoice_stock">Invoice No</label>
@@ -68,5 +68,6 @@
 				</table>
 	    </div>
 	  </div>
+	  @include('layouts.footers.auth')
 	</div>
 @endsection

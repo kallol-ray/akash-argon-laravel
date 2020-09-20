@@ -292,11 +292,15 @@ class ProductController extends Controller
       public function purchase_order_save(Request $request) {
         $auto_invoice = DB::table('purchase_order_info')
           ->max('auto_invoice_no');
-        // echo "<pre>";
-        // var_dump($auto_invoice);
-        // echo "</pre>";
-
-        $new_invoice_no = "POI-". (preg_replace('/[^0-9]/', '', $auto_invoice) + 1);
+        echo "<pre>";
+        var_dump($auto_invoice);
+        echo "</pre>";
+        if($auto_invoice == NULL) {
+          $new_invoice_no = "POI-10001";
+        } else {
+          $new_invoice_no = "POI-". (preg_replace('/[^0-9]/', '', $auto_invoice) + 1);
+        }
+        
 
         $data = array();
         $data['auto_invoice_no'] = $new_invoice_no;
@@ -368,7 +372,6 @@ class ProductController extends Controller
           DB::table('po_info_item')
                   ->insert($item);
         }
-
 
         Session::put('sucMsg', 'A Purchase Information Saved Successfully!');
         return Redirect::to('/product/purchase_order/view');
@@ -500,7 +503,7 @@ class ProductController extends Controller
                   ->where('po_info_id', $po_info_id)
                   ->update($data);
 
-        Session::put('sucMsg', 'A Purchase Order Entry Stop Successfully!');
+        Session::put('sucMsg', 'A Order Ready to Stock Entry Successfully!');
         return Redirect::to('/product/purchase_order/view');
       }
     //end purchase order
@@ -526,26 +529,34 @@ class ProductController extends Controller
                     ->with("product_info", $product_info);
       }
       public function store_in_entry_save(Request $request) {
-        $data = array();
-        $data['is_stored'] = '0';
-        $data['po_info_id'] = "";
-        $data['auto_invoice_no'] = $request->po_auto_invoice;
-        $data['product_info_id'] = $request->product_info_id;
-        $data['barcode'] = $request->barcode;
-        $data['quantity'] = '1';
-        $data['buy_price'] = "";
-        $data['sale_price'] = "";
-        $data['buy_date'] = "";
-        $data['comment'] = $request->comment;
-        $data['entry_by'] = Auth::user()->email;
-        $data['created_at'] = date('Y-m-d H:i:s');
+        $dataPurchaseHistory = array();
+        $dataInventory = array();
+
+        $dataPurchaseHistory['is_stored'] = '0';
+        $dataPurchaseHistory['po_info_id'] = "";
+        $dataPurchaseHistory['auto_invoice_no'] = $request->po_auto_invoice;
+        $dataPurchaseHistory['product_info_id'] = $request->product_info_id;
+        $dataPurchaseHistory['barcode'] = $request->barcode;
+        $dataPurchaseHistory['quantity'] = '1';
+        $dataPurchaseHistory['buy_price'] = "";
+        $dataPurchaseHistory['sale_price'] = "";
+        $dataPurchaseHistory['buy_date'] = "";
+        $dataPurchaseHistory['comment'] = $request->comment;
+        $dataPurchaseHistory['entry_by'] = Auth::user()->email;
+        $dataPurchaseHistory['created_at'] = date('Y-m-d H:i:s');
+
+        $dataInventory['product_info_id'] = $request->product_info_id;
+        $dataInventory['barcode'] = $request->barcode;
+        $dataInventory['qty'] = "1";
+        $dataInventory['entry_by'] = Auth::user()->email;
+        $dataInventory['created_at'] = date('Y-m-d H:i:s');
 
         // echo "<pre>";
-        // var_dump($data);
+        // var_dump($dataPurchaseHistory);
         $barcodesFromDb = DB::table('product_purchase_history')
                 ->select('barcode')
                 ->orderBy('barcode', 'asc')
-                ->get();        
+                ->get();
         $po_info_item = DB::table('po_info_item')
                 ->select('po_info_item_id', 'product_info_id', 'po_info_id', 'auto_invoice_no', 'unit_price', 'sale_price')
                 ->where('auto_invoice_no', $request->po_auto_invoice)
@@ -553,23 +564,23 @@ class ProductController extends Controller
                 ->get();
         if(count($po_info_item) > 0) {
           foreach($po_info_item as $item) {
-            $data['po_info_id'] = $item->po_info_id;
-            $data['buy_price'] = $item->unit_price;
-            $data['sale_price'] = $item->sale_price;
+            $dataPurchaseHistory['po_info_id'] = $item->po_info_id;
+            $dataPurchaseHistory['buy_price'] = $item->unit_price;
+            $dataPurchaseHistory['sale_price'] = $item->sale_price;
           }
         }
         $purchase_order_info = DB::table('purchase_order_info')
                 ->select('po_info_id', 'auto_invoice_no', 'purchased_date')
-                ->where('po_info_id', $data['po_info_id'])
+                ->where('po_info_id', $dataPurchaseHistory['po_info_id'])
                 ->get();
         if(count($po_info_item) > 0) {
           foreach($purchase_order_info as $date) {
-            $data['buy_date'] = $date->purchased_date;
+            $dataPurchaseHistory['buy_date'] = $date->purchased_date;
           }
         }
 
         // echo "<pre>";
-        //   var_dump($data);
+        //   var_dump($dataPurchaseHistory);
         // echo "</pre>";
         
 
@@ -577,7 +588,7 @@ class ProductController extends Controller
         if(count($barcodesFromDb) > 0) {
           foreach($barcodesFromDb as $barcode) {
             // echo $barcode->barcode;
-            if($barcode->barcode == $data['barcode']) {
+            if($barcode->barcode == $dataPurchaseHistory['barcode']) {
               // echo $barcode->barcode;
               // echo "<br/>";
               $isBarcodeExist = true;
@@ -589,7 +600,10 @@ class ProductController extends Controller
         if(!$isBarcodeExist) {
           
           DB::table('product_purchase_history')
-                    ->insert($data);
+                    ->insert($dataPurchaseHistory);
+          DB::table('inventory')
+                    ->insert($dataInventory);
+
           // Session::put('sucMsg', 'A Product Stored Successfully!');
           // return Redirect::to('/product/store_in/view');
           
@@ -639,14 +653,18 @@ class ProductController extends Controller
         return $single_product_info;
       }
       public function get_invoice_wise_product(Request $req) {
+        $auto_invoice = $req->auto_invoice;
+        $total_and_entry = array();
+        $optionArr = array();
+        $data = array();
         $product_info_id = DB::table('po_info_item')
                 ->select('product_info_id')
-                ->where('auto_invoice_no', $req->auto_invoice)
+                ->where('auto_invoice_no', $auto_invoice)
                 ->get();
         $product_info = DB::table('product_info')
                 ->select('product_info_id', 'title')
                 ->get();
-        $optionArr = array();
+        
         foreach($product_info_id as $id) {
           foreach($product_info as $product) {
             if($id->product_info_id == $product->product_info_id) {
@@ -655,34 +673,60 @@ class ProductController extends Controller
           }
         }
         // var_dump($product_info_id);
-        $option_total_entry = array();
-        $option_total_entry['option'] = $optionArr;
-
-        return $optionArr;
-      }
-      public function get_product_count(Request $req) {
-        $auto_invoice = $req->auto_invoice;
-        $total_qty = DB::table('po_info_item')
+        $total_qty_invoice = DB::table('po_info_item')
                 ->select(DB::raw('SUM(product_qty) as total_qty'))
                 ->groupBy('auto_invoice_no')
                 ->where('auto_invoice_no', $auto_invoice)
                 ->get();
-        $total_entry = DB::table('product_purchase_history')
+        $total_entry_invoice = DB::table('product_purchase_history')
                 ->select(DB::raw('SUM(quantity) as entry'))
                 ->groupBy('auto_invoice_no')
                 ->where('auto_invoice_no', $auto_invoice)
                 ->get();
-        $total_and_entry = array();
-        $total_and_entry['total_qty'] = $total_qty[0]->total_qty;
-        $total_and_entry['total_entry'] = $total_entry[0]->entry;
 
-        // echo "<pre>";
-        //   var_dump($total_qty[0]->total_qty);
-        // echo "</pre>";
-        // return response()->json(['success'=>'Got Simple Ajax Request.']);
-        // return response()->json($total_qty);
-        return $total_and_entry;
+        if(count($total_qty_invoice) > 0) {
+          $total_and_entry['total_qty'] = $total_qty_invoice[0]->total_qty;
+        } else {
+          $total_and_entry['total_qty'] = '0';          
+        }
+        if(count($total_entry_invoice) > 0) {
+          $total_and_entry['total_entry'] = $total_entry_invoice[0]->entry;
+        } else {
+          $total_and_entry['total_entry'] = '0';
+        }
+        $data['product_option'] = $optionArr;
+        $data['count'] = $total_and_entry;
+        // $data['invoie'] = $total_entry_invoice;
+
+        // echo count($total_qty_invoice);
+        // echo '<br>';
+        // echo count($total_entry_invoice);
+
+        return response()->json($data);
       }
+      // public function get_product_count(Request $req) {
+      //   $auto_invoice = $req->auto_invoice;
+      //   $total_qty = DB::table('po_info_item')
+      //           ->select(DB::raw('SUM(product_qty) as total_qty'))
+      //           ->groupBy('auto_invoice_no')
+      //           ->where('auto_invoice_no', $auto_invoice)
+      //           ->get();
+      //   $total_entry = DB::table('product_purchase_history')
+      //           ->select(DB::raw('SUM(quantity) as entry'))
+      //           ->groupBy('auto_invoice_no')
+      //           ->where('auto_invoice_no', $auto_invoice)
+      //           ->get();
+      //   $total_and_entry = array();
+      //   $total_and_entry['total_qty'] = $total_qty[0]->total_qty;
+      //   $total_and_entry['total_entry'] = $total_entry[0]->entry;
+
+      //   // echo "<pre>";
+      //   //   var_dump($total_qty[0]->total_qty);
+      //   // echo "</pre>";
+      //   // return response()->json(['success'=>'Got Simple Ajax Request.']);
+      //   // return response()->json($total_qty);
+      //   return $total_and_entry;
+      // }
       public function get_entry_count(Request $req) {
         $auto_invoice = $req->invoice;
         $product_info_id = $req->product_id;
@@ -712,6 +756,84 @@ class ProductController extends Controller
         // echo "</pre>";
        
         return $total_and_item;
+      }
+      public function get_purchase_order_details(Request $req) {
+        $auto_invoice = $req->auto_invoice;
+        $data_id = $req->data_id;
+        $data = array();
+        $product_item_ids = array();
+        $products_information = array();
+        // $this_supplier_info = array();
+        $order_info = DB::table('purchase_order_info')
+                ->select()
+                ->where('auto_invoice_no', $auto_invoice)
+                ->where('po_info_id', $data_id)
+                ->get();
+        $supplier_info = DB::table('supplier')
+                ->select()
+                ->where('supplier_id', $order_info[0]->supplier_id)
+                ->get();        
+                
+
+        $order_item = DB::table('po_info_item')
+                ->select()
+                ->where('auto_invoice_no', $auto_invoice)
+                ->where('po_info_id', $data_id)
+                ->get();
+        foreach($order_item as $item) {          
+          array_push($product_item_ids, $item->product_info_id);
+        }
+
+        $order_product_info = DB::table('product_info')
+                ->select()
+                ->whereIn('product_info_id', $product_item_ids)
+                ->get();
+        foreach($order_product_info as $product) {
+          $allInfo = array();
+          $allInfo['product_info_id'] = $product->product_info_id;
+          $allInfo['title'] = $product->title;
+          $allInfo['description'] = $product->description;
+          $allInfo['model'] = $product->model;
+          $allInfo['brand'] = $product->brand;
+          $allInfo['info_entry_date'] = $product->info_entry_date;
+          $allInfo['image'] = $product->image;
+          $allInfo['entry_by'] = $product->entry_by;
+          $allInfo['updated_by'] = $product->updated_by;
+          $allInfo['created_at'] = $product->created_at;
+          $allInfo['updated_at'] = $product->updated_at;
+          $products_information[$product->product_info_id] = $allInfo;
+        }
+        
+        $data['status'] = true;
+        $data['order_info'] = $order_info;
+        $data['order_item'] = $order_item;
+        $data['products_information'] = $products_information;
+        $data['supplier_info'] = $supplier_info;
+
+
+        // $productArr = array();
+        // $product_info = DB::table('product_info')
+        //         // ->select('product_info_id', 'title')
+        //         ->select()
+        //         ->get();
+        // foreach($product_info as $product) {
+        //   $allInfo = array();
+        //   $allInfo['title'] = $product->title;
+        //   $allInfo['description'] = $product->description;
+        //   $allInfo['model'] = $product->model;
+        //   $allInfo['brand'] = $product->brand;
+        //   $allInfo['info_entry_date'] = $product->info_entry_date;
+        //   $allInfo['image'] = $product->image;
+        //   $allInfo['entry_by'] = $product->entry_by;
+        //   $allInfo['updated_by'] = $product->updated_by;
+        //   $allInfo['created_at'] = $product->created_at;
+        //   $allInfo['updated_at'] = $product->updated_at;
+
+        //   $productArr[$product->product_info_id] = $allInfo;
+        // }
+        // $data['productArr'] = $productArr;
+
+        return response()->json($data);
       }
 }
 

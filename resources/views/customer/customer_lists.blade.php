@@ -22,7 +22,7 @@
 	</div>
 	<div class="container-fluid product-view">
 	  <div class="row">
-	    <div class="col-md-12">	    	
+	    <div class="col-md-12 customer-entry-from">	    	
 	    	<h2 class="text-center">Customer List View</h2>
 	    	<table border="1px" class="pdt_list_tbl">
 					<tr>
@@ -59,5 +59,6 @@
 				</table>
 	    </div>
 	  </div>
+	  @include('layouts.footers.auth')
 	</div>
 @endsection

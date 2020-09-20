@@ -3,10 +3,10 @@
 
   <div class="container-fluid product-entry">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12 product-in">
         {!! Form::open(['url' => 'product/entry', 'method' => 'post', 'enctype' => 'multipart/form-data', 'class'=> 'form-horizontal']) !!}
           <div class="row">
-            <div class="col-md-6 pL0">
+            <div class="col-md-6">
               <div class="form-group">
                 <label for="info_entry_date">Date</label>
                 <input type="text" class="form-control" id="info_entry_date" name="info_entry_date" placeholder="dd/mm/yyyy">

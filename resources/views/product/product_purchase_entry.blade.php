@@ -3,10 +3,10 @@
 
   <div class="container-fluid product-entry">
     <div class="row">
-      <div class="col-md-12">
-        {!! Form::open(['url' => 'product/purchase_order/entry', 'method' => 'post', 'enctype' => 'multipart/form-data', 'class'=> 'form-horizontal']) !!}
+      <div class="col-md-12 product-in">
+        {!! Form::open(['url' => 'product/purchase_order/entry', 'method' => 'post', 'enctype' => 'multipart/form-data', 'class'=> 'form-horizontal', 'autocomplete' => 'off']) !!}
           <div class="row">
-            <div class="col-md-4 pL0">
+            <div class="col-md-4">
               <div class="form-group">
                 <label for="purchased_date">Date</label>
                 <input type="text" class="form-control" id="purchased_date" name="purchased_date" placeholder="dd/mm/yyyy">
@@ -64,29 +64,31 @@
                 <input type="text" class="form-control allowNumbersOnly" id="due_amount" name="due_amount" placeholder="Supplier Due Amount" value="0">
               </div>
             </div>
-            <table class="order_entry_tbl" id="order_entry_item">
-              <thead>
-                <tr>
-                  <th width="50px">IMG</th>
-                  <th width="200px">SKU</th>
-                  <th width="200px">Product Title</th>
-                  <th>Quantity</th>
-                  <th>Unit Price</th>
-                  <th>Unit Price<br>(Additional)</th>
-                  <th>Sale Price</th>
-                  <th>Total Price</th>
-                  <th width="70px">#</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Dynamic Items Placed Here -->
-              </tbody>
-            </table>
+            <div class="col-md-12">
+              <table class="order_entry_tbl" id="order_entry_item">
+                <thead>
+                  <tr>
+                    <th width="50px">IMG</th>
+                    <!-- <th width="200px">SKU</th> -->
+                    <th width="200px">Product Title</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Unit Price<br>(Additional)</th>
+                    <th>Sale Price</th>
+                    <th>Total Price</th>
+                    <th width="70px">#</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Dynamic Items Placed Here -->
+                </tbody>
+              </table>
+            </div>
             <div class="col-md-12" style="margin-top: 50px;">
               <div class="po_summary">
                 <div class="k-control">
                   <div class="k-label">Product Value:</div>
-                  <input type="text" class="k-field allowNumbersOnly" name="sub_total" id="sub_total" value="0.00" placeholder="Sub Total" required>
+                  <input type="text" class="k-field allowNumbersOnly" name="sub_total" id="sub_total" value="0.00" placeholder="Sub Total" required readonly>
                 </div>
                 <div class="k-control">
                   <div class="k-label">VAT:</div>
@@ -94,7 +96,7 @@
                 </div>
                 <div class="k-control">
                   <div class="k-label">VAT Amount:</div>
-                  <input type="text" class="k-field allowNumbersOnly" id="vat_amount" name="vat_amount" value="0.00" placeholder="Vat Amount" required>
+                  <input type="text" class="k-field allowNumbersOnly" id="vat_amount" name="vat_amount" value="0.00" placeholder="Vat Amount" required readonly>
                 </div>
                 <div class="k-control">
                   <div class="k-label">Supplier Cost:</div>
@@ -106,7 +108,7 @@
                 </div>
                 <div class="k-control">
                   <div class="k-label">Grand Total:</div>
-                  <input class="k-field" required name="grand_total" id="grand_total" value="0.00" placeholder="Grand Total">
+                  <input class="k-field" name="grand_total" id="grand_total" value="0.00" placeholder="Grand Total" required readonly>
                 </div>
               </div>
             </div>

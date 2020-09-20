@@ -84,12 +84,12 @@
             </form>
             <!-- Navigation -->
             <ul class="navbar-nav">
-                <li class="nav-item">
+                <li class="nav-item" id="dashboradMnu">
                     <a class="nav-link" href="{{ route('home') }}">
                         <i class="ni ni-tv-2 text-primary"></i> {{ __('Dashboard') }}
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="userMnu">
                     <a class="nav-link" href="#navbar-user" data-toggle="collapse" role="button" aria-expanded="false"
                         aria-controls="navbar-user">
                         <i class="ni ni-circle-08" style="color: #f4645f;"></i>
@@ -111,7 +111,7 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="productInMnu">
                     <a class="nav-link" href="#navbar-product" data-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="navbar-product">
                         <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
@@ -157,7 +157,7 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="productOutMnu">
                     <a class="nav-link" href="#navbar-product-out" data-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="navbar-product-out">
                         <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
@@ -183,7 +183,7 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="supplierMnu">
                     <a class="nav-link " href="#navbar-supplier" data-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="navbar-supplier">
                         <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->
@@ -213,7 +213,7 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="customerMnu">
                     <a class="nav-link " href="#navbar-customer" data-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="navbar-customer">
                         <!-- <i class="ni ni-collection text-pink" style="color: #f4645f;"></i> -->

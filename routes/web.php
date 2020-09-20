@@ -67,6 +67,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('order_place/entry', ['as'=>'order_place.entry', 'uses'=>'SaleController@order_entry']);
 	Route::post('order_place/entry', ['as'=>'order_place.entry', 'uses'=>'SaleController@order_save']);
 	Route::get('order_place/view', ['as'=>'order_place.view', 'uses'=>'SaleController@order_view']);
+	Route::post('order_place/sale', ['as'=>'order_place.sale', 'uses'=>'SaleController@get_sale_product_info']);
+	Route::get('order_place/sale/{barcodeSale}', ['as'=>'order_place.sale', 'uses'=>'SaleController@get_sale_product_info']);
+
 
 	Route::get('brand/entry', ['as'=>'brand.entry', 'uses'=>'BrandController@brand_entry_form']);
 	Route::post('brand/entry', ['as'=>'brand.entry', 'uses'=>'BrandController@brand_save']);
@@ -76,11 +79,18 @@ Route::group(['middleware' => 'auth'], function () {
 	// ajax call
 	Route::post('/single-product-info', 'ProductController@get_single_product_info');
 	Route::post('/invoice-wise-product', 'ProductController@get_invoice_wise_product');
-	Route::post('/invoice-product-count', 'ProductController@get_product_count');
+	// Route::get('/invoice-wise-product/{auto_invoice}', 'ProductController@get_invoice_wise_product');
+
 	Route::get('/invoice-product-count/{auto_invoice}', 'ProductController@get_product_count');
 
 	Route::post('/entry-count', 'ProductController@get_entry_count');
 	Route::get('/entry-count/{invoice}/{product_id}', 'ProductController@get_entry_count');
+
+	Route::post('/product/purchase-order/details', 'ProductController@get_purchase_order_details');
+	
+
+	// Route::get('/order_place/details/{auto_sale_invoice}/{sale_id}', 'SaleController@sale_order_details');
+	Route::post('/order_place/details', 'SaleController@sale_order_details');
 
 });
 

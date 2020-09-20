@@ -3,10 +3,10 @@
 
   <div class="container-fluid product-entry">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12 customer-entry-from">
         {!! Form::open(['url' => 'customer/entry', 'method' => 'post', 'enctype' => 'multipart/form-data', 'class'=> 'form-horizontal']) !!}
           <div class="row">
-            <div class="col-md-6 pL0">
+            <div class="col-md-6">
               <div class="form-group">
                 <label for="customer_name">Customer Name</label>
                 <input type="text" class="form-control allowNumbersOnly" id="customer_name" name="customer_name" placeholder="Customer Name">

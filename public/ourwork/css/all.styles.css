@@ -54,6 +54,12 @@ body{
 .pR0 {
 	padding-right: 0px;
 }
+.m0{
+	margin: 0px;
+}
+.p0{
+	padding: 0px;
+}
 
 .main-content .navbar-top {
   background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%) !important;
@@ -258,6 +264,11 @@ body{
 .footer {
 	padding-left: 40px;
 	padding-right: 40px;
+	margin: 40px 0px;
+	background-color: #17005b26;
+	padding: 20px;
+	box-shadow: 0px 0px 10px #00001cd6;
+	border-radius: 5px;
 	/*border: 1px solid red;*/
 }
 .stockreset {
@@ -280,4 +291,65 @@ body{
 }
 .brand_tbl td {
 	padding: 0px 4px;
+}
+.mnuActive {
+	background-color: #d3d1ff;
+}
+.header {
+	padding-top: 5rem !important;
+	margin-bottom: 100px;
+}
+.sale_order_form {
+	background-color: #fff;
+	padding: 20px;
+	box-shadow: 0px 0px 10px #00001cd6;
+	border-radius: 5px;
+}
+.navbar-vertical {
+  box-shadow: 0 0 10px rgb(119, 113, 255) !important;
+}
+.topBar {
+	/*background-color: red;
+	height: 30px;
+	border-radius: 5px 5px 0px 0px;*/
+}
+.payment-part {
+	width: 500px;
+	float: left;
+}
+.sale-search {
+	background-color: #FFF;
+	padding: 20px;
+	box-shadow: 0px 0px 10px #00001cd6;
+	border-radius: 5px;
+	margin-bottom: 30px;
+}
+.sale-order-tbl {
+	background-color: #FFF;
+	padding: 20px;
+	box-shadow: 0px 0px 10px #00001cd6;
+	border-radius: 5px;
+	/*margin-bottom: 40px;*/
+}
+.supply-entry-form {
+	background-color: #FFF;
+	padding: 20px;
+	box-shadow: 0px 0px 10px #00001cd6;
+	border-radius: 5px;
+}
+.customer-entry-from {
+	background-color: #FFF;
+	padding: 20px;
+	box-shadow: 0px 0px 10px #00001cd6;
+	border-radius: 5px;
+}
+.product-in {
+	background-color: #FFF;
+	padding: 20px;
+	box-shadow: 0px 0px 10px #00001cd6;
+	border-radius: 5px;
+}
+.stock-hr {
+	border: 1px solid gray;
+	margin: 0px;
 }

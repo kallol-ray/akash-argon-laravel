@@ -12,12 +12,12 @@ class PurchaseOrderInfoInfoSeeder extends Seeder
     public function run()
     {
         DB::table('purchase_order_info')->insert([
-    		'auto_invoice_no' => 'POI-100001',
-    		'is_stored' => '0',
+	    		'auto_invoice_no' => 'POI-100001',
+	    		'is_stored' => '0',
 	        'supplier_id' => '1',
 	        'purchase_invoice_no' => 'A012451',
 	        'buyer_adnl_cost' => '50',
-			'supplier_adnl_cost' => '50',
+					'supplier_adnl_cost' => '50',
 	        'vat_percent' => '5',
 	        'vat_amount' => '100',
 	        'discount' => '100',

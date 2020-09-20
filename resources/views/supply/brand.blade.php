@@ -6,7 +6,7 @@
       <div class="col-md-12">
         
           <div class="row">
-            <div class="col-md-6 pL0">
+            <div class="col-md-5 supply-entry-form">
               {!! Form::open(['url' => 'brand/entry', 'method' => 'post', 'enctype' => 'multipart/form-data', 'class'=> 'form-horizontal']) !!}
               <div class="form-group">
                 <label for="brand_name">Brand Name</label>
@@ -18,7 +18,7 @@
               </div>              
               {!! Form::close() !!}
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 offset-md-1 supply-entry-form">
               <h2 class="brand-head">Brand List</h2>
               <table border="1px" class="brand_tbl">
                 <thead>

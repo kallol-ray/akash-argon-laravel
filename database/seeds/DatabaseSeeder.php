@@ -15,7 +15,11 @@ class DatabaseSeeder extends Seeder
         	UsersTableSeeder::class,
         	SupplierTableSeeder::class,
             ProductInfoSeeder::class,            
-            PurchaseOrderInfoInfoSeeder::class          
+            // PurchaseOrderInfoInfoSeeder::class,
+            CustomerSeeder::class,
+            // InventorySeeder::class,
+            BrandSeeder::class,
+            
         ]);
     }
 }
