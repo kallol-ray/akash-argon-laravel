@@ -301,7 +301,7 @@ function remove_list(elm, event) {
 	removeItemOnce(scannedItem, product_id);
 	$(elm).closest('tr').remove();
 	console.log(scannedItem);
-
+	$("#paid_or_due").val("").trigger("change");
 
 	if($('#order_entry_item tbody').find("tr.itemRow").length > 0) {
 		$('#order_entry_item tbody')
@@ -781,6 +781,44 @@ function remove_order_list(elm, scanCode) {
   $("#paid_or_due_sale").val("").trigger("change");
 }
 
+$(document).on("change", "#paid_or_due", function(){
+	// ===========================================
+	let status = $(this).val();
+	console.log("status=", status);
+	let paid_amount = $("#paid_amount").val();
+	let total_amount = $("#grand_total").val();
+	let due_amount = total_amount - paid_amount;
+	if(status == '0') {
+		//partial payment
+		$("#paid_amount").val("0.00").focus();
+		$("#due_amount").val("0.00");
+	} else if(status == '1') {
+		//fulldue
+		$("#paid_amount").val("0.00");
+		$("#due_amount").val(parseFloat(due_amount).toFixed(2));
+	} else if(status == '2') {
+		//fullpaid
+		$("#paid_amount").val(parseFloat(total_amount).toFixed(2));
+		$("#due_amount").val("0.00");
+	} else {
+		$("#paid_amount").val("0.00");
+		$("#due_amount").val("0.00");
+	}
+});
+$(document).on("blur", "#paid_amount", function(e) {
+	// e.preventDefault();
+	// e.stopImmediatePropagation();
+	let status = $("#paid_or_due").val();
+	// console.log(status);
+	if(status == '0') {
+		//partial payment
+		let paid_amount = $(this).val();
+		let grand_total = $("#grand_total").val();
+		let due_amount = grand_total - paid_amount;
+		$("#due_amount").val(parseFloat(due_amount).toFixed(2)).focus();
+		$("#paid_amount").val(parseFloat(paid_amount).toFixed(2));
+	}
+});
 function sale_row_add() {
 	if($("#customer_id").val() == "") {
 		alert("Please select a customer First.");
@@ -1306,3 +1344,67 @@ $("#add_customer_sale").click(function() {
 //   $("#grand_total").val(parseFloat(grand_total).toFixed(2));
 //   $("#customer_paid").val(parseFloat(grand_total - discount).toFixed(2));
 // }
+
+// $("#search_sale_invoice").keyup("")
+$("#search_sale_invoice").keyup(function (e) {
+	if (e.which == 13) {
+		let searchInvoice = $(this).val();
+		console.log("searchInvoice", searchInvoice);
+		$.ajax({			
+			url: "/order_place/search_invoice",
+			type: "POST",
+			// cache: false,
+			data: {
+				'_token': $("meta[name='csrf-token']").attr('content'),
+				'auto_sale_invoice': searchInvoice
+			},
+			dataType: "json",
+			success: function(data, textStatus, xhr){				
+				if(xhr.status) {
+					console.log("data", data);
+					if(data.status) {
+						$("#sale_list_tbl tbody").html("");
+						let dateFormat = data.saled_date;
+						let tableBody =  '<tr data-id="'+data.sale_info_id+'">'+
+							'<td class="">'+data.auto_sale_invoice+'</td>'+
+							'<td class="">'+data.customer_name+'</td>'+
+							'<td class="">'+data.sub_total_bill +'</td>'+
+							'<td class="">'+
+							dateFormat +
+								// {{ date("d/m/Y", strtotime(str_replace('-', '/',  $sale->saled_date))) }}</td>'+
+							'<td>'+
+								'<button class="btn btn-outline-info btn-sm" onclick="print_invoice('+data.sale_info_id+','+data.auto_sale_invoice+')">Print Invoice</button>'+
+								'<button class="btn btn-outline-success btn-sm" onclick="complete_order('+data.sale_info_id+','+data.auto_sale_invoice+')">Make Complete</button>'+
+								'<button class="btn btn-outline-primary btn-sm" onclick="sale_order_details('+data.sale_info_id+','+data.auto_sale_invoice+')">Details</button>'+
+								'<button class="btn btn-outline-default btn-sm" onclick="update_sale_order('+data.sale_info_id+','+data.auto_sale_invoice+')">Edit</button>'+
+								'<button class="btn btn-outline-danger btn-sm" onclick="cancel_sale_order('+data.sale_info_id+','+data.auto_sale_invoice+')">Cancel</button>'+
+							'</td>'+
+						'</tr>';
+						$("#sale_list_tbl tbody").append(tableBody);
+					} else {
+						console.log("Data Not Received Successfully Kallol.")
+					}
+				}
+			},
+			error: function (jqXHR, exception) {
+				var msg = '';
+				if (jqXHR.status === 0) {
+				    msg = 'Not connect.\n Verify Network.';
+				} else if (jqXHR.status == 404) {
+				    msg = 'Requested page not found. [404]';
+				} else if (jqXHR.status == 500) {
+				    msg = 'Internal Server Error [500].';
+				} else if (exception === 'parsererror') {
+				    msg = 'Requested JSON parse failed.';
+				} else if (exception === 'timeout') {
+				    msg = 'Time out error.';
+				} else if (exception === 'abort') {
+				    msg = 'Ajax request aborted.';
+				} else {
+				    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+				}
+				console.log("msg",msg);
+			},
+		});
+	}
+});

@@ -271,4 +271,48 @@ class SaleController extends Controller
     $data['status'] = true;
     return response()->json($data);
   }
+
+  function search_invoice_sale(Request $req) {
+    $auto_sale_invoice = $req->auto_sale_invoice;
+    $data = array();
+    $sale_info = DB::table('sale_info')
+                  ->select()
+                  ->where('auto_sale_invoice', $auto_sale_invoice)
+                  ->get();
+    
+    
+    if($sale_info != NULL) {
+      $data['status'] = true;
+      foreach ($sale_info as $info) {
+        $data['sale_info_id'] = $info->sale_info_id;
+        $data['auto_sale_invoice'] = $info->auto_sale_invoice;
+        $data['customer_id'] = $info->customer_id;
+        $data['sub_total_bill'] = $info->sub_total_bill;
+        $data['vat_percent'] = $info->vat_percent;
+        $data['vat_amount'] = $info->vat_amount;
+        $data['discount'] = $info->discount;
+
+        $data['paid_or_due'] = $info->paid_or_due;
+        $data['paid_amount'] = $info->paid_amount;
+        $data['due_amount'] = $info->due_amount;
+        $data['is_delivered'] = $info->is_delivered;
+        $data['saled_date'] = $info->saled_date;
+        $data['entry_by'] = $info->entry_by;
+        $data['update_by'] = $info->update_by;
+        $data['created_at'] = $info->created_at;
+        $data['updated_at'] = $info->updated_at;      
+      }
+      $customer = DB::table('customer')
+                    ->select()
+                    ->where('customer_id', $sale_info[0]->sale_info_id)
+                    ->get();
+      foreach ($customer as $c) {
+        $data['customer_name'] = $c->customer_name;
+      }
+      return response()->json($data);
+    } else {
+      $data['status'] = false;
+      return response()->json($data);
+    }    
+  }
 }

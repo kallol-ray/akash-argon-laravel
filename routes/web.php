@@ -96,6 +96,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	// Route::get('/order_place/details/{auto_sale_invoice}/{sale_id}', 'SaleController@sale_order_details');
 	Route::post('/order_place/details', 'SaleController@sale_order_details');
+	Route::post('/order_place/search_invoice', 'SaleController@search_invoice_sale');
 
 });
 

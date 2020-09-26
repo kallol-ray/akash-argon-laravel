@@ -4,7 +4,7 @@
   <div class="container-fluid product-entry">
     <div class="row">
       <div class="col-md-12">
-        {!! Form::open(['url' => 'product/purchase_order/update', 'method' => 'post', 'enctype' => 'multipart/form-data', 'class'=> 'form-horizontal', 'autocomplete' => 'off']) !!}
+        {!! Form::open(['url' => 'product/purchase_order/update', 'method' => 'post', 'class'=> 'form-horizontal', 'autocomplete' => 'off']) !!}
           <div class="row">
             <div class="col-md-3">
               <div class="form-group">
@@ -79,7 +79,7 @@
                       <td>
                         <input type="hidden" name="product_info_id[]" value="{{ $items->product_info_id }}">
                         <input type="hidden" name="image[]" value="{{ $items->image }}">
-                        
+
                         <!-- pattern="[0-9]+([.,][0-9]+)?" -->
                         <input type="text" name="quantity[]" id="qty_{{ $loop->iteration - 1 }}" step="1" required placeholder="Quantity" class="order_input inp_quantity allowNumbersOnly" min="1" value="{{ $items->product_qty }}">
                       </td>
