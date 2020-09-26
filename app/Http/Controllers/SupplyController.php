@@ -27,7 +27,7 @@ class SupplyController extends Controller
     $data['address'] = "";
     $data['comments'] = "";
     $data['supplier_entry_date'] = "";
-    $data['entry_by'] = Auth::user()->email;;
+    $data['entry_by'] = Auth::user()->email;
     $data['created_at'] = "";
 
     
@@ -55,5 +55,32 @@ class SupplyController extends Controller
                 ->orderBy('supplier_id', 'desc')               
                 ->get();
       return view('supply.supplier_info_lists')->with('supplier_info', $supplier_info);
+  }
+  function supplier_update_process(Request $req) {
+    $supplier_id = $req->supplier_id;
+    $supplier_info = DB::table('supplier')
+                ->select()              
+                ->where('supplier_id', $supplier_id) 
+                ->get();
+    // echo "<pre>";
+    // var_dump($supplier_info);
+    // echo "</pre>";
+    return view('supply.supplier_info_update')->with('supplier_info', $supplier_info);
+  }
+  function supply_update(Request $req) {
+    $data = array();
+    $supplier_id = $req->supplier_id;
+    $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $req->supplier_entry_date)));
+
+    $data['supplier_entry_date'] = $newDate;
+    $data['supplier_name'] = $req->supplier_name;
+    $data['phone'] = $req->phone;
+    $data['comments'] = $req->comments;
+    $data['address'] = $req->address;
+    DB::table('supplier')
+                  ->where('supplier_id', $supplier_id)
+                  ->update($data);
+    Session::put('sucMsg', 'A Supplier Information Updated Successfully!');
+    return Redirect::to('/supplier/view');
   }
 }

@@ -37,61 +37,78 @@
         </div>
         <div class="popupCon" id="purchase_order_details">
           <div class="order-details">
-            <!-- <h2 class="text-center">Purchase Order Details</h2>
-            <button type="button" class="close close-order-details" aria-label="Close" onclick="close_po()">
+            <div class="head-details">
+              <h2 class="text-center">NA/NA/NA/NA/NA/NA/NA/NA</h2>
+              <button type="button" class="close close-order-details" aria-label="Close" onclick="close_po()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="head-body">
+              <!-- Content Here -->
+              <!-- <div class="pofield_set">
+                <div class="bar"></div>
+                <div class="addcustomer-con">
+                  <div class="row">
+                    <div class="col-md-12" style="padding: 20px 40px;">
+                      <form action="/customer/entry" method="post" class="form-horizontal">
+                        <input name="_token" type="hidden" value="{{ csrf_token() }}">
+                        <input type="text" name="fromWhere" value="sale">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="customer_name">Customer Name</label>
+                              <input type="text" class="form-control allowNumbersOnly" id="customer_name" name="customer_name" placeholder="Customer Name">
+                            </div>
+                            <div class="form-group">
+                              <label for="phone">Phone</label>
+                              <input type="text" class="form-control allowNumbersOnly" id="phone" name="phone" placeholder="Phone No">
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="company_name">Company Name</label>
+                              <input type="text" class="form-control allowNumbersOnly" id="company_name" name="company_name" placeholder="Compnay Name">
+                            </div>
+                            <div class="form-group">
+                              <label for="address">Address</label>
+                              <input type="text" class="form-control allowNumbersOnly" id="address" name="address" placeholder="Address">
+                            </div>
+                          </div>
+                          <div class="col-md-12">
+                            <div class="form-group subres">
+                              <input type="submit" name="saveBtn" class="btn btn-outline-primary" id="saveBtnCustomer" value="Save"/>
+                              <input type="button" class="btn btn-outline-danger" id="reset_cancel_customer" value="Reset"/>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>               
+                </div>
+              </div> -->
+            </div>
+            <!-- <div class="head-footer">                
+              <div class="po-footer">
+                <button type="button" class="btn btn-outline-danger po-close-btn" onclick="close_po()">Close</button>
+              </div>
+            </div> -->
+          </div>
+        </div>
+        <div class="popupCon" id="yesNoAlert">
+          <div class="allalertCon">
+            <button type="button" class="close close-alert-top" aria-label="Close" onclick="$(this).closest('#yesNoAlert').fadeOut();">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div class="pofield_set">
-                <div class="bar"></div>
-                <div class="po-head">
-                    <div class="po-labels">Supplier Name</div>
-                    <div class="po-labels" id="po-supplier-name">xxx</div>
-                    <div class="po-labels">Supplier Cost</div>
-                    <div class="po-labels" id="po-supplier-cost">25.00</div>
-
-                    <div class="po-labels">Invoice Number</div>
-                    <div class="po-labels" id="po-invoice-no">1445</div>
-                    <div class="po-labels">Buyer Cost</div>
-                    <div class="po-labels" id="po-buyer-cost">45</div>
-
-                    
-                    <div class="po-labels">Purchase Date</div>
-                    <div class="po-labels" id="po-purchase-date">12/12/20</div>
-                    <div class="po-labels">Product Cost</div>
-                    <div class="po-labels" id="po-product-cost">4545</div>
-                    <div class="po-labels">Total Product Quantity</div>
-                    <div class="po-labels" id="po-total-quantity">454</div>
-                    <div class="po-labels">Total Cost</div>
-                    <div class="po-labels" id="po-total-cost">4545</div>
-                </div>
-                <div class="po-table">
-                    <table class="po-details-tbl">
-                        <thead>
-                            <tr>
-                                <th>Product Title</th>
-                                <th>Quantity</th>
-                                <th>Product Price</th>
-                                <th>With Additional Cost</th>
-                                <th>Sale Price</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Product Title</td>
-                                <td>Quantity</td>
-                                <td>Product Price</td>
-                                <td>Witd Additional Cost</td>
-                                <td>Sale Price</td>
-                                <td>Total</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="po-footer">
-                        <button type="button" class="btn btn-outline-danger po-close-btn" onclick="close_po()">Close</button>
-                    </div>                        
-                </div>
-            </div> -->
+            <div class="alertHead">
+              ALERT !!!
+            </div>
+            <div class="alertBody">
+              Are you sure?
+            </div>
+            <div class="alertFoot">
+              <button type="button" class="btn btn-outline-success" id="alertYes">Yes</button>
+              <button type="button" class="btn btn-outline-danger" onclick="$(this).closest('#yesNoAlert').fadeOut();">Cancel</button>
+            </div>
           </div>
         </div>
         

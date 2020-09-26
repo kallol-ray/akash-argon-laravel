@@ -23,7 +23,7 @@ class CreatePurchaseOrderInfoTable extends Migration
             $table->decimal('supplier_adnl_cost', 8, 2)->comment('adnl=additional');
             $table->decimal('vat_percent', 8, 2);
             $table->decimal('vat_amount', 8, 2);
-            $table->decimal('discount', 8, 2);
+            $table->decimal('discount', 8, 2)->nullable();
             $table->tinyInteger('paid_or_due')->comment('0=partial payment, 1=due, 2=paid');
             $table->decimal('paid_amount', 8, 2);
             $table->decimal('due_amount', 8, 2);
@@ -31,6 +31,7 @@ class CreatePurchaseOrderInfoTable extends Migration
             $table->decimal('grand_total', 8, 2);
             $table->date('purchased_date');
             $table->string('entry_by', 50);
+            $table->string('update_by', 50)->nullable();
             $table->timestamps();
         });
     }

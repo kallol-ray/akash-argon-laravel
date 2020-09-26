@@ -49,8 +49,11 @@ Route::group(['middleware' => 'auth'], function () {
 
 
 	Route::get('supplier/entry', ['as'=>'supplier.entry', 'uses'=>'SupplyController@supplier_info_entry']);
-	Route::post('supplier/entry', ['as'=>'supplier.entry', 'uses'=>'SupplyController@supplier_save']);	
+	Route::post('supplier/entry', ['as'=>'supplier.entry', 'uses'=>'SupplyController@supplier_save']);
 	Route::get('supplier/view', ['as'=>'supplier.view', 'uses'=>'SupplyController@supplier_view']);
+	Route::get('supplier/update/{supplier_id}', ['as'=>'supplier.updateGet', 'uses'=>'SupplyController@supplier_update_process']);
+	Route::post('supplier/update', ['as'=>'supplier.updatePost', 'uses'=>'SupplyController@supply_update']);
+	
 
 
 	Route::get('product/store_in/entry', ['as'=>'product.store_in.entry', 'uses'=>'ProductController@store_in_entry']);
@@ -62,6 +65,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('customer/entry', ['as'=>'customer.entry', 'uses'=>'CustomerController@ready_entry']);
 	Route::post('customer/entry', ['as'=>'customer.entry', 'uses'=>'CustomerController@save_entry']);
 	Route::get('customer/view', ['as'=>'customer.view', 'uses'=>'CustomerController@view_entry']);
+	Route::get('customer/update/{customer_id}', ['as'=>'customer.update', 'uses'=>'CustomerController@customer_update_process']);
+	Route::post('customer/update', ['as'=>'customer.update', 'uses'=>'CustomerController@customer_update']);
 
 
 	Route::get('order_place/entry', ['as'=>'order_place.entry', 'uses'=>'SaleController@order_entry']);

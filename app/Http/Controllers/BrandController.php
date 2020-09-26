@@ -23,15 +23,25 @@ class BrandController extends Controller
   }
   public function brand_save(Request $req) {
   	$data = array();
-  	$data['brand_name'] = $req->brand_name;
-  	$data['entry_by'] = Auth::user()->email;
-  	$data['created_at'] = date('Y-m-d H:i:s');
-  	DB::table('brand')
-  							->insert($data);
-  	$brand_info = DB::table('brand')
-  							->orderBy('brand_id', 'desc')
-                ->get();
-  	return view('supply.brand')
-  					->with("brand_info", $brand_info);
+    $saveBtn = $req->saveBtn;
+    $brand_id = $req->brand_id;
+    // echo $saveBtn;
+    $data['brand_name'] = $req->brand_name;
+    if($saveBtn == "Save") {      
+      $data['entry_by'] = Auth::user()->email;
+      $data['created_at'] = date('Y-m-d H:i:s');
+      DB::table('brand')
+                  ->insert($data);
+      Session::put('sucMsg', 'A Brand Saved Successfully!');
+      return redirect('/brand/entry');
+    } else {
+      $data['update_by'] = Auth::user()->email;
+      $data['updated_at'] = date('Y-m-d H:i:s');
+      DB::table('brand')
+                  ->where('brand_id', $brand_id)
+                  ->update($data);
+      Session::put('sucMsg', 'A Brand Updated Successfully!');
+      return redirect('/brand/entry');
+    }
   }
 }

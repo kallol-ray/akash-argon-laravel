@@ -25,20 +25,7 @@
                   <option value="">Select one..</option>
                    @foreach ($brand_info as $brand)
                     <option value="{{ $brand->brand_name }}"  @if($product_info_single->brand == $brand->brand_name) selected @endif>{{ $brand->brand_name }}</option>
-                  @endforeach   
-                  <!-- <option value="TP-Link" @if($product_info_single->brand =='TP-Link') selected @endif>TP-Link</option>
-                  <option value="Tenda" @if($product_info_single->brand =='Tenda') selected @endif>Tenda</option>
-                  <option value="D-Link" @if($product_info_single->brand =='D-Link') selected @endif>D-Link</option>
-                  <option value="Mikrotik" @if($product_info_single->brand =='Mikrotik') selected @endif>Mikrotik</option>
-                  <option value="Xiaomi" @if($product_info_single->brand =='Xiaomi') selected @endif>Xiaomi</option>
-                  <option value="Netgear" @if($product_info_single->brand =='Netgear') selected @endif>Netgear</option>
-                  <option value="Huawei" @if($product_info_single->brand =='Huawei') selected @endif>Huawei</option>
-                  <option value="Asus" @if($product_info_single->brand =='Asus') selected @endif>Asus</option>
-                  <option value="Linksys" @if($product_info_single->brand =='Linksys') selected @endif>Linksys</option>
-                  <option value="Belkin" @if($product_info_single->brand =='Belkin') selected @endif>Belkin</option>
-                  <option value="Cisco" @if($product_info_single->brand =='Cisco') selected @endif>Cisco</option>
-                  <option value="TRENDnet" @if($product_info_single->brand =='TRENDnet') selected @endif>TRENDnet</option>
-                  <option value="Others" @if($product_info_single->brand =='Others') selected @endif>Others</option> -->
+                  @endforeach
                 </select>
               </div>              
             </div>

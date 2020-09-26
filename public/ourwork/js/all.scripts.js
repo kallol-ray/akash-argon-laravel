@@ -6,15 +6,13 @@ var suplierCost = 0;
 var companyCost = 0;
 var additionalCost = 0;
 var product_subtotal = 0;
-// var cnf_cost = 0;
-// var transport_cost = 0;
-// var labour_cost = 0;
-// var productUnit = {};
 // var productUnitQty = {};
-// var quantityScan = [];
 
 //Sale entry
 var scannedSaleBarcode = [];
+//Alert Status
+var isClickWork = false;
+
 
 
 
@@ -83,7 +81,7 @@ function msgAlertAutoHide() {
 	if($(".msgAlert .alert").is(":visible")) {
       setTimeout(function(){
           $(".msgAlert .alert").fadeOut("slow");
-      }, 4000);
+      }, 2000);
   }
 }
 $( document ).ready(function() {
@@ -158,6 +156,18 @@ $("#reset_cancel_store").click(function(){
 $(document).on("change", "#product_info_id", function() {
 	let product_info_id = this.value;
 	var i = $(".itemRow").length;
+	let rows = $(".itemRow");
+	$(rows).each(function(k,v) {
+		//it works on update time
+		let has_attr_update = $(this).attr('update');
+    if (typeof has_attr_update !== typeof undefined && has_attr_update !== false) {
+      let pid = $(v).attr('data-product-info-id');
+      if($.inArray(pid, scannedItem) == -1) {
+      	scannedItem.push($(v).attr('data-product-info-id'));
+      }      
+    }
+  });
+	// console.log(rows);
 	if(product_info_id != '') {
 		// console.log(scannedItem.indexOf(product_info_id));
 		if(scannedItem.indexOf(product_info_id) == -1) {
@@ -165,6 +175,7 @@ $(document).on("change", "#product_info_id", function() {
 			scannedItem.push(product_info_id);
 	 		let title = $(this).find('option:selected').attr("title");
 	 		let image = $(this).find('option:selected').attr("image");
+	 		console.log("image", image);
 			let html = '<tr class="itemRow" data-product-info-id="'+product_info_id+'">' +
 	                  '<td align="center"><img src="/ourwork/img/product_image/'+image+'" class="order_product_img"></td>'+
 	                  '<td>'+title+'</td>'+
@@ -234,27 +245,33 @@ function setpurchasePrice(key, elem) {
 }
 
 function calculateTotal(){
-    product_subtotal = 0;
+  product_subtotal = 0;
+  // console.log(suplierCost);
+  // console.log(companyCost);
+  if(suplierCost == '0' && companyCost == '0') {
+  	// onupdate time it works
+  	suplierCost = $("#buyer_addtional_costs").val();
+  	companyCost = $("#supplier_additional_cost").val();
+  }
 
-    $('.inp_total_price').each(function(k,v) {
-        if($(v).val() != ''){
-            product_subtotal = product_subtotal+parseFloat($(v).val());
-        }
-    });
+  $('.inp_total_price').each(function(k,v) {
+    if($(v).val() != ''){
+      product_subtotal = product_subtotal+parseFloat($(v).val());
+    }
+  });
 
-    $("#sub_total").val(parseFloat(product_subtotal).toFixed(2));
-    $("#suppliercost_final").text(parseFloat(suplierCost).toFixed(2));
-    // var companycost_final = parseFloat(transport_cost)+parseFloat(cnf_cost)+parseFloat(labour_cost);
-    $("#companycost_final").text(parseFloat(companyCost).toFixed(2));
-    var vat_percent = $("#vat_percent").val();
-    // console.log("vat_percent", vat_percent);
-    var vat_amount = parseFloat((product_subtotal * vat_percent)/100).toFixed(2);
-    // console.log("vat_amount", vat_amount);
-    $("#vat_amount").val(vat_amount);
+  $("#sub_total").val(parseFloat(product_subtotal).toFixed(2));
+  $("#suppliercost_final").text(parseFloat(suplierCost).toFixed(2));
+  // var companycost_final = parseFloat(transport_cost)+parseFloat(cnf_cost)+parseFloat(labour_cost);
+  $("#companycost_final").text(parseFloat(companyCost).toFixed(2));
+  var vat_percent = $("#vat_percent").val();
+  // console.log("vat_percent", vat_percent);
+  var vat_amount = parseFloat((product_subtotal * vat_percent)/100).toFixed(2);
+  // console.log("vat_amount", vat_amount);
+  $("#vat_amount").val(vat_amount);
 
-
-    var grand_total = parseFloat(product_subtotal)+parseFloat(suplierCost)+parseFloat(companyCost)+parseFloat(vat_amount);
-    $("#grand_total").val(parseFloat(grand_total).toFixed(2));
+  var grand_total = parseFloat(product_subtotal)+parseFloat(suplierCost)+parseFloat(companyCost)+parseFloat(vat_amount);
+  $("#grand_total").val(parseFloat(grand_total).toFixed(2));
 }
 
 $(document).on('input', '.allowNumbersOnly', function(event) {
@@ -279,11 +296,13 @@ $(document).on('input', '.allowNumbersOnly', function(event) {
 
 function remove_list(elm, event) {
 	let product_id = $(elm).closest('tr').attr("data-product-info-id");
+	console.log(product_id);
 	$("#product_list_err").text("");
 	removeItemOnce(scannedItem, product_id);
 	$(elm).closest('tr').remove();
-	// console.log($("#order_entry_item tbody").find("tr.itemRow").length);
-	// console.log($(elm).closest('table'));
+	console.log(scannedItem);
+
+
 	if($('#order_entry_item tbody').find("tr.itemRow").length > 0) {
 		$('#order_entry_item tbody')
 			.children('tr:first')
@@ -291,8 +310,14 @@ function remove_list(elm, event) {
 			.find("[id^=purchaseprice]")
 			.trigger("blur");
 		// console.log(row);
+	} else {
+		$("#sub_total").val("0.00");
+		$("#vat_percent").val("5");
+		$("#vat_amount").val("0.00");
+		$("#suppliercost_final").text(parseFloat($("#buyer_addtional_costs").val()).toFixed(2));
+		$("#companycost_final").text(parseFloat($("#supplier_additional_cost").val()).toFixed(2));
+		$("#grand_total").val("0.00");
 	}
-	// console.log($(document).on("#purchaseprice_0").length);
 }
 
 $(document).on("input", "#buyer_addtional_costs", function(){
@@ -337,7 +362,8 @@ function order_details(auto_invoice, data_id) {
 			if(xhr.status) {
 				console.log("data", data);
 				// console.log("data.status", data.status);
-				$("#purchase_order_details").find(".order-details").html("");
+				$("#purchase_order_details").find(".head-body").html("");
+				$("#purchase_order_details").find(".head-details h2").html("Purchase Order Details");
 				if(data.status) {
 					let tableBody = '';
 					let total_product_qty = 0;
@@ -355,13 +381,10 @@ function order_details(auto_invoice, data_id) {
             total_product_qty += parseInt(itemVal.product_qty);
 					});
 					var dateAr = data.order_info['0'].purchased_date.split('-');
-					var purchased_date = dateAr[1] + '/' + dateAr[2] + '/' + dateAr[0];
+					var purchased_date = dateAr[2] + '/' + dateAr[1] + '/' + dateAr[0];
 					// var purchased_date = dateAr[1] + '/' + dateAr[2] + '/' + dateAr[0].slice(-2);
 
-					let html = '<h2 class="text-center">Purchase Order Details</h2>' +
-            '<button type="button" class="close close-order-details" aria-label="Close" onclick="close_po()">'+
-              '<span aria-hidden="true">&times;</span>'+
-            '</button>'+
+					let html = 
             '<div class="pofield_set">'+
               '<div class="bar"></div>'+
               '<div class="po-head">'+
@@ -407,7 +430,7 @@ function order_details(auto_invoice, data_id) {
                 '</div>'+                        
               '</div>'+
             '</div>';
-					$("#purchase_order_details").find(".order-details").append(html);
+					$("#purchase_order_details").find(".head-body").append(html);
 					$("#purchase_order_details").show();
 				} else {
 					console.log("Data Not Received Successfully Kallol.")
@@ -434,7 +457,6 @@ function order_details(auto_invoice, data_id) {
 			console.log("msg",msg);
 		},
 	});
-	// $("#purchase_order_details").show();
 }
 $(document).on("change", "#po_auto_invoice", function() {	
 	// console.log($(this).val());
@@ -1045,10 +1067,12 @@ function sale_order_details(sale_id, soi) {
 			if(xhr.status) {
 				console.log("data", data);
 				// console.log("data.status", data.status);
-				$("#purchase_order_details").find(".order-details").html("");
+				$("#purchase_order_details").find(".head-body").html("");
+				$("#purchase_order_details").find(".head-details h2").html("Sale Order Details");
 				if(data.status) {
 					let tableBody = '';
 					let total_product_qty = 0;
+					let dstatus = '';
 					$.each(data.product_info, function(index, itemVal) {
 					  // console.log(itemVal);
 					  tableBody += '<tr>';
@@ -1066,12 +1090,13 @@ function sale_order_details(sale_id, soi) {
 					// var dateAr = data.order_info['0'].purchased_date.split('-');
 					// var purchased_date = dateAr[1] + '/' + dateAr[2] + '/' + dateAr[0];
 					// var purchased_date = dateAr[1] + '/' + dateAr[2] + '/' + dateAr[0].slice(-2);
-					
+					if(data.sale_info.is_delivered == 'Not Delivered') {
+						dstatus = 'bg-status-danger';
+					} else {
+						dstatus = 'bg-status-success';
+					}
 
-					let html = '<h2 class="text-center">Sale Order Details</h2>' +
-            '<button type="button" class="close close-order-details" aria-label="Close" onclick="close_po()">'+
-              '<span aria-hidden="true">&times;</span>'+
-            '</button>'+
+					let html = 
             '<div class="pofield_set">'+
               '<div class="bar"></div>'+
               '<div class="po-head" style="height: 250px;">'+
@@ -1101,7 +1126,7 @@ function sale_order_details(sale_id, soi) {
                 '<div class="po-labels" id="">'+data.sale_info.due_amount+'</div>'+
 
                 '<div class="po-labels">Delivery Status</div>'+
-                '<div class="po-labels" id="">'+data.sale_info.is_delivered+'</div>'+ 
+                '<div class="po-labels" id=""><span class="'+dstatus+'">'+data.sale_info.is_delivered+'</span></div>'+ 
                 '<div class="po-labels">Paid Amount</div>'+
                 '<div class="po-labels" id="">'+data.sale_info.paid_amount+'</div>'+                
               '</div>'+
@@ -1127,7 +1152,7 @@ function sale_order_details(sale_id, soi) {
                 '</div>'+                        
               '</div>'+
             '</div>';
-					$("#purchase_order_details").find(".order-details").append(html);
+					$("#purchase_order_details").find(".head-body").append(html);
 					$("#purchase_order_details").show();
 				} else {
 					console.log("Data Not Received Successfully Kallol.")
@@ -1155,3 +1180,129 @@ function sale_order_details(sale_id, soi) {
 		},
 	});
 }
+// function showAlert(fromWhere, event, elm) {
+// 	// $(event).stopPropagation();
+// 	if(fromWhere == 'start_stock_entry') {
+// 		// isClickWork = false;		
+// 		if(isClickWork) {
+// 			isClickWork = false;
+// 			return true;
+// 		} else {
+// 			$("#yesNoAlert").fadeIn();
+// 			$("#alertYes").attr('onclick', 'alertSuccess(\''+fromWhere+'\', event,'+$(elm)+')');
+// 			return false;
+// 		}		
+// 	}
+// }
+// function alertSuccess(fromWhere, event, firstEventElm) {
+// 	if(fromWhere == 'start_stock_entry') {
+// 		isClickWork = true;
+// 		if(isClickWork) {
+// 			$("#yesNoAlert").fadeOut();
+// 			// firstEventElm.trigger('click');
+// 			isClickWork = false;
+// 		}
+// 	}
+// }
+function update_brand(e, brand_id) {
+	$("#brand_name").val($(e.target).closest('tr').find('td').eq(1).text());
+	$("#brand_id").val(brand_id);
+	$("#saveBtnCustomer").val('Update');
+	$("#reset_cancel_brand").val("Cancel");
+	console.log($(e.target).closest('tr').find('td').eq(1).text());
+}
+$("#reset_cancel_brand").click(function () {
+	$("#brand_name").val("");
+	$("#brand_id").val("");
+	$("#saveBtnCustomer").val('Save');
+	$("#reset_cancel_brand").val("Reset");
+});
+$("#search_brand").keyup(function (e) {
+	if (e.which == 13) {
+		let searchtxt = $(this).val().toLowerCase();
+		let rows = $(".brand_tbl tbody").find('tr');
+		// console.log(rows);
+		$(rows).each(function( index, element ) {
+			let brandTxt = $(element).find('td').eq(1).text().toLowerCase();
+			console.log(searchtxt, brandTxt);
+
+			if(brandTxt.indexOf(searchtxt) != -1) {
+				$(element).show();
+			} else {
+				$(element).hide();
+			}
+		});
+	}
+});
+
+$("#add_customer_sale").click(function() {
+	$("#purchase_order_details").find(".head-body").html("");
+	$("#purchase_order_details").find(".head-details h2").html("Add a customer");
+	let html = '<div class="pofield_set">' +
+      '<div class="bar"></div>' +
+      '<div class="addcustomer-con">' +
+        '<div class="row">' +
+          '<div class="col-md-12" style="padding: 20px 40px;">' +
+            '<form action="/customer/entry" method="post" class="form-horizontal">' +
+              '<input name="_token" type="hidden" value="'+$('meta[name="csrf-token"]').attr('content')+'">' +
+              '<input type="hidden" name="fromWhere" value="sale">' +
+              '<div class="row">' +
+                '<div class="col-md-6">' +
+                  '<div class="form-group">' +
+                    '<label for="customer_name">Customer Name</label>' +
+                    '<input type="text" class="form-control allowNumbersOnly" id="customer_name" name="customer_name" placeholder="Customer Name">' +
+                  '</div>' +
+                  '<div class="form-group">' +
+                    '<label for="phone">Phone</label>' +
+                    '<input type="text" class="form-control allowNumbersOnly" id="phone" name="phone" placeholder="Phone No">' +
+                  '</div>' +
+                '</div>' +
+                '<div class="col-md-6">' +
+                  '<div class="form-group">' +
+                    '<label for="company_name">Company Name</label>' +
+                    '<input type="text" class="form-control allowNumbersOnly" id="company_name" name="company_name" placeholder="Compnay Name">' +
+                  '</div>' +
+                  '<div class="form-group">' +
+                    '<label for="address">Address</label>' +
+                    '<input type="text" class="form-control allowNumbersOnly" id="address" name="address" placeholder="Address">' +
+                  '</div>' +
+                '</div>' +
+                '<div class="col-md-12">' +
+                  '<div class="form-group subres">' +
+                  	'<input type="submit" name="saveBtn" class="btn btn-outline-primary" id="saveBtnCustomer" value="Save"/>' +
+                    '<input type="button" class="btn btn-outline-danger" id="reset_cancel_customer" value="Reset"/>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</form>' +
+          '</div>' +
+        '</div>' +             
+      '</div>' +
+    '</div>';
+	$("#purchase_order_details").find(".head-body").append(html);
+	// $("#customer_name").val("");
+	// $("#company_name").val("");
+	// $("#phone").val("");
+	// $("#address").val("");
+	$("#purchase_order_details").show();
+});
+
+// function calcPoTotal(){
+// 	console.log("function calcSaleTotal()");
+//   let sale_subtotal = 0;
+//   $('.total_price').each(function(k, v) {
+//     if($(v).val() != ''){
+//       sale_subtotal = sale_subtotal+parseFloat($(v).val());
+//     }
+//   });
+//   let vat_percent = $("#vat_percent").val();
+//   let vat_amount = parseFloat((sale_subtotal * vat_percent)/100).toFixed(2);
+//   let grand_total = parseFloat(sale_subtotal)+parseFloat(vat_amount); 
+//   let discount = parseFloat($("#discount").val());
+//   console.log("vat_amount", vat_amount);
+    
+//   $("#sub_total").val(parseFloat(sale_subtotal).toFixed(2));
+//   $("#vat_amount").val(vat_amount);    
+//   $("#grand_total").val(parseFloat(grand_total).toFixed(2));
+//   $("#customer_paid").val(parseFloat(grand_total - discount).toFixed(2));
+// }

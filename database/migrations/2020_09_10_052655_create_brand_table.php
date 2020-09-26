@@ -17,6 +17,7 @@ class CreateBrandTable extends Migration
             $table->id('brand_id');
             $table->string('brand_name', 50)->unique();
             $table->string('entry_by', 50);
+            $table->string('update_by', 50);
             $table->timestamps();
         });
     }

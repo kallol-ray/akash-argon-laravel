@@ -162,18 +162,24 @@ class ProductController extends Controller
                 ->get();
       return view('product.product_info_lists')->with('product_info', $product_info);
     }
-    public function product_update_process(Request $request) {
+    public function product_update_process(Request $request)
+    {
       $product_info_id = $request->id;
       $product_info_single = DB::table('product_info')               
-                ->where('product_info_id', $product_info_id)->first();
+                  ->where('product_info_id', $product_info_id)->first();
       $brand_info = DB::table('brand')
-                ->orderBy('brand_id', 'desc')
-                ->get();
+                  ->orderBy('brand_id', 'desc')
+                  ->get();
+      // echo '<pre>';
+      // var_dump($product_info_single);
+      // var_dump($brand_info);
+      // echo '</pre>';
       return view('product.product_info_update')
                   ->with("product_info_single", $product_info_single)
                   ->with("brand_info", $brand_info);
     }
-    public function update_product(Request $request) {
+    public function update_product(Request $request)
+    {
       //update product
         $data = array();       
         $before_img_name = $request->before_img_name;
@@ -277,7 +283,8 @@ class ProductController extends Controller
     }
 
     //start purchase order
-      public function purchase_order_entry(){
+      public function purchase_order_entry()
+      {
         $supplier_info = DB::table('supplier')
                 ->select('supplier_id', 'supplier_name')               
                 ->get();
@@ -289,12 +296,13 @@ class ProductController extends Controller
                     ->with("supplier_info", $supplier_info)
                     ->with("product_info", $product_info);
       }
-      public function purchase_order_save(Request $request) {
+      public function purchase_order_save(Request $request)
+      {
         $auto_invoice = DB::table('purchase_order_info')
           ->max('auto_invoice_no');
-        echo "<pre>";
-        var_dump($auto_invoice);
-        echo "</pre>";
+        // echo "<pre>";
+        // var_dump($auto_invoice);
+        // echo "</pre>";
         if($auto_invoice == NULL) {
           $new_invoice_no = "POI-10001";
         } else {
@@ -322,7 +330,7 @@ class ProductController extends Controller
         $data['vat_percent'] = $request->vat_percent;
         $data['vat_amount']  = $request->vat_amount;
         $data['grand_total'] = $request->grand_total;
-        $data['entry_by']    = Auth::user()->email;
+        $data['entry_by']    = Auth::user()->email;      
         $data['created_at']  = date('Y-m-d H:i:s');
 
         // Array
@@ -376,7 +384,8 @@ class ProductController extends Controller
         Session::put('sucMsg', 'A Purchase Information Saved Successfully!');
         return Redirect::to('/product/purchase_order/view');
       }
-      public function purchase_order_view(){
+      public function purchase_order_view()
+      {
         $spplierArr = array();
         // $productArr = array();
         $purchase_order_info = DB::table('purchase_order_info')
@@ -405,13 +414,14 @@ class ProductController extends Controller
                     ->with("spplierArr", $spplierArr);
                     // ->with("productArr", $productArr);
       }
-      public function purchase_order_delete(Request $request) {
-        $po_info_id = $request->po_info_id;
-        DB::table('purchase_order_info')
-                ->where('po_info_id', $po_info_id)
-                ->delete();
-        Session::put('sucMsg', 'A Purchase Order Info Deleted Successfully!');
-        return Redirect::to('/product/purchase_order/view');
+      public function purchase_order_delete(Request $request)
+      {
+        // $po_info_id = $request->po_info_id;
+        // DB::table('purchase_order_info')
+        //         ->where('po_info_id', $po_info_id)
+        //         ->delete();
+        // Session::put('sucMsg', 'A Purchase Order Info Deleted Successfully!');
+        // return Redirect::to('/product/purchase_order/view');
       }
       public function purchase_order_update_process(Request $request) {
         $po_info_id = $request->po_info_id;
@@ -451,46 +461,73 @@ class ProductController extends Controller
       public function update_purchase_order(Request $request) {
         $data = array();        
         $po_info_id = $request->po_info_id;
-
-        // $data['is_stored'] = 0;
-        $data['supplier_id'] = "";
-        $data['product_info_id'] = "";
-        $data['purchase_invoice_no'] = "";
-        $data['product_qty'] = "";
-        $data['total_bill'] = "";
-        $data['vat'] = "";
-        $data['discount'] = "";
-        $data['paid_or_due'] = "";
-        $data['paid_amount'] = "";
-        $data['due_amount'] = "";
-        $data['purchased_date'] = "";
-        $data['comments'] = "";
-        $data['entry_by'] = "";
+        $auto_invoice_no = $request->auto_invoice_no;
 
         // $orgDate = $request->info_entry_date;
         // $changeSeparator = str_replace('/', '-', $orgDate);  
         // $newDate = date("Y-m-d", strtotime($changeSeparator));
         $newDate = date("Y-m-d", strtotime(str_replace('/', '-', $request->purchased_date)));
 
-
+        // $data['is_stored'] = 0;
         $data['supplier_id'] = $request->supplier_id;
-        $data['product_info_id'] = $request->product_info_id;
+        // $data['product_info_id'] = $request->product_info_id;
         $data['purchase_invoice_no'] = $request->purchase_invoice_no;
-        $data['product_qty'] = $request->product_qty;
-        $data['total_bill'] = $request->total_bill;
-        $data['vat'] = $request->vat;
+        $data['buyer_adnl_cost'] = $request->buyer_addtional_costs;
+        $data['supplier_adnl_cost'] = $request->supplier_additional_cost;
+        $data['vat_percent'] = $request->vat_percent;
+        $data['vat_amount'] = $request->vat_amount;
         $data['discount'] = $request->discount;
         $data['paid_or_due'] = $request->paid_or_due;
         $data['paid_amount'] = $request->paid_amount;
         $data['due_amount'] = $request->due_amount;
-        // $data['purchased_date'] = $request->purchased_date;
+        $data['sub_total'] = $request->sub_total;
+        $data['grand_total'] = $request->grand_total;
         $data['purchased_date'] = $newDate;
-        $data['comments'] = $request->comments;
-        $data['entry_by'] = $request->entry_by;
-        
+        $data['update_by'] = Auth::user()->email;
+        $data['updated_at']  = date('Y-m-d H:i:s');
         DB::table('purchase_order_info')
                   ->where('po_info_id', $po_info_id)
+                  ->where('is_stored', '0')
+                  ->where('auto_invoice_no', $auto_invoice_no)
                   ->update($data);
+
+        DB::table('po_info_item')
+                  ->where('po_info_id', $po_info_id)
+                  ->where('auto_invoice_no', $auto_invoice_no)
+                  ->delete();
+
+        $product_info_id_arr  = $request->product_info_id;
+        $image_arr            = $request->image;
+        $quantity_arr         = $request->quantity;
+        $unit_price_arr       = $request->unit_price;
+        $additional_price_arr = $request->additional_price;
+        $sale_price_arr       = $request->sale_price;
+        $total_price_arr      = $request->total_price;
+
+        foreach($product_info_id_arr as $key => $value) {
+          $item = array();
+          $item['product_info_id'] = $value;
+
+          $item['po_info_id'] = $po_info_id;
+
+          $item['image'] = $image_arr[$key];
+          $item['auto_invoice_no'] = $auto_invoice_no;
+          $item['product_qty'] = $quantity_arr[$key];
+          $item['unit_price'] = $unit_price_arr[$key];
+          $item['unit_adnl_price'] = $additional_price_arr[$key];
+          $item['sale_price'] = $sale_price_arr[$key];
+          $item['total_price'] = $total_price_arr[$key];
+          $item['created_at'] = date('Y-m-d H:i:s');
+          // echo "<pre>";
+          // var_dump($key."=".$value);
+          // var_dump($item);
+          // echo "</pre>";
+          DB::table('po_info_item')
+                  ->insert($item);
+        }
+        
+        
+        
 
         Session::put('sucMsg', 'A Purchase Information Updated Successfully!');
         return Redirect::to('/product/purchase_order/view');

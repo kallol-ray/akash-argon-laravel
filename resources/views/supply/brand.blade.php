@@ -1,25 +1,48 @@
 @extends('layouts.app',['title' => 'Brand Entry'])
 @section('content')
-
+  <div class="msgAlert">
+    @if(Session::has('sucMsg'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+        <span class="alert-text"><strong>{{ Session::get('sucMsg') }}{{ Session::forget('sucMsg')}}</strong></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    @endif
+    @if(Session::has('errMsg'))
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+        <span class="alert-text"><strong>{{ Session::get('errMsg') }}{{ Session::forget('errMsg')}}</strong></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    @endif
+  </div>
   <div class="container-fluid product-entry">
     <div class="row">
       <div class="col-md-12">
         
           <div class="row">
-            <div class="col-md-5 supply-entry-form">
-              {!! Form::open(['url' => 'brand/entry', 'method' => 'post', 'enctype' => 'multipart/form-data', 'class'=> 'form-horizontal']) !!}
+            <div class="col-md-5 pL0">
+              {!! Form::open(['url' => 'brand/entry', 'method' => 'post', 'enctype' => 'multipart/form-data', 'class'=> 'form-horizontal  supply-entry-form', 'autocomplete' => 'off']) !!}
               <div class="form-group">
                 <label for="brand_name">Brand Name</label>
+                <input type="hidden" id="brand_id" name="brand_id" value="">
                 <input type="text" class="form-control" id="brand_name" name="brand_name" placeholder="Brand Name">
               </div>
               <div class="form-group subres">
                 <input type="submit" name="saveBtn" class="btn btn-outline-primary" id="saveBtnCustomer" value="Save"/>
-                <!-- <input type="button" class="btn btn-outline-danger" id="reset_cancel_customer" value="Reset"/> -->
+                <input type="button" class="btn btn-outline-danger" id="reset_cancel_brand" value="Reset"/>
               </div>              
               {!! Form::close() !!}
             </div>
             <div class="col-md-6 offset-md-1 supply-entry-form">
-              <h2 class="brand-head">Brand List</h2>
+              <h2 class="brand-head">
+                Brand List
+                <input type="text" class="form-control" id="search_brand" autocomplete="off" placeholder="Search...">
+              </h2>
               <table border="1px" class="brand_tbl">
                 <thead>
                   <tr>

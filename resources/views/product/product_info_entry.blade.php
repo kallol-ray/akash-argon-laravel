@@ -26,20 +26,7 @@
                   
                   @foreach ($brand_info as $brand)
                     <option value="{{ $brand->brand_name }}">{{ $brand->brand_name }}</option>
-                  @endforeach    
-                  <!-- <option value="TP-Link">TP-Link</option>
-                  <option value="Tenda">Tenda</option>
-                  <option value="D-Link">D-Link</option>
-                  <option value="Mikrotik">Mikrotik</option>
-                  <option value="Xiaomi">Xiaomi</option>
-                  <option value="Netgear">Netgear</option>
-                  <option value="Huawei">Huawei</option>
-                  <option value="Asus">Asus</option>
-                  <option value="Linksys">Linksys</option>
-                  <option value="Belkin">Belkin</option>
-                  <option value="Cisco">Cisco</option>
-                  <option value="TRENDnet">TRENDnet</option>
-                  <option value="Others">Others</option> -->
+                  @endforeach
                 </select>
               </div>              
             </div>

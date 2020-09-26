@@ -6,7 +6,7 @@
       <div class="col-md-12 product-in">
         {!! Form::open(['url' => 'product/purchase_order/entry', 'method' => 'post', 'enctype' => 'multipart/form-data', 'class'=> 'form-horizontal', 'autocomplete' => 'off']) !!}
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="purchased_date">Date</label>
                 <input type="text" class="form-control" id="purchased_date" name="purchased_date" placeholder="dd/mm/yyyy">
@@ -20,6 +20,12 @@
                   @endforeach
                 </select>
               </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="buyer_addtional_costs">Buyer Additional Costs</label>
+                <input type="text" class="form-control allowNumbersOnly" id="buyer_addtional_costs" name="buyer_addtional_costs" placeholder="Buyer Additional Costs" value="0">
+              </div>
               <div class="form-group">
                 <label for="product_info_id">Product List</label>
                 <select class="form-control" id="product_info_id" name="product_info_id">
@@ -31,37 +37,16 @@
                 <label id="product_list_err"></label>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="buyer_addtional_costs">Buyer Additional Costs</label>
-                <input type="text" class="form-control allowNumbersOnly" id="buyer_addtional_costs" name="buyer_addtional_costs" placeholder="Buyer Additional Costs" value="0">
-              </div>
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="supplier_additional_cost">Supplier Additional Costs</label>
                 <input type="text" class="form-control allowNumbersOnly" id="supplier_additional_cost" name="supplier_additional_cost" placeholder="Supplier Additional Costs" value="0">
               </div>
-              <div class="form-group">
-                <label for="paid_or_due">Payment Type</label>
-                <select class="form-control" id="paid_or_due" name="paid_or_due">
-                  <option value="">Select one..</option>
-                  <option value="0">Partial Payment</option>
-                  <option value="1">Full Due</option>
-                  <option value="2">Full Paid</option>
-                </select>
-              </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-group">
                 <label for="purchase_invoice_no">Purchase Invoice Number</label>
                 <input type="text" class="form-control" id="purchase_invoice_no" name="purchase_invoice_no" placeholder="Purchase Invoice Number" value="N/A">
-              </div>
-              <div class="form-group">
-                <label for="paid_amount">Supplier Paid Amount</label>
-                <input type="text" class="form-control allowNumbersOnly" id="paid_amount" name="paid_amount" placeholder="Supplier Paid Amount" value="0">
-              </div>
-              <div class="form-group">
-                <label for="paid_amount">Supplier Due Amount</label>
-                <input type="text" class="form-control allowNumbersOnly" id="due_amount" name="due_amount" placeholder="Supplier Due Amount" value="0">
               </div>
             </div>
             <div class="col-md-12">
@@ -85,6 +70,33 @@
               </table>
             </div>
             <div class="col-md-12" style="margin-top: 50px;">
+              <!-- <div class="po_payment">                
+              </div> -->
+              <div class="payment-part">
+                <div class="">
+                  <div class="form-group">
+                    <label for="paid_or_due">Payment Status</label>
+                    <select name="paid_or_due" id="paid_or_due" class="form-control">
+                      <option value="">Select one...</option>
+                      <option value="0">Partial Payment</option>
+                      <option value="1">Full Due</option>
+                      <option value="2">Full Paid</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="" style="width: 40%; float: left;">
+                  <div class="form-group">
+                    <label for="paid_amount">Paid Amount</label>
+                    <input type="text" name="paid_amount" placeholder="Supplier Paid Amount" value="0" id="paid_amount" class="form-control">
+                  </div>
+                </div>
+                <div class="" style="width: 40%; float: left; margin-left: 20%;">
+                  <div class="form-group">
+                    <label for="due_amount">Due Amount</label>
+                    <input type="text" name="due_amount" id="due_amount" placeholder="Supplier Due Amount" value="0" class="form-control">
+                  </div>
+                </div>
+              </div>
               <div class="po_summary">
                 <div class="k-control">
                   <div class="k-label">Product Value:</div>
@@ -92,7 +104,7 @@
                 </div>
                 <div class="k-control">
                   <div class="k-label">VAT:</div>
-                  <div class="k-field-vat"><input type="text" name="vat_percent" id="vat_percent" class="order_input_vat allowNumbersOnly" value="5" placeholder="Vat Percent" required>&nbsp;%</div>
+                  <div class="k-field-vat"><input type="text" name="vat_percent" id="vat_percent" class="order_input_vat allowNumbersOnly" value="5" placeholder="Vat Percent" onblur="calculateTotal()" required>&nbsp;%</div>
                 </div>
                 <div class="k-control">
                   <div class="k-label">VAT Amount:</div>

@@ -1,7 +1,25 @@
 @extends('layouts.app',['title' => 'Order Entry Form'])
 @section('content')
-  
-  <div class="msgAlert"></div>
+  <div class="msgAlert">
+    @if(Session::has('sucMsg'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+        <span class="alert-text"><strong>{{ Session::get('sucMsg') }}{{ Session::forget('sucMsg')}}</strong></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    @endif
+    @if(Session::has('errMsg'))
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+        <span class="alert-text"><strong>{{ Session::get('errMsg') }}{{ Session::forget('errMsg')}}</strong></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    @endif
+  </div>
   <div class="container-fluid product-entry">
     <div class="row">
       <div class="col-md-12 sale_order_form">
@@ -24,7 +42,7 @@
               </div>
             </div>
             <div class="col-md-4">
-              <button type="button" class="btn btn-outline-primary" style="float: right; margin-top: 35px;">Add Customer</button>
+              <button type="button" class="btn btn-outline-primary" id="add_customer_sale">Add Customer</button>
             </div>
             <div class="col-md-4">
             </div>

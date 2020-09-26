@@ -1,4 +1,4 @@
-@extends('layouts.app',['title' => 'Product Entry'])
+@extends('layouts.app',['title' => 'Supplier Entry'])
 @section('content')
 
   <div class="container-fluid product-entry">
