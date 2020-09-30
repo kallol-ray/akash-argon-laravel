@@ -1,13 +1,17 @@
-@extends('layouts.app',['title' => 'Dashboard'])
+@extends('layouts.app',['title' => 'Home'])
 
 @section('content')
     @include('layouts.headers.cards')
     <div class="container-fluid mt--7">
-        <div class="row">
-            <div class="col-xl-8 mb-5 mb-xl-0">
-                
-            </div>
+      <div class="row">
+        <div class="col-xl-12 mb-5 mb-xl-0 status-product">
+          <div class="form-group">
+            <label for="search_product_status">Search Product Status</label>
+            <input class="form-control" type="text" name="search_product_status" placeholder="Search product status">
+          </div>
+          <hr>
         </div>
+      </div>
     </div>
     
     <!-- <div class="container-fluid mt--7">

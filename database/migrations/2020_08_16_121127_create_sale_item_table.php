@@ -17,8 +17,9 @@ class CreateSaleItemTable extends Migration
             $table->id('sale_item_id');
             $table->foreignId('sale_info_id');
             $table->foreignId('product_info_id');
-            $table->decimal('sale_price', 8, 2);
             $table->foreignId('inventory_id');
+            $table->string('barcode', 200);
+            $table->decimal('sale_price', 8, 2);            
             $table->integer('qty');
             // $table->string('entry_by', 50);
             $table->timestamps();

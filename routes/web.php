@@ -35,8 +35,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::get('product/view', ['as'=>'product.view', 'uses'=>'ProductController@product_view']);
 	Route::get('product/update/{id}', ['as'=>'product.update', 'uses'=>'ProductController@product_update_process']);
-	Route::post('product/update', ['as'=>'product.update', 'uses'=>'ProductController@update_product']);	
-	Route::post('product/entry/delete', ['as'=>'product.entry.delete', 'uses'=>'ProductController@product_delete']);
+	Route::post('product/update', ['as'=>'product.update', 'uses'=>'ProductController@update_product']);
+	Route::get('product/entry/delete/{image_del_path}/{product_del_id}', ['as'=>'product.entry.delete', 'uses'=>'ProductController@product_delete']);
 
 
 	Route::get('product/purchase_order/entry', ['as'=>'product.purchase_order.entry', 'uses'=>'ProductController@purchase_order_entry']);

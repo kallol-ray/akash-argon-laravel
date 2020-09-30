@@ -134,10 +134,11 @@ class ProductController extends Controller
 
     public function product_delete(Request $request)
     {
-      if($request->deleteBtn == "Delete") {
+      // if($request->deleteBtn == "Delete") {
         $product_del_id = $request->product_del_id;
-        $image_del_path = $request->image_del_path;
-        // var_dump($image_del_path);
+        // $image_del_path = $request->image_del_path;
+        $image_del_path = 'ourwork/img/product_image/'.$request->image_del_path;
+        var_dump($image_del_path);
         if(file_exists($image_del_path)) {
           if(str_contains($image_del_path,".jpg") || str_contains($image_del_path,".jpeg") || str_contains($image_del_path,".png") || str_contains($image_del_path,".gif")) {
             unlink($image_del_path);
@@ -151,7 +152,7 @@ class ProductController extends Controller
                 ->where('product_info_id', $product_del_id)->delete();
 
         Session::put('sucMsg', 'A Product Information Deleted Successfully!');         
-      }
+      // }
       return Redirect::to('/product/view');
     }
 
@@ -650,7 +651,7 @@ class ProductController extends Controller
           return $returnArr;
         } else {
           $returnArr['status'] = false;
-          $returnArr['message'] = "This Product is Already Added.<br/> Barcode = '".$data['barcode']."'.";
+          $returnArr['message'] = "This Product is Already Added.<br/> Barcode = '".$dataInventory['barcode']."'.";
           return $returnArr;
           // return "This Product is Already Added, Barcode = '".$data['barcode']."'.";
         }

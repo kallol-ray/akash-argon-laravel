@@ -78,14 +78,15 @@ $("#imageToUpload").change(function() {
 });
 
 function msgAlertAutoHide() {
-	if($(".msgAlert .alert").is(":visible")) {
-      setTimeout(function(){
-          $(".msgAlert .alert").fadeOut("slow");
-      }, 2000);
+	console.log("Hide", $(".msgAlert .alert").is(":visible"));
+	if($(".msgAlert").is(":visible")) {
+    setTimeout(function(){
+        $(".msgAlert .alert").fadeOut("slow");
+    }, 2000);
   }
 }
-$( document ).ready(function() {
-   msgAlertAutoHide(); 
+$(document).ready(function() {
+   msgAlertAutoHide();
 });
 
 
@@ -138,7 +139,8 @@ $("#reset_cancel_purchase").click(function(){
 	scannedItem = [];
 });
 $("#reset_cancel_store").click(function(){
-	$("#po_auto_invoice").val("");	
+	$("#po_auto_invoice").val("");
+	$('#po_auto_invoice').trigger('change.select2');
 	$("#invoiceNoErr").text("");
 	$("#productNotFoundErr").text("");
 	$("#barcode").val("");
@@ -343,7 +345,7 @@ function removeItemOnce(arr, value) {
   return arr;
 }
 function close_po() {
-	$("#purchase_order_details").hide();
+	$("#purchase_order_details").fadeOut();
 }
 function order_details(auto_invoice, data_id) {
 	// console.log(auto_invoice, data_id);
@@ -431,7 +433,7 @@ function order_details(auto_invoice, data_id) {
               '</div>'+
             '</div>';
 					$("#purchase_order_details").find(".head-body").append(html);
-					$("#purchase_order_details").show();
+					$("#purchase_order_details").fadeIn();
 				} else {
 					console.log("Data Not Received Successfully Kallol.")
 				}
@@ -548,6 +550,34 @@ function barcode_entry_product(from_where, event) {
 			let product_info_id_frm_stock = $("#product_info_id_frm_stock").val();
 			let comment = $("#comment").val();
 			let barcode = $("#barcode").val();
+
+			// let codeLength = barcode.length;
+			// if (codeLength % 2 == 0) {
+			// 	//double barcode checker
+			// 	// if event number for 2barcode
+			// 	let partNum = codeLength / 2;
+			// 	let partOne = barcode.substr(0, partNum);
+			// 	let partTwo = barcode.substr(partNum, codeLength);
+			// 	// console.log(partNum, partOne, partTwo);
+			// 	if(partOne == partTwo) {
+			// 		danger_alert("You Enter same barcode in twise "+partOne);
+			// 	} else {
+
+			// 	}
+			// } else if(codeLength % 2 == 1){
+
+			// }
+			// else if(codeLength % 2 == 1){
+			// 	//if odd number for 3barcode
+			// 	let partNum = codeLength / 3;
+			// 	let partOne = a.substr(0, partNum);
+			// 	let partTwo = a.substr(partNum, partNum);
+			// 	let partThree = a.substr(partNum+partNum, codeLength);
+			// 	console.log(partNum, partOne, partTwo, partThree);
+			// 	if((partOne == partTwo) && (partTwo == partThree)) {
+			// 		console.log('ddd');
+			// 	}
+			// }
 			if($(event.target).val() != "" && po_auto_invoice != "" && product_info_id_frm_stock != "" && comment != "")
 			{
 				event.preventDefault();
@@ -555,17 +585,17 @@ function barcode_entry_product(from_where, event) {
 				let total_item = parseInt($("#total_current_item_no").text());
 				
 				if(total_item > entry_item) {
-					$.ajaxSetup({
-						headers: {
-							'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
-						}
-					});
+					// $.ajaxSetup({
+					// 	headers: {
+					// 		'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+					// 	}
+					// });
 					$.ajax({
 						url: "/product/store_in/entry",
 						type: "POST",
 						cache: false,
 						data: {
-							// '_token': $("meta[name='csrf-token']").attr('content'),
+							'_token': $("meta[name='csrf-token']").attr('content'),
 							po_auto_invoice : po_auto_invoice,
 							product_info_id : product_info_id_frm_stock,
 							comment 				: comment,
@@ -580,23 +610,27 @@ function barcode_entry_product(from_where, event) {
 								if(data.status) {
 									$("#current_item_entry").text(parseInt($("#current_item_entry").text()) + 1);
 									$("#entry_no_now").text(parseInt($("#entry_no_now").text()) + 1);
-									let html = '<div class="alert alert-success alert-dismissible fade show" role="alert">'
-						          + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
-						          + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
-						          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
-						              + '<span aria-hidden="true">&times;</span>'
-						          + '</button>'
-						      	+ '</div>';
-						      $(".msgAlert").append(html);
+									// let html = '<div class="alert alert-success alert-dismissible fade show" role="alert">'
+						   //        + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
+						   //        + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
+						   //        + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+						   //            + '<span aria-hidden="true">&times;</span>'
+						   //        + '</button>'
+						   //    	+ '</div>';
+						   //    $(".msgAlert").html("");
+						   //    $(".msgAlert").append(html);
+						      success_alert(data.message);
 								} else {
-									let html = '<div class="alert alert-danger alert-dismissible fade show" role="alert">'
-						          + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
-						          + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
-						          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
-						              + '<span aria-hidden="true">&times;</span>'
-						          + '</button>'
-						      	+ '</div>';
-						      $(".msgAlert").append(html);
+									// let html = '<div class="alert alert-danger alert-dismissible fade show" role="alert">'
+						   //        + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
+						   //        + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
+						   //        + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+						   //            + '<span aria-hidden="true">&times;</span>'
+						   //        + '</button>'
+						   //    	+ '</div>';
+						   //    $(".msgAlert").html("");
+						   //    $(".msgAlert").append(html);
+						      danger_alert(data.message);
 								}
 							}
 						},
@@ -630,10 +664,10 @@ function barcode_entry_product(from_where, event) {
 						              + '<span aria-hidden="true">&times;</span>'
 						          + '</button>'
 						      	+ '</div>';
+						      $(".msgAlert").html("");
 						      $(".msgAlert").append(html);
 				}
-				msgAlertAutoHide();
-				
+				msgAlertAutoHide();				
 			} else {
 				event.preventDefault();
 				if(po_auto_invoice == "") {
@@ -919,7 +953,7 @@ $(document).on('keydown', '.productName', function(event) {
   	let barcodeSale = $(event.target).val();
 		// http://localhost:8000/order_place/sale/8941193073216
 		if(scannedSaleBarcode.indexOf(barcodeSale) == -1) {			
-			$.ajax({			
+			$.ajax({
 				url: "/order_place/sale",
 				type: "POST",
 				// cache: false,
@@ -939,25 +973,28 @@ $(document).on('keydown', '.productName', function(event) {
 							$(event.target).closest('tr').find('td.name').find('.productName').val(data.title).prop('readonly', true);
 							$(event.target).closest('tr').find('td.name').find('.product_id').val(data.product_id).prop('readonly', true);
 							$(event.target).closest('tr').find('td.name').find('.inventory_id').val(data.inventory_id).prop('readonly', true);
+							$(event.target).closest('tr').find('td.name').find('.barcode').val(barcodeSale).prop('readonly', true);
 							$(event.target).closest('tr').find('td.img').find('img').attr('src', '/ourwork/img/product_image/'+data.image);
 							$(event.target).closest('tr').find('td.model').html(data.model);
 							$(event.target).closest('tr').find('td.brand').html(data.brand);
+							$(event.target).closest('tr').find('td.quantity').find('.product_qty').attr('max', data.qty);
 							$(event.target).closest('tr').find('td.price').find('.unit_price').val(data.sale_price);
 							$(event.target).closest('tr').find('td.price').find('.unit_price').attr('unit-price', data.sale_price);
 							$(event.target).closest('tr').find('td.last_price').find('.total_price').val(data.sale_price);
 							$(event.target).closest('tr').find('td.remove').find('img').attr('onclick', 'remove_order_list(this, \''+barcodeSale+'\')');
-							$(event.target).closest('tr').next('tr').find('td.name').find('.productName').focus();
+
+							
 							calcSaleTotal();
+							let nextTrIsPresent = $(event.target).closest('tr').next('tr').length;
+							if(nextTrIsPresent == 0) {
+								$("#add_row_sell_item").trigger("click");
+							} else {
+								$(event.target).closest('tr').next('tr').find('td.name').find('.productName').focus();
+							}
+							// console.log("Next tr", $(event.target).closest('tr').next('tr').length);
 							// $("#paid_or_due_sale").val("2").trigger('change');
 						} else {
-							// let html = '<div class="alert alert-danger alert-dismissible fade show" role="alert">'
-				   //        + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
-				   //        + '<span class="alert-text"><strong>'+data.message+'</strong></span>'
-				   //        + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
-				   //            + '<span aria-hidden="true">&times;</span>'
-				   //        + '</button>'
-				   //    	+ '</div>';
-				   //    $(".msgAlert").append(html);
+							// danger_alert("Product Not Found In DB !");					
 						}
 					}
 				},
@@ -985,21 +1022,25 @@ $(document).on('keydown', '.productName', function(event) {
 			console.log("The Product Already added. Increased quantity.");			
 			// let barcode = $(event.target).closest('tr').attr('data-code');
 			let tr = $(event.target).closest('tr').siblings();
-
 			  $(tr).each(function(index, elm) {
-			  	console.log(elm);
+			  	// console.log(elm);
 			  	if($(elm).attr('data-code') == barcodeSale) {
-			  		let qty = parseInt($(elm).find('td.quantity').find('.product_qty').val()) + 1;
-			  		let saleprice = parseInt($(elm).find('td.price').find('.unit_price').val());
+			  		let maxQty = $(elm).find('td.quantity').find('.product_qty').attr("max");
+			  		let presentQty = parseInt($(elm).find('td.quantity').find('.product_qty').val());
+			  		// console.log("maxQty", maxQty);
+			  		if(maxQty > presentQty) {
+			  			let qty = parseInt($(elm).find('td.quantity').find('.product_qty').val()) + 1;
+				  		let saleprice = parseInt($(elm).find('td.price').find('.unit_price').val());
 
-			  		$(elm).find('td.quantity').find('.product_qty').val(qty);
-			  		$(elm).find('td.last_price').find('.total_price').val(parseFloat(qty * saleprice).toFixed(2));
-			  		// console.log(qty);
-			  		calcSaleTotal();
-			  		// ================================================
+				  		$(elm).find('td.quantity').find('.product_qty').val(qty);
+				  		$(elm).find('td.last_price').find('.total_price').val(parseFloat(qty * saleprice).toFixed(2));
+				  		// console.log(qty);
+				  		calcSaleTotal();
+			  		} else {
+			  			alert("The item is not available.");
+			  		}
 			  	}
 			  });
-
 			// console.log(barcode);
 			$(event.target).val("");
 		}
@@ -1007,7 +1048,7 @@ $(document).on('keydown', '.productName', function(event) {
 });
 
 function calcSaleTotal(){
-	console.log("function calcSaleTotal()");
+	// console.log("function calcSaleTotal()");
   let sale_subtotal = 0;
   $('.total_price').each(function(k, v) {
     if($(v).val() != ''){
@@ -1018,7 +1059,7 @@ function calcSaleTotal(){
   let vat_amount = parseFloat((sale_subtotal * vat_percent)/100).toFixed(2);
   let grand_total = parseFloat(sale_subtotal)+parseFloat(vat_amount); 
   let discount = parseFloat($("#discount").val());
-  console.log("vat_amount", vat_amount);
+  // console.log("vat_amount", vat_amount);
     
   $("#sub_total").val(parseFloat(sale_subtotal).toFixed(2));
   $("#vat_amount").val(vat_amount);    
@@ -1087,6 +1128,21 @@ $('#product_info_id_frm_stock').select2();
 $('#supplier_id').select2();
 $('#product_info_id').select2();
 $('#customer_id').select2();
+
+$(document).on("change", "#customer_id", function() {
+	let isEmpty = $(this).val();
+	let rowLength = $("#sale_entry_item tbody").find(".saleItemRow").length;
+	// console.log("rowLength", rowLength)
+	if(isEmpty != "" && rowLength == 0) {
+		$("#add_row_sell_item").trigger("click");
+		if($("#sale_entry_item tbody").find("tr").find("td.name").find(".productName").val() == "") {
+			console.log("ins");
+			setTimeout(function() {
+				$("#sale_entry_item tbody").find("tr").find("td.name").find(".productName").focus();
+			}, 350);	
+		}
+	}
+});
 
 function sale_order_details(sale_id, soi) {
 	// console.log(sale_id, soi);
@@ -1191,7 +1247,7 @@ function sale_order_details(sale_id, soi) {
               '</div>'+
             '</div>';
 					$("#purchase_order_details").find(".head-body").append(html);
-					$("#purchase_order_details").show();
+					$("#purchase_order_details").fadeIn();
 				} else {
 					console.log("Data Not Received Successfully Kallol.")
 				}
@@ -1408,3 +1464,64 @@ $("#search_sale_invoice").keyup(function (e) {
 		});
 	}
 });
+
+function cancel_sale_order(sale_id, order_id) {
+	$("#yesNoAlert .alertBody").text("Are sure you want to cancel the Order ?");
+	$("#yesNoAlert .allalertCon").css({
+		"border": "1px solid #f5365c"
+	});
+	$("#yesNoAlert .alertHead").css({
+		"background-color": "#f5365c"
+	});
+	let html = '<a href="/order_place/cancel/'+sale_id+'/'+order_id+'" class="btn btn-outline-success">Yes</a>';
+	$("#yesNoAlert #alertYes").html(html);
+	$("#yesNoAlert").fadeIn();
+}
+function complete_order(sale_id, order_id) {
+	$("#yesNoAlert .alertBody").text("Are sure you want to complete the Order ?");
+	$("#yesNoAlert .allalertCon").css({
+		"border": "1px solid #2dce89"
+	});
+	$("#yesNoAlert .alertHead").css({
+		"background-color": "#2dce89"
+	});
+	let html = '<a href="/order_place/complete/'+sale_id+'/'+order_id+'" class="btn btn-outline-success">Yes</a>';
+	$("#yesNoAlert #alertYes").html(html);
+	$("#yesNoAlert").fadeIn();
+}
+
+function delete_product_info(image_name, product_id) {
+	$("#yesNoAlert .alertBody").text("Are sure you want to delete the product ?");
+	$("#yesNoAlert .allalertCon").css({
+		"border": "1px solid #f5365c"
+	});
+	$("#yesNoAlert .alertHead").css({
+		"background-color": "#f5365c"
+	});
+	let html = '<a href="/product/entry/delete/'+image_name+'/'+product_id+'" class="btn btn-outline-success">Yes</a>';
+	$("#yesNoAlert #alertYes").html(html);
+	$("#yesNoAlert").fadeIn();
+}
+
+function danger_alert(message) {
+	let html =	'<div class="alert alert-danger alert-dismissible fade show" role="alert">'
+		          + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
+		          + '<span class="alert-text"><strong>'+message+'</strong></span>'
+		          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+		            + '<span aria-hidden="true">&times;</span>'
+		          + '</button>'
+		      	+ '</div>';
+	$(".msgAlert").html("");
+	$(".msgAlert").append(html);
+}
+function success_alert(message) {
+	let html = 	'<div class="alert alert-success alert-dismissible fade show" role="alert">'
+				      + '<span class="alert-icon"><i class="ni ni-like-2"></i></span>'
+				      + '<span class="alert-text"><strong>'+message+'</strong></span>'
+				      + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+				        + '<span aria-hidden="true">&times;</span>'
+				      + '</button>'
+				  	+ '</div>';
+  $(".msgAlert").html("");
+  $(".msgAlert").append(html);
+}

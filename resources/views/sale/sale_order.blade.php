@@ -65,7 +65,7 @@
               </tbody>
             </table>
             <div class="col-md-12" style="margin-top: 10px;">
-              <button type="button" class="btn btn-outline-default btn-sm" onclick="sale_row_add()">Add Row</button>
+              <button id="add_row_sell_item" type="button" class="btn btn-outline-default btn-sm" onclick="sale_row_add()">Add Row</button>
             </div>            
             <div class="col-md-12" style="margin-top: 40px;">
               <div class="payment-part">

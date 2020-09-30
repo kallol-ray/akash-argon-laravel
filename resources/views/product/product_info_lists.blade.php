@@ -61,11 +61,12 @@
 								<a class="btn btn-outline-success" href="/product/update/{{ $product->product_info_id }}">Edit</a>
 							</td>
 							<td>
-								{!! Form::open(['url' => 'product/entry/delete', 'method' => 'post']) !!}
+								<!-- {!! Form::open(['url' => 'product/entry/delete', 'method' => 'post']) !!}
 									<input type="hidden" name="image_del_path" value="ourwork/img/product_image/{{ $product->image }}">
 									<input type="hidden" name="product_del_id" value="{{ $product->product_info_id }}">
 									<button type="submit" name="deleteBtn" value="Delete" class="btn btn-outline-danger">Delete</button>
-								{!! Form::close() !!}
+								{!! Form::close() !!} -->
+								<button type="button" class="btn btn-outline-danger" onclick='delete_product_info("{{ $product->image }}", "{{ $product->product_info_id }}")'>Delete</button>
 							</td>
 						</tr>
 					@endforeach

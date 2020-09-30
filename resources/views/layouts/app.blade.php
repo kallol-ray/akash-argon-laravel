@@ -106,7 +106,9 @@
               Are you sure?
             </div>
             <div class="alertFoot">
-              <button type="button" class="btn btn-outline-success" id="alertYes">Yes</button>
+              <span id="alertYes">
+                <button type="button" class="btn btn-outline-success">Yes</button>
+              </span>              
               <button type="button" class="btn btn-outline-danger" onclick="$(this).closest('#yesNoAlert').fadeOut();">Cancel</button>
             </div>
           </div>

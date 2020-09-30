@@ -226,6 +226,7 @@ body{
 }
 .bar {
 	background-color: gray;
+	/*background-color: var(--gray-dark);*/
 	border-radius: 5px 5px 0px 0px;
 	height: 30px;
 }
@@ -379,12 +380,17 @@ body{
 .alertBody {
 	padding: 20px;
 	min-height: 90px;
+	font-size: 18px;
+}
+#alertYes {
+	margin-right: 20px;
 }
 .alertFoot {
 	padding: 0px 20px 20px 20px;
 	text-align: center;
 }
-.alertFoot button {
+.alertFoot button,
+.alertFoot a {
 	width: 100px;
 }
 .close-alert-top {
@@ -422,6 +428,13 @@ body{
 }
 .form-control {
 	border-color: rgb(170, 170, 170);
+}
+.status-product {
+  background-color: #FFF;
+  padding: 20px;
+  box-shadow: 0px 0px 10px #00001cd6;
+  border-radius: 5px;
+  margin-top: 40px;
 }
 
 

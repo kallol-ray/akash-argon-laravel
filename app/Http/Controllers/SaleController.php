@@ -103,6 +103,7 @@ class SaleController extends Controller
 
     $product_id_arr = $req->product_id;
     $inventory_id = $req->inventory_id;
+    $barcode = $req->barcode;
     // $product_name = $req->product_name;
     $quantity = $req->quantity;
     $unit_price = $req->unit_price;
@@ -125,8 +126,9 @@ class SaleController extends Controller
 
     foreach($product_id_arr as $key => $value) {
       $saleItem = array();
-      $saleItem['sale_info_id'] = $sale_info_id;      
+      $saleItem['sale_info_id'] = $sale_info_id;
       $saleItem['product_info_id'] = $value;
+      $saleItem['barcode'] = $barcode[$key];
       $saleItem['sale_price'] = $total_price[$key];
       $saleItem['inventory_id'] = $inventory_id[$key];
       $saleItem['qty'] = $quantity[$key];
@@ -135,10 +137,49 @@ class SaleController extends Controller
       // var_dump($key."=".$value);
       // var_dump($item);
       // echo "</pre>";
-      DB::table('sale_item')
-              ->insert($saleItem);
-    }
+      DB::beginTransaction();
+      $isQuantityAvailable = DB::table('inventory')
+            ->select('qty')
+            ->where('barcode', $barcode[$key])      
+            ->where('product_info_id', $value)
+            ->sharedLock()     
+            ->get();
+      
+      if($isQuantityAvailable != NULL) {
+        // echo "<pre>";
+        // var_dump($isQuantityAvailable);
+        // var_dump($isQuantityAvailable[0]->qty);
+        // echo "</pre>";
+        // echo "</br></br>";
+        $presentQty = $quantity[$key];
+        $dbQty = $isQuantityAvailable[0]->qty;
+        if( $dbQty >= $presentQty) {          
+          // try {
+            $upadteQtyValue = $dbQty - $presentQty;
+            if($upadteQtyValue >= 0) {
+              // $dataupdate = array();
+              DB::table('inventory')
+                  ->where('barcode', $barcode[$key])
+                  ->where('inventory_id', $inventory_id[$key])
+                  ->where('product_info_id', $value)
+                  ->update(['qty' => $upadteQtyValue]); 
 
+              // array_push($dataupdate, $upadteQtyValue, $barcode[$key], $inventory_id[$key], $value);
+
+              // DB::select('update inventory set qty = qty - ? where barcode = ? and inventory_id = ? and product_info_id = ?', $dataupdate);
+
+              DB::table('sale_item')
+                  ->insert($saleItem);
+              DB::commit();
+              
+            }              
+              
+          // } catch (Exception $e) {
+          //     // return error messsage
+          // }
+        }
+      }
+    }
     Session::put('sucMsg', 'A Sale Order Saved Successfully!');
     return Redirect::to('/order_place/view');
 	}
@@ -151,14 +192,14 @@ class SaleController extends Controller
     // $total_and_entry['total_qty'] = $total_qty[0]->total_qty;
     // $total_and_entry['total_entry'] = $total_entry[0]->entry;
     $inventory = DB::table('inventory')
-                ->select('inventory_id','product_info_id')
+                ->select('inventory_id','product_info_id', 'qty')
                 ->where('barcode', $barcode)
                 ->where('qty','>', '0')
                 ->get();
     $scaned_product_id = $inventory[0]->product_info_id;
     $inventory_id = $inventory[0]->inventory_id;
     $isProductAvailable = false;
-    if(count($inventory) == 1) {
+    if(count($inventory) >= 1) {
       $isProductAvailable = true;
       // echo $isProductAvailable;
     }
@@ -182,9 +223,10 @@ class SaleController extends Controller
       $sale_info['brand'] = $product_info[0]->brand;
       $sale_info['image'] = $product_info[0]->image;
       $sale_info['inventory_id'] = $inventory_id;
+      $sale_info['qty'] = $inventory[0]->qty;
       $sale_info['status'] = 200;
     } else {
-      $sale_info['status'] = 404;
+      $sale_info['status'] = false;
     }
     return response()->json($sale_info);
   }

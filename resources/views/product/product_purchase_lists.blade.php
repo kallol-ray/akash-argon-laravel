@@ -56,11 +56,11 @@
 								@endif
 							</td>
 							<td>
-								<button class="btn-outline-primary" onclick="order_details('{{ $purchase->auto_invoice_no }}', '{{ $purchase->po_info_id }}')">Details</button>
+								<button class="btn btn-outline-primary btn-sm" onclick="order_details('{{ $purchase->auto_invoice_no }}', '{{ $purchase->po_info_id }}')">Details</button>
 								@if ($purchase->is_stored == 0)
-									<a class="btn-outline-success" href="/product/purchase_order/update/{{ $purchase->po_info_id  }}">Edit</a>
+									<a class="btn btn-outline-success btn-sm" href="/product/purchase_order/update/{{ $purchase->po_info_id  }}">Edit</a>
 									<br>
-									<a class="btn-outline-success" href="/product/purchase_order/stop_entry/{{ $purchase->po_info_id  }}" onclick="return showAlert('start_stock_entry', event, this)">Start Stock Entry</a>
+									<a class="btn btn-outline-success btn-sm" href="/product/purchase_order/stop_entry/{{ $purchase->po_info_id  }}" onclick="return showAlert('start_stock_entry', event, this)">Start Stock Entry</a>
 								@endif							
 							</td>
 						</tr>
