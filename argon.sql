@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 26, 2020 at 08:28 AM
+-- Generation Time: Sep 30, 2020 at 08:49 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -41,18 +41,18 @@ CREATE TABLE `brand` (
 --
 
 INSERT INTO `brand` (`brand_id`, `brand_name`, `entry_by`, `update_by`, `created_at`, `updated_at`) VALUES
-(1, 'Tp-Link', 'admin@argon.com', '', '2020-09-25 10:03:28', NULL),
-(2, 'Tenda', 'admin@argon.com', '', '2020-09-25 10:03:28', NULL),
-(3, 'D-Link', 'admin@argon.com', '', '2020-09-25 10:03:28', NULL),
-(4, 'Mikrotik', 'admin@argon.com', '', '2020-09-25 10:03:28', NULL),
-(5, 'Xiaomi', 'admin@argon.com', '', '2020-09-25 10:03:29', NULL),
-(6, 'Netgear', 'admin@argon.com', '', '2020-09-25 10:03:29', NULL),
-(7, 'Huawei', 'admin@argon.com', '', '2020-09-25 10:03:29', NULL),
-(8, 'Asus', 'admin@argon.com', '', '2020-09-25 10:03:29', NULL),
-(9, 'Linksys', 'admin@argon.com', '', '2020-09-25 10:03:29', NULL),
-(10, 'Belkin', 'admin@argon.com', '', '2020-09-25 10:03:29', NULL),
-(11, 'Cisco', 'admin@argon.com', '', '2020-09-25 10:03:29', NULL),
-(12, 'TRENDnet', 'admin@argon.com', '', '2020-09-25 10:03:29', NULL);
+(1, 'Tp-Link', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(2, 'Tenda', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(3, 'D-Link', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(4, 'Mikrotik', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(5, 'Xiaomi', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(6, 'Netgear', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(7, 'Huawei', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(8, 'Asus', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(9, 'Linksys', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(10, 'Belkin', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(11, 'Cisco', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL),
+(12, 'TRENDnet', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -76,7 +76,7 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`customer_id`, `customer_name`, `company_name`, `phone`, `address`, `entry_by`, `created_at`, `updated_at`) VALUES
-(1, 'Ami Kallol', 'Kallol Corporation', '01727379068', '216, Rampura, Dhaka-1219', 'admin@argon.com', '2020-09-25 10:03:28', NULL);
+(1, 'Ami Kallol', 'Kallol Corporation', '01727379068', '216, Rampura, Dhaka-1219', 'admin@argon.com', '2020-09-30 10:37:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -109,6 +109,16 @@ CREATE TABLE `inventory` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `inventory`
+--
+
+INSERT INTO `inventory` (`inventory_id`, `product_info_id`, `barcode`, `qty`, `entry_by`, `created_at`, `updated_at`) VALUES
+(1, 1, '8941193073216', 0, 'admin@argon.com', '2020-09-30 10:45:53', NULL),
+(2, 2, '8941100294840', 0, 'admin@argon.com', '2020-09-30 10:45:59', NULL),
+(3, 1, '89411002948401', 1, 'admin@argon.com', '2020-09-30 11:32:12', NULL),
+(4, 1, '89411930732162', 1, 'admin@argon.com', '2020-09-30 11:37:01', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -126,19 +136,19 @@ CREATE TABLE `migrations` (
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(144, '2014_10_12_000000_create_users_table', 1),
-(145, '2014_10_12_100000_create_password_resets_table', 1),
-(146, '2019_08_19_000000_create_failed_jobs_table', 1),
-(147, '2020_08_16_105820_create_product_info_table', 1),
-(148, '2020_08_16_111637_create_product_purchase_history_table', 1),
-(149, '2020_08_16_120153_create_sale_info_table', 1),
-(150, '2020_08_16_121127_create_sale_item_table', 1),
-(151, '2020_08_16_121833_create_inventory_table', 1),
-(152, '2020_08_16_122236_create_customer_table', 1),
-(153, '2020_08_16_122547_create_supplier_table', 1),
-(154, '2020_08_24_175539_create_purchase_order_info_table', 1),
-(155, '2020_08_29_183157_create_po_info_item_table', 1),
-(156, '2020_09_10_052655_create_brand_table', 1);
+(196, '2014_10_12_000000_create_users_table', 1),
+(197, '2014_10_12_100000_create_password_resets_table', 1),
+(198, '2019_08_19_000000_create_failed_jobs_table', 1),
+(199, '2020_08_16_105820_create_product_info_table', 1),
+(200, '2020_08_16_111637_create_product_purchase_history_table', 1),
+(201, '2020_08_16_120153_create_sale_info_table', 1),
+(202, '2020_08_16_121127_create_sale_item_table', 1),
+(203, '2020_08_16_121833_create_inventory_table', 1),
+(204, '2020_08_16_122236_create_customer_table', 1),
+(205, '2020_08_16_122547_create_supplier_table', 1),
+(206, '2020_08_24_175539_create_purchase_order_info_table', 1),
+(207, '2020_08_29_183157_create_po_info_item_table', 1),
+(208, '2020_09_10_052655_create_brand_table', 1);
 
 -- --------------------------------------------------------
 
@@ -178,8 +188,8 @@ CREATE TABLE `po_info_item` (
 --
 
 INSERT INTO `po_info_item` (`po_info_item_id`, `po_info_id`, `product_info_id`, `auto_invoice_no`, `image`, `product_qty`, `unit_price`, `unit_adnl_price`, `sale_price`, `total_price`, `created_at`, `updated_at`) VALUES
-(17, 1, 1, 'POI-10001', 'default@1598295452.jpg', 20, '20.00', '32.55', '80.00', '400.00', '2020-09-26 00:26:45', NULL),
-(18, 1, 2, 'POI-10001', 'default@1598295453.jpg', 60, '40.00', '52.55', '60.00', '2400.00', '2020-09-26 00:26:46', NULL);
+(1, 1, 1, 'POI-10001', 'default@1598295452.jpg', 50, '20.00', '32.50', '40.00', '1000.00', '2020-09-30 10:43:46', NULL),
+(2, 1, 2, 'POI-10001', 'default@1598295453.jpg', 30, '30.00', '42.50', '50.00', '900.00', '2020-09-30 10:43:46', NULL);
 
 -- --------------------------------------------------------
 
@@ -206,8 +216,8 @@ CREATE TABLE `product_info` (
 --
 
 INSERT INTO `product_info` (`product_info_id`, `title`, `description`, `model`, `brand`, `info_entry_date`, `image`, `entry_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(1, 'TP Link Router R8', 'No Description', '216E0', 'TP-Link', '2020-09-25 16:03:28', 'default@1598295452.jpg', 'admin@argon.com', '', '2020-09-25 10:03:28', NULL),
-(2, 'Tenda Router', 'No Description', '454545', 'Tenda', '2020-09-25 16:03:28', 'default@1598295453.jpg', 'admin@argon.com', '', '2020-09-25 10:03:28', NULL);
+(1, 'TP Link Router R8', 'No Description', '216E0', 'Tp-Link', '2020-09-30 00:00:00', 'default@1598295452.jpg', 'admin@argon.com', 'admin@argon.com', '2020-09-30 10:37:44', '2020-09-30 10:41:00'),
+(2, 'Tenda Router', 'No Description', '454545', 'Tenda', '2020-09-30 16:37:45', 'default@1598295453.jpg', 'admin@argon.com', '', '2020-09-30 10:37:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -231,6 +241,16 @@ CREATE TABLE `product_purchase_history` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `product_purchase_history`
+--
+
+INSERT INTO `product_purchase_history` (`pp_history_id`, `po_info_id`, `product_info_id`, `auto_invoice_no`, `barcode`, `quantity`, `buy_price`, `sale_price`, `buy_date`, `is_stored`, `entry_by`, `comment`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'POI-10001', '8941193073216', 1, '20.00', '40.00', '2020-09-30', 0, 'admin@argon.com', 'N/A', '2020-09-30 10:45:53', NULL),
+(2, 1, 2, 'POI-10001', '8941100294840', 1, '30.00', '50.00', '2020-09-30', 0, 'admin@argon.com', 'N/A', '2020-09-30 10:45:59', NULL),
+(3, 1, 1, 'POI-10001', '89411002948401', 1, '20.00', '40.00', '2020-09-30', 0, 'admin@argon.com', 'N/A', '2020-09-30 11:32:12', NULL),
+(4, 1, 1, 'POI-10001', '89411930732162', 1, '20.00', '40.00', '2020-09-30', 0, 'admin@argon.com', 'N/A', '2020-09-30 11:37:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -266,7 +286,7 @@ CREATE TABLE `purchase_order_info` (
 --
 
 INSERT INTO `purchase_order_info` (`po_info_id`, `auto_invoice_no`, `is_stored`, `supplier_id`, `purchase_invoice_no`, `buyer_adnl_cost`, `supplier_adnl_cost`, `vat_percent`, `vat_amount`, `discount`, `paid_or_due`, `paid_amount`, `due_amount`, `sub_total`, `grand_total`, `purchased_date`, `entry_by`, `update_by`, `created_at`, `updated_at`) VALUES
-(1, 'POI-10001', 0, 1, 'N/A1', '502.00', '502.00', '5.00', '140.00', NULL, 0, '22000.00', '4.00', '2800.00', '3944.00', '2020-09-26', 'admin@argon.com', 'admin@argon.com', '2020-09-25 10:04:48', '2020-09-26 00:26:45');
+(1, 'POI-10001', 1, 1, 'N/A', '500.00', '500.00', '5.00', '95.00', '0.00', 0, '995.00', '2000.00', '1900.00', '2995.00', '2020-09-30', 'admin@argon.com', NULL, '2020-09-30 10:43:46', NULL);
 
 -- --------------------------------------------------------
 
@@ -293,6 +313,13 @@ CREATE TABLE `sale_info` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `sale_info`
+--
+
+INSERT INTO `sale_info` (`sale_info_id`, `auto_sale_invoice`, `customer_id`, `sub_total_bill`, `vat_percent`, `vat_amount`, `discount`, `paid_or_due`, `paid_amount`, `due_amount`, `is_delivered`, `saled_date`, `entry_by`, `update_by`, `created_at`, `updated_at`) VALUES
+(1, 'SOI-100001', 1, '90.00', '5.00', '4.50', '4.50', 0, '50.00', '40.00', 0, '2020-09-30', 'admin@argon.com', NULL, '2020-09-30 12:37:48', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -303,12 +330,21 @@ CREATE TABLE `sale_item` (
   `sale_item_id` bigint(20) UNSIGNED NOT NULL,
   `sale_info_id` bigint(20) UNSIGNED NOT NULL,
   `product_info_id` bigint(20) UNSIGNED NOT NULL,
-  `sale_price` decimal(8,2) NOT NULL,
   `inventory_id` bigint(20) UNSIGNED NOT NULL,
+  `barcode` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sale_price` decimal(8,2) NOT NULL,
   `qty` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `sale_item`
+--
+
+INSERT INTO `sale_item` (`sale_item_id`, `sale_info_id`, `product_info_id`, `inventory_id`, `barcode`, `sale_price`, `qty`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 1, '8941193073216', '40.00', 1, '2020-09-30 12:37:48', NULL),
+(2, 1, 2, 2, '8941100294840', '50.00', 1, '2020-09-30 12:37:48', NULL);
 
 -- --------------------------------------------------------
 
@@ -333,7 +369,7 @@ CREATE TABLE `supplier` (
 --
 
 INSERT INTO `supplier` (`supplier_id`, `supplier_name`, `phone`, `address`, `comments`, `supplier_entry_date`, `entry_by`, `created_at`, `updated_at`) VALUES
-(1, 'Tp Link Dealer', '01727379068', '216, East Rampura, Dhaka-1219', 'No comments', '2020-09-25 16:03:28', 'Kallol Ray', '2020-09-25 10:03:28', NULL);
+(1, 'Tp Link Dealer', '01727379068', '216, East Rampura, Dhaka-1219', 'No comments', '2020-09-30 16:37:44', 'Kallol Ray', '2020-09-30 10:37:44', NULL);
 
 -- --------------------------------------------------------
 
@@ -357,7 +393,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin Ray', 'admin@argon.com', '2020-09-25 10:03:27', '$2y$10$pfOGdAkIJrUoJmwUjRBwoOjZYKkZ7mPh.fEN.g46cXbkdY8BHignC', NULL, '2020-09-25 10:03:27', '2020-09-25 10:03:27');
+(1, 'Admin Ray', 'admin@argon.com', '2020-09-30 10:37:44', '$2y$10$muW47gFXIJNKfinirRFbmeztVWM2hdSfS0APcLCXFM7ieGufAw5KG', NULL, '2020-09-30 10:37:44', '2020-09-30 10:37:44');
 
 --
 -- Indexes for dumped tables
@@ -479,19 +515,19 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `inventory_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `inventory_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=157;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=209;
 
 --
 -- AUTO_INCREMENT for table `po_info_item`
 --
 ALTER TABLE `po_info_item`
-  MODIFY `po_info_item_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `po_info_item_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `product_info`
@@ -503,7 +539,7 @@ ALTER TABLE `product_info`
 -- AUTO_INCREMENT for table `product_purchase_history`
 --
 ALTER TABLE `product_purchase_history`
-  MODIFY `pp_history_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `pp_history_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `purchase_order_info`
@@ -515,13 +551,13 @@ ALTER TABLE `purchase_order_info`
 -- AUTO_INCREMENT for table `sale_info`
 --
 ALTER TABLE `sale_info`
-  MODIFY `sale_info_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `sale_info_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sale_item`
 --
 ALTER TABLE `sale_item`
-  MODIFY `sale_item_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `sale_item_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `supplier`
