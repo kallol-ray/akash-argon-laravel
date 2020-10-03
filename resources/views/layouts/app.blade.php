@@ -113,6 +113,107 @@
             </div>
           </div>
         </div>
+        <div id="print_div">
+          <!-- <div class="print-continer">
+            <div class="print-top-head">
+              <div class="print-invoice-no">Invoice: SOI-00001</div>
+              <div class="print-date">July 18, 2020 05:03</div>
+            </div>
+            <div class="print-shop-name">Akash Router Shop</div>
+            <div class="print-shop-address">450, East Rampura, Dhaka-1219, Mobile: 01727379068</div>
+            <hr style="border-top: 3px solid rgba(0,0,0, .7); margin: 10px 0px 10px 0px;">
+            <div class="print-info">
+              <div class="print-customer-name"><span class="info-p">Customer Name: </span></div>
+              <div class="print-customer-mobile"><span class="info-p">Mobile: </span></div>
+            </div>
+            <table class="print-invoice-tbl">
+              <thead>
+                <tr>
+                  <th>Sl</th>
+                  <th>Product Name</th>
+                  <th>Model</th>
+                  <th>Brand</th>
+                  <th>Qty</th>
+                  <th>Rate</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">1</td>
+                  <td>Tp Link Router R8</td>
+                  <td>M126575</td>
+                  <td>TP Link</td>
+                  <td>1</td>
+                  <td>1450</td>                  
+                  <td>1450</td>
+                </tr>
+                <tr>
+                  <td style="text-align: center;">1</td>
+                  <td>Tp Link Router R8</td>
+                  <td>M126575</td>
+                  <td>TP Link</td>
+                  <td>1</td>
+                  <td>1450</td>                  
+                  <td>1450</td>
+                </tr>
+                <tr>
+                  <td style="text-align: center;">1</td>
+                  <td>Tp Link Router R8</td>
+                  <td>M126575</td>
+                  <td>TP Link</td>
+                  <td>1</td>
+                  <td>1450</td>                  
+                  <td>1450</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="footer-line">
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td style="text-align: right;">Total Qty = </td>
+                  <td>5</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+            <div class="print-hisab-left-con">
+              <div class="amount-inword">asdfasdf</div>
+            </div>
+            <div class="print-hisab-con">
+              <div class="print-indivi">
+                <div class="print-left">Total</div>
+                <div class="print-right">500.00 Tk</div>
+              </div>
+              <div class="print-indivi">
+                <div class="print-left">Discount</div>
+                <div class="print-right">50.00 Tk</div>
+              </div>
+              <div class="print-indivi">
+                <div class="print-left">Netsale</div>
+                <div class="print-right">450.00 Tk</div>
+              </div>
+              <div class="print-indivi">
+                <div class="print-left">Vat (5%)</div>
+                <div class="print-right">22.50 Tk</div>
+              </div>
+              <div class="print-indivi">
+                <div class="print-left">Grand Total</div>
+                <div class="print-right">472.50 Tk</div>
+              </div>
+              <div class="print-indivi">
+                <div class="print-left">Paid</div>
+                <div class="print-right">400.00 Tk</div>
+              </div>
+              <div class="print-indivi">
+                <div class="print-left">Due</div>
+                <div class="print-right">72.50 Tk</div>
+              </div>
+            </div>
+          </div> -->
+        </div>
         
         @guest()
             @include('layouts.footers.guest')

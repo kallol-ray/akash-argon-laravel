@@ -183,6 +183,32 @@ class SaleController extends Controller
     Session::put('sucMsg', 'A Sale Order Saved Successfully!');
     return Redirect::to('/order_place/view');
 	}
+
+
+  public function complete_order(Request $req) {
+    $sale_id = $req->sale_id;
+    $order_invoice = $req->order_invoice;
+    // var_dump($order_invoice);
+    DB::table('sale_info')
+              ->where('sale_info_id', $sale_id)
+              ->where('auto_sale_invoice', $order_invoice)              
+              ->where('is_delivered', '0')
+              ->update(['is_delivered' => '1']);
+
+    Session::put('sucMsg', 'A Sale Order Delivery Complete Successfully!');
+    return Redirect::to('/order_place/view');
+  }
+
+  public function cancel_sale_order(Request $req) {
+    $sale_info_id = $req->sale_info_id;
+    $auto_sale_invoice = $req->auto_sale_invoice;
+    ================================
+    Session::put('sucMsg', 'A Sale Order Cancel Successfully!');
+    return Redirect::to('/order_place/view');
+  }
+
+  
+  //ajax call
   public function get_sale_product_info(Request $req) {
     $barcode = $req->barcodeSale;
     $scaned_product_id = "";
@@ -230,7 +256,6 @@ class SaleController extends Controller
     }
     return response()->json($sale_info);
   }
-
 
   public function sale_order_details(Request $req) {
     $data = array();
@@ -314,7 +339,7 @@ class SaleController extends Controller
     return response()->json($data);
   }
 
-  function search_invoice_sale(Request $req) {
+  public function search_invoice_sale(Request $req) {
     $auto_sale_invoice = $req->auto_sale_invoice;
     $data = array();
     $sale_info = DB::table('sale_info')
@@ -356,5 +381,97 @@ class SaleController extends Controller
       $data['status'] = false;
       return response()->json($data);
     }    
+  }
+
+  public function get_print_invoice(Request $req) {
+    $sale_info_id = $req->sale_info_id;
+    $auto_sale_invoice = $req->auto_sale_invoice;
+    $data = array();
+    $item_data = array();
+    $total_qty = 0;
+    $item_products_id = array();
+
+    $sale_info = DB::table('sale_info')
+                  ->select()
+                  ->where('sale_info_id', $sale_info_id)
+                  ->where('auto_sale_invoice', $auto_sale_invoice)
+                  ->get();
+    $sale_item = DB::table('sale_item')
+                  ->select()
+                  ->where('sale_info_id', $sale_info_id)
+                  ->get();
+    foreach ($sale_item as $key => $value) {
+      // echo 'value'. $value->product_info_id .'<br>';
+      array_push($item_products_id,$value->product_info_id);
+    }
+    $product_info = DB::table('product_info')
+                  ->select()
+                  ->whereIn('product_info_id', $item_products_id)
+                  ->get();    
+
+    $customer_info = DB::table('customer')
+                  ->select()
+                  ->where('customer_id', $sale_info[0]->customer_id)
+                  ->get();
+
+    $data['auto_sale_invoice'] = $sale_info[0]->auto_sale_invoice;
+    $data['sub_total_bill'] = $sale_info[0]->sub_total_bill;
+    $data['vat_percent'] = $sale_info[0]->vat_percent;
+    $data['vat_amount'] = $sale_info[0]->vat_amount;
+    $data['discount'] = $sale_info[0]->discount;
+    $data['paid_amount'] = $sale_info[0]->paid_amount;
+    $data['due_amount'] = $sale_info[0]->due_amount;
+    $data['saled_date'] = date("d/m/Y", strtotime(str_replace('/', '-', $sale_info[0]->saled_date)));
+
+    $net_sale = $data['sub_total_bill'] - $data['discount'];
+    $grand_total = $net_sale - $data['vat_amount'];
+
+    $data['net_sale'] = number_format($net_sale, 2);
+    $data['grand_total'] = number_format($grand_total, 2);
+
+    $data['customer_name'] = $customer_info[0]->customer_name;
+    $data['company_name'] = $customer_info[0]->company_name;
+    $data['customer_phone'] = $customer_info[0]->phone;
+
+    $i = 1;
+    $all_item = array();
+    foreach ($sale_item as $item) {
+      $all_item['serial_no'] = $i;
+
+      foreach ($product_info as $product) {
+        if($item->product_info_id == $product->product_info_id) {
+          $all_item['product_name'] = $product->title;
+          $all_item['model'] = $product->model;
+          $all_item['brand'] = $product->brand;
+        }        
+      }
+      
+      $all_item['qty'] = $item->qty;
+      // $all_item['rate'] = $item->rate;
+      $all_item['rate'] = ""; //Db te rate rakha hoinai
+      $all_item['price'] = $item->sale_price;
+      $total_qty += $item->qty;
+      $i++;
+      
+      array_push($item_data, $all_item);
+      $all_item = [];
+    }
+    $data['total_qty'] = $total_qty;
+    $data['item_data'] = $item_data;
+
+
+    // $data['total_qty'] = $total_qty;
+    // echo "<pre>";
+    // print_r($data);
+    // echo "</pre>";
+    // echo "<pre>";
+    // print_r($product_info);
+    // echo "</pre>";
+
+    // echo "<pre>";
+    // print_r($item_data);
+    // echo "</pre>";
+    $data['status'] = true;
+    return response()->json($data);
   }
 }

@@ -1477,7 +1477,7 @@ function cancel_sale_order(sale_id, order_id) {
 	$("#yesNoAlert #alertYes").html(html);
 	$("#yesNoAlert").fadeIn();
 }
-function complete_order(sale_id, order_id) {
+function complete_order(sale_id, order_invoice) {
 	$("#yesNoAlert .alertBody").text("Are sure you want to complete the Order ?");
 	$("#yesNoAlert .allalertCon").css({
 		"border": "1px solid #2dce89"
@@ -1485,7 +1485,7 @@ function complete_order(sale_id, order_id) {
 	$("#yesNoAlert .alertHead").css({
 		"background-color": "#2dce89"
 	});
-	let html = '<a href="/order_place/complete/'+sale_id+'/'+order_id+'" class="btn btn-outline-success">Yes</a>';
+	let html = '<a href="/order_place/complete/'+sale_id+'/'+order_invoice+'" class="btn btn-outline-success">Yes</a>';
 	$("#yesNoAlert #alertYes").html(html);
 	$("#yesNoAlert").fadeIn();
 }
@@ -1524,4 +1524,201 @@ function success_alert(message) {
 				  	+ '</div>';
   $(".msgAlert").html("");
   $(".msgAlert").append(html);
+}
+
+function print_invoice(sale_info_id, auto_sale_invoice)
+{
+	var newWin = window.open('','Print-Window');
+	let css = "@page {size: auto; margin: 0px;}#print_div{height:100%;width:100%;background-color:rgba(0,0,0,.3);position:fixed;top:0;display:none;z-index:99999999999;color:#000;font-family:Open Sans,sans-serif}.print-continer{background-color:#fff;width:80%;margin:auto;float:left;position:relative;left:50%;margin-left:-40%}.print-top-head{width:100%;height:26px;font-size:16px}.print-invoice-no{width:50%;float:left;font-weight:700}.print-date{width:50%;float:left;font-weight:700;text-align:right}.print-shop-name{text-align:center;font-size:22px;font-weight:700}.print-shop-address{text-align:center;font-size:15px}.print-info{font-size:16px;font-weight:700}.info-p{width:50px;display:inline-block;width:140px;text-align:right}.print-invoice-tbl{margin:20px 0;width:100%;border-collapse:collapse}.print-invoice-tbl th{border:1px solid rgba(0,0,0,.7);text-align:center}.print-invoice-tbl tbody tr{border-bottom:1px solid rgba(0,0,0,.5)}.print-invoice-tbl td{padding:2px 8px}.footer-line{border-top:2px solid rgba(0,0,0,.7)}.print-indivi{float:right;height:26px;width:260px}.print-left{width:110px;float:left}.print-right{width:calc(100% - 110px);float:left;border-bottom:2px solid rgba(0,0,0,.2);text-align:right}.print-hisab-con{width:270px;float:right;font-size:16px;font-weight:700}.print-hisab-left-con{width:calc(100% - 350px);float:left;font-size:16px;height:200px;}.amount-inword{font-size:15px;font-weight:700;text-transform:capitalize}";
+	$.ajax({			
+		url: "/order_place/print_invoice",
+		type: "POST",
+		// cache: false,
+		data: {
+			'_token': $("meta[name='csrf-token']").attr('content'),
+			'auto_sale_invoice': auto_sale_invoice,
+			'sale_info_id': sale_info_id
+		},
+		dataType: "json",
+		success: function(data, textStatus, xhr){				
+			if(xhr.status) {
+				// console.log("data", data);
+				if(data.status) {
+					// console.log("1545", data);
+					$("#print_div").html("");					
+
+					let html = '<div class="print-continer">'+
+            '<div class="print-top-head">'+
+              '<div class="print-invoice-no">Invoice: '+data.auto_sale_invoice+'</div>'+
+              // '<div class="print-date">July 18, 2020 05:03</div>'+
+              '<div class="print-date">'+data.saled_date+'</div>'+
+            '</div>'+
+            '<div class="print-shop-name">Akash Router Shop</div>'+
+            '<div class="print-shop-address">450, East Rampura, Dhaka-1219, Mobile: 01727379068</div>'+
+            '<hr style="border-top: 3px solid rgba(0,0,0, .7); margin: 10px 0px 10px 0px;">'+
+            '<div class="print-info">'+
+              '<div class="print-customer-name"><span class="info-p">Customer Name: </span> '+data.customer_name+'</div>'+
+              '<div class="print-customer-mobile"><span class="info-p">Mobile: </span> '+data.customer_phone+'</div>'+
+            '</div>'+
+            '<table class="print-invoice-tbl">'+
+              '<thead>'+
+                '<tr>'+
+                  '<th>Sl</th>'+
+                  '<th>Product Name</th>'+
+                  '<th>Model</th>'+
+                  '<th>Brand</th>'+
+                  '<th>Qty</th>'+
+                  '<th>Rate</th>'+
+                  '<th>Price</th>'+
+                '</tr>'+
+              '</thead>'+
+              '<tbody>';
+              	
+              	$.each(data.item_data, function (k, v){
+              		html += '<tr>'+
+	                  '<td style="text-align: center;">'+v.serial_no+'</td>'+
+	                  '<td>'+v.product_name+'</td>'+
+	                  '<td>'+v.model+'</td>'+
+	                  '<td>'+v.brand+'</td>'+
+	                  '<td>'+v.qty+'</td>'+
+	                  '<td>'+v.rate+'</td>'+                 
+	                  '<td>'+v.price+'</td>'+
+	                '</tr>';
+              	});                
+
+              html += '</tbody>'+
+              '<tfoot>'+
+                '<tr class="footer-line">'+
+                  '<td></td>'+
+                  '<td></td>'+
+                  '<td></td>'+
+                  '<td style="text-align: right;">Total Qty = </td>'+
+                  '<td>'+data.total_qty+'</td>'+
+                  '<td></td>'+
+                  '<td></td>'+
+                '</tr>'+
+              '</tfoot>'+
+            '</table>'+
+						'<div class="print-hisab-left-con">'+
+	            '<div class="amount-inword">'+numberToWords(data.grand_total)+' Taka Only.</div>'+
+	          '</div>'+
+            '<div class="print-hisab-con">'+
+              '<div class="print-indivi">'+
+                '<div class="print-left">Total</div>'+
+                '<div class="print-right">'+data.sub_total_bill+' Tk</div>'+
+              '</div>'+
+              '<div class="print-indivi">'+
+                '<div class="print-left">Discount</div>'+
+                '<div class="print-right">'+data.discount+' Tk</div>'+
+              '</div>'+
+              '<div class="print-indivi">'+
+                '<div class="print-left">Netsale</div>'+
+                '<div class="print-right">'+data.net_sale+' Tk</div>'+
+              '</div>'+
+              '<div class="print-indivi">'+
+                '<div class="print-left">Vat ('+data.vat_percent+'%)</div>'+
+                '<div class="print-right">'+data.vat_amount+' Tk</div>'+
+              '</div>'+
+              '<div class="print-indivi">'+
+                '<div class="print-left">Grand Total</div>'+
+                '<div class="print-right">'+data.grand_total+' Tk</div>'+
+              '</div>'+
+              '<div class="print-indivi">'+
+                '<div class="print-left">Paid</div>'+
+                '<div class="print-right">'+data.paid_amount+' Tk</div>'+
+              '</div>'+
+              '<div class="print-indivi">'+
+                '<div class="print-left">Due</div>'+
+                '<div class="print-right">'+data.due_amount+' Tk</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>';
+          //console.log(numberToWords(564564));
+					$("#print_div").append(html);
+					// $("#print_div").fadeIn();
+				  newWin.document.open();
+				  let divToPrint=document.getElementById('print_div');
+				  newWin.document.write('<html><body><head><title>Print Invoice</title><style>'+css+'</style></head>'+divToPrint.innerHTML+'</body></html>');
+				  newWin.print();
+				  newWin.close();
+				} else {
+					console.log("Print Data Not Received Successfully Kallol.")
+				}
+			}
+		},
+		error: function (jqXHR, exception) {
+			var msg = '';
+			if (jqXHR.status === 0) {
+			    msg = 'Not connect.\n Verify Network.';
+			} else if (jqXHR.status == 404) {
+			    msg = 'Requested page not found. [404]';
+			} else if (jqXHR.status == 500) {
+			    msg = 'Internal Server Error [500].';
+			} else if (exception === 'parsererror') {
+			    msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+			    msg = 'Time out error.';
+			} else if (exception === 'abort') {
+			    msg = 'Ajax request aborted.';
+			} else {
+			    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+			}
+			console.log("msg",msg);
+		},
+	});
+
+	// $("#print_div").fadeIn();
+	// setTimeout(function(){ ss
+		// let css = "@page {size: auto; margin: 0px;}#print_div { height: 100%; width: 100%; background-color: rgba(0,0,0, .3); position: fixed; top: 0px; display: none; z-index: 99999999999; color: #000; font-family: Open Sans, sans-serif;} .print-continer { background-color: #FFF; width: 80%; margin: auto; float: left; position: relative; left: 50%; margin-left: -40%; } .print-top-head { width: 100%; height: 26px; font-size: 16px; } .print-invoice-no { width: 50%; float: left; font-weight: bold; } .print-date { width: 50%; float: left; font-weight: bold; text-align: right; } .print-shop-name { text-align: center; font-size: 22px; font-weight: bold; } .print-shop-address { text-align: center; font-size: 15px; } .print-info { font-size: 16px; font-weight: bold; } .info-p { width: 50px; display: inline-block; width: 140px; text-align: right; } .print-invoice-tbl { margin: 20px 0px; width: 100%; border-collapse: collapse; } .print-invoice-tbl th { border: 1px solid rgba(0,0,0, .7); text-align: center; } .print-invoice-tbl tbody tr { border-bottom: 1px solid rgba(0,0,0, .5); } .print-invoice-tbl td { padding: 2px 8px; /*border-left: 1px solid rgba(0,0,0, .7); border-right: 1px solid rgba(0,0,0, .7);*/ } .footer-line { border-top: 2px solid rgba(0,0,0, .7); } .print-indivi { float: right; height: 26px; width: 260px; } .print-left { width: 110px; float: left; } .print-right { width: calc(100% - 110px); float: left; border-bottom: 2px solid rgba(0,0,0,.2); text-align: right; } .print-hisab-con{ width: 400px;float: right; font-size: 16px; font-weight: bold; }";
+	 //  let newWin = window.open('','Print-Window');
+	 //  newWin.document.open();
+	 //  let divToPrint=document.getElementById('print_div');	    
+	 //  newWin.document.write('<html><body><head><title>Print Invoice</title><style>'+css+'</style></head>'+divToPrint.innerHTML+'</body></html>');
+	 //  newWin.print();
+	 //  newWin.close();
+	// }, 10000);
+	
+}
+function numberToWords(number) {
+  var digit = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+  var elevenSeries = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+  var countingByTens = ['twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  var shortScale = ['', 'thousand', 'million', 'billion', 'trillion'];
+
+  number = number.toString();
+  number = number.replace(/[\, ]/g, '');
+  if (number != parseFloat(number)) return 'not a number';
+  var x = number.indexOf('.');
+  if (x == -1) x = number.length;
+  if (x > 15) return 'too big';
+  var n = number.split('');
+  var str = '';
+  var sk = 0;
+  for (var i = 0; i < x; i++) {
+    if ((x - i) % 3 == 2) {
+      if (n[i] == '1') {
+        str += elevenSeries[Number(n[i + 1])] + ' ';
+        i++;
+        sk = 1;
+      } else if (n[i] != 0) {
+        str += countingByTens[n[i] - 2] + ' ';
+        sk = 1;
+      }
+    } else if (n[i] != 0) {
+      str += digit[n[i]] + ' ';
+      if ((x - i) % 3 == 0) str += 'hundred ';
+      sk = 1;
+    }
+    if ((x - i) % 3 == 1) {
+      if (sk) str += shortScale[(x - i - 1) / 3] + ' ';
+      sk = 0;
+    }
+  }
+  if (x != number.length) {
+    var y = number.length;
+    str += 'point ';
+    for (var i = x + 1; i < y; i++) str += digit[n[i]] + ' ';
+  }
+  str = str.replace(/\number+/g, ' ');
+  return str.trim() + ".";
 }

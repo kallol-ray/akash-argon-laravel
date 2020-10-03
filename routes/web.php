@@ -74,6 +74,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('order_place/view', ['as'=>'order_place.view', 'uses'=>'SaleController@order_view']);
 	Route::post('order_place/sale', ['as'=>'order_place.sale', 'uses'=>'SaleController@get_sale_product_info']);
 	Route::get('order_place/sale/{barcodeSale}', ['as'=>'order_place.sale', 'uses'=>'SaleController@get_sale_product_info']);
+	Route::get('order_place/complete/{sale_id}/{order_invoice}', ['as'=>'order_place.sale', 'uses'=>'SaleController@complete_order']);
 
 
 	Route::get('brand/entry', ['as'=>'brand.entry', 'uses'=>'BrandController@brand_entry_form']);
@@ -97,6 +98,12 @@ Route::group(['middleware' => 'auth'], function () {
 	// Route::get('/order_place/details/{auto_sale_invoice}/{sale_id}', 'SaleController@sale_order_details');
 	Route::post('/order_place/details', 'SaleController@sale_order_details');
 	Route::post('/order_place/search_invoice', 'SaleController@search_invoice_sale');
+
+	Route::post('/order_place/print_invoice', 'SaleController@get_print_invoice');
+	// Route::get('/order_place/print_invoice/{sale_info_id}/{auto_sale_invoice}', 'SaleController@get_print_invoice');
+
+	// Route::post('/order_place/cancel', 'SaleController@get_print_invoice');
+	Route::get('/order_place/cancel/{sale_info_id}/{auto_sale_invoice}', 'SaleController@cancel_sale_order');
 
 });
 
