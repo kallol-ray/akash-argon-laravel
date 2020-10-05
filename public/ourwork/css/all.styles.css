@@ -94,6 +94,10 @@ body{
 #reset_cancel_brand {
 	width: 200px;
 }
+#saveBtnBrand,
+#reset_cancel_brand {
+	width: 140px;
+}
 #saveBtn,
 #updateBtn,
 #saveBtnCustomer {

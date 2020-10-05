@@ -79,7 +79,8 @@ class ProductController extends Controller
               // echo "Sorry, file already exists.";
               $uploadOk = 0;
             }
-            // Check file size 500KB
+            // Check file size 500KB = 500000Byte
+            //size return with byte
             if ($_FILES["imageToUpload"]["size"] > 500000) {
               // echo "Sorry, your file is too large.";
               $uploadOk = 0;
@@ -657,27 +658,27 @@ class ProductController extends Controller
         }
       }
       public function store_in_view() {
-        $pp_history = DB::table('product_purchase_history')
-                ->orderBy('pp_history_id', 'desc')
-                ->get();
+        // $pp_history = DB::table('product_purchase_history')
+        //         ->orderBy('pp_history_id', 'desc')
+        //         ->get();
         $pp_invoice = DB::table('product_purchase_history')
                       ->select('auto_invoice_no', 'buy_date')
                       ->orderBy('auto_invoice_no', 'desc')
                       ->distinct()
                       ->get(['auto_invoice_no']);
 
-        $productArr = array();
-        $product_info = DB::table('product_info')
-                ->select('product_info_id', 'title')
-                ->get();
+        // $productArr = array();
+        // $product_info = DB::table('product_info')
+        //         ->select('product_info_id', 'title')
+        //         ->get();
                 
-        foreach($product_info as $product) {
-          $productArr[$product->product_info_id] = $product->title;
-        }
+        // foreach($product_info as $product) {
+        //   $productArr[$product->product_info_id] = $product->title;
+        // }
         return view('product.store_in_lists')
-                  ->with("pp_history", $pp_history)
-                  ->with("pp_invoice", $pp_invoice)
-                  ->with("productArr", $productArr);
+                  // ->with("pp_history", $pp_history)
+                  // ->with("productArr", $productArr)
+                  ->with("pp_invoice", $pp_invoice);
       }
     // End Store In
 
@@ -872,6 +873,95 @@ class ProductController extends Controller
         // $data['productArr'] = $productArr;
 
         return response()->json($data);
+      }
+
+      
+      public function po_store_item_details(Request $req) {
+        $auto_invoice_no = $req->auto_invoice_no;
+        $data = array();
+        $po_info = DB::table('purchase_order_info')
+                      ->select()
+                      ->where('auto_invoice_no', $auto_invoice_no)
+                      ->get();
+        
+        if($po_info != NULL && count($po_info) > 0) {
+          $data['po_invoice_items'] = array();
+
+          $data['purchase_invoice'] = $po_info[0]->purchase_invoice_no;
+          $data['buyer_adnl_cost'] = $po_info[0]->buyer_adnl_cost;
+          $data['supplier_adnl_cost'] = $po_info[0]->supplier_adnl_cost;
+          $data['supplier_adnl_cost'] = $po_info[0]->supplier_adnl_cost;
+          // $data['is_stored'] = $po_info[0]->is_stored;
+          // $data['payment_status'] = $po_info[0]->paid_or_due;
+          if($po_info[0]->is_stored == 0) {
+            $data['is_stored_text'] = "No";
+          } elseif($po_info[0]->is_stored == 1) {
+            $data['is_stored_text'] = "Yes";
+          } else {
+            $data['is_stored_text'] = "Invalid";
+          }
+          if($po_info[0]->paid_or_due == 0) {
+            $data['payment_status_text'] = "Partial Payment";
+          } elseif($po_info[0]->paid_or_due == 1) {
+            $data['payment_status_text'] = "Full Due";
+          } elseif($po_info[0]->paid_or_due == 2) {
+            $data['payment_status_text'] = "Full Paid";
+          } else {
+            $data['payment_status_text'] = "Invalid Status";
+          }
+          
+          $data['purchased_date'] = date("d/m/Y", strtotime(str_replace("/", "-", $po_info[0]->purchased_date)));
+          $data['sub_total'] = $po_info[0]->sub_total;
+          $data['vat_percent'] = $po_info[0]->vat_percent + 0;
+          $data['vat_amount'] = $po_info[0]->vat_amount;
+          $data['grand_total'] = $po_info[0]->grand_total;
+          $data['due_amount'] = $po_info[0]->due_amount;
+          $data['paid_amount'] = $po_info[0]->paid_amount;
+          // $data['supplier_id'] = $po_info[0]->supplier_id;
+          $supplier = DB::table('supplier')
+                      ->select('supplier_name')
+                      ->where('supplier_id', $po_info[0]->supplier_id)
+                      ->get();
+          if($supplier != NULL && count($supplier) == 1) {
+            $data['supplier_name'] = $supplier[0]->supplier_name;
+          }
+
+          $po_info_item = DB::table('po_info_item')
+                        ->select()
+                        ->where('auto_invoice_no', $auto_invoice_no)
+                        ->get();
+          $i= 1;
+          foreach ($po_info_item as $info) {
+            $single_item = array();
+            $single_item['serial'] = $i;
+            $single_item['product_info_id'] = $info->product_info_id;
+            $single_item['image'] = $info->image;
+            $single_item['product_qty'] = $info->product_qty;
+            $single_item['unit_price'] = $info->unit_price;
+            $single_item['unit_adnl_price'] = $info->unit_adnl_price;
+            $single_item['sale_price'] = $info->sale_price;
+            $single_item['total_price'] = $info->total_price;
+            $single_item['po_info_item_id'] = $info->po_info_item_id;
+            $single_item['auto_invoice_no'] = $info->auto_invoice_no;
+
+            $product_info = DB::table('product_info')
+                        ->select()
+                        ->where('product_info_id', $info->product_info_id)
+                        ->get();
+            foreach ($product_info as $pf) {
+              $single_item['product_name'] = $pf->title;
+              $single_item['model'] = $pf->model;
+              $single_item['brand'] = $pf->brand;
+            }
+            $i++;
+            array_push($data['po_invoice_items'], $single_item);
+          }
+          $data['status'] = true;
+          return response()->json($data);
+        } else {
+          $data['status'] = false;
+          return response()->json($data);
+        }
       }
 }
 

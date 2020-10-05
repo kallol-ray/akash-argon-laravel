@@ -142,7 +142,7 @@ class SaleController extends Controller
             ->select('qty')
             ->where('barcode', $barcode[$key])      
             ->where('product_info_id', $value)
-            ->sharedLock()     
+            ->sharedLock()
             ->get();
       
       if($isQuantityAvailable != NULL) {
@@ -151,7 +151,7 @@ class SaleController extends Controller
         // var_dump($isQuantityAvailable[0]->qty);
         // echo "</pre>";
         // echo "</br></br>";
-        $presentQty = $quantity[$key];
+        $presentQty = (int)$quantity[$key];
         $dbQty = $isQuantityAvailable[0]->qty;
         if( $dbQty >= $presentQty) {          
           // try {
@@ -183,7 +183,230 @@ class SaleController extends Controller
     Session::put('sucMsg', 'A Sale Order Saved Successfully!');
     return Redirect::to('/order_place/view');
 	}
+  public function sale_order_update_process(Request $req) {
+    $sale_info_id = $req->sale_info_id;
+    $auto_sale_invoice = $req->auto_sale_invoice;
+    // var_dump($auto_sale_invoice);
+    $saleInfo = array();
+    $saleItems = array();
+    $product_item_id = array();
+    $product_info = array();
 
+
+    $customer_info = DB::table('customer')
+                ->select('customer_id','customer_name','phone')
+                ->orderBy('customer_id', 'desc')
+                ->get();
+
+    $sale_info = DB::table('sale_info')
+                ->select()
+                ->where('sale_info_id', $sale_info_id)
+                ->where('is_delivered', '0')
+                ->get();
+    $saleInfo['sale_info_id'] = $sale_info[0]->sale_info_id;
+    $saleInfo['auto_sale_invoice'] = $sale_info[0]->auto_sale_invoice;
+
+    $saleInfo['customer_id'] = $sale_info[0]->customer_id;
+    $saleInfo['sub_total_bill'] = $sale_info[0]->sub_total_bill;
+    $saleInfo['vat_percent'] = $sale_info[0]->vat_percent + 0;
+    $saleInfo['vat_amount'] = $sale_info[0]->vat_amount;
+    $saleInfo['discount'] = $sale_info[0]->discount;    
+    $saleInfo['paid_or_due'] = $sale_info[0]->paid_or_due;
+    $saleInfo['paid_amount'] = $sale_info[0]->paid_amount;
+    $saleInfo['due_amount'] = $sale_info[0]->due_amount;
+    $saleInfo['saled_date'] = $sale_info[0]->saled_date;
+
+    $saleInfo['after_discount'] = number_format($saleInfo['sub_total_bill'] - $saleInfo['discount'], 2);
+    $saleInfo['customer_paid'] = number_format($saleInfo['after_discount'] + $saleInfo['vat_amount'], 2);
+
+
+    $sale_item = DB::table('sale_item')
+                ->select()
+                ->where('sale_info_id', $sale_info_id)
+                ->get();
+    
+    foreach ($sale_item as $key => $item) {
+      // $data = array();
+      // $data['sale_item_id'] = $item->sale_item_id;
+      // $data['product_info_id'] = $item->product_info_id;
+      // $data['inventory_id'] = $item->inventory_id;
+      // $data['barcode'] = $item->barcode;
+      // $data['qty'] = $item->qty;
+      // $data['sale_price'] = $item->sale_price;
+      // $data['unit_price'] = $item->sale_price / $item->qty;
+      // array_push($saleItems, $data);
+      array_push($product_item_id, $item->product_info_id);
+    }    
+    $product_info = DB::table('product_info')
+                ->select()
+                ->whereIn('product_info_id', $product_item_id)
+                ->get();
+    // echo '<pre>';
+    // var_dump($product_info);
+    // echo '</pre>';
+    foreach ($sale_item as $key => $item) {
+      $data = array();
+      $data['sale_item_id'] = $item->sale_item_id;
+      $data['product_info_id'] = $item->product_info_id;
+      $data['inventory_id'] = $item->inventory_id;
+      $data['barcode'] = $item->barcode;
+      $data['qty'] = $item->qty;
+      $data['sale_price'] = $item->sale_price;
+      $data['unit_price'] = number_format($item->sale_price / $item->qty, 2);
+      foreach ($product_info as $key => $info) {
+        if($info->product_info_id == $item->product_info_id) {
+          // $data['product_info_id'] = $info->product_info_id;
+          $data['product_name'] = $info->title;
+          $data['model'] = $info->model;
+          $data['brand'] = $info->brand;
+          $data['image'] = $info->image;
+        }
+      }
+      array_push($saleItems, $data);
+      // $saleItems[$item->sale_item_id] = $data;
+    }  
+    
+    // echo '<pre>';
+    // var_dump($saleItems);
+    // echo '</pre>';
+
+    return view('sale/sale_order_update')
+        ->with('customer_info', $customer_info)
+        ->with('saleInfo', $saleInfo)
+        ->with('saleItems', $saleItems)
+        ->with('product_info', $product_info);
+  }
+  public function sale_order_update(Request $req) {  
+    $sale_info_id = $req->sale_info_id;
+    $data = array();
+    $data['customer_id'] = $req->customer_id;
+    $data['sub_total_bill'] = $req->sub_total;
+    $data['vat_percent'] = $req->vat_percent;
+    $data['vat_amount'] = $req->vat_amount;
+    $data['discount'] = $req->discount;
+    $data['paid_or_due'] = $req->paid_or_due;
+    $data['paid_amount'] = $req->paid_amount;
+    $data['due_amount'] = $req->due_amount;
+    $data['update_by'] = Auth::user()->email;
+    $data['updated_at'] = date('Y-m-d H:i:s');
+    DB::table('sale_info')
+              ->where('sale_info_id', $sale_info_id)            
+              ->where('is_delivered', '0')
+              ->update($data);
+    
+    //Restore item qty and delete
+      $total_items = 0;
+      $row_updated = 0;
+      $sale_item = DB::table('sale_item')
+                        ->select()
+                        ->where('sale_info_id', $sale_info_id)
+                        ->get();
+
+      // echo '<pre>';
+      // print_r($sale_item);
+      // exit;
+      
+      foreach ($sale_item as $key => $item) {
+        $inventory = DB::table('inventory')
+                      ->select('inventory_id', 'product_info_id', 'qty')
+                      ->where('inventory_id', $item->inventory_id)
+                      ->where('product_info_id', $item->product_info_id)
+                      ->get();
+
+        // echo '<pre>';
+        // print_r($inventory);
+        // echo '</pre>';
+        $updateQty = $inventory[0]->qty + $item->qty;
+        // echo '$updateQty'.$updateQty;
+        $affected = DB::table('inventory')
+                ->where('inventory_id', $item->inventory_id)
+                ->where('product_info_id', $item->product_info_id)
+                ->update(['qty' => $updateQty]);
+        $row_updated += $affected;
+        $total_items++;
+      }
+      
+      if($total_items == $row_updated) {
+        DB::table('sale_item')
+          ->where('sale_info_id', $sale_info_id)
+          ->delete();
+      }
+    //Restore item qty and delete
+
+
+    $product_info_id_arra = $req->product_id;
+    $inventory_id = $req->inventory_id;
+    $barcode = $req->barcode;
+    $sale_price = $req->total_price;
+    $quantity = $req->quantity;
+    // echo "<pre>";
+    // var_dump($product_info_id_arra);
+    // var_dump($inventory_id);
+    // var_dump($barcode);
+    // var_dump($sale_price);
+    // var_dump($quantity);
+    // exit();
+    foreach ($product_info_id_arra as $key => $product_id) {
+      $dataItem = array();
+      $dataItem['sale_info_id'] = $sale_info_id;
+      $dataItem['product_info_id'] = $product_id;
+      $dataItem['inventory_id'] = $inventory_id[$key];
+      $dataItem['barcode'] = $barcode[$key];
+      $dataItem['qty'] = $quantity[$key];
+      $dataItem['sale_price'] = $sale_price[$key];
+      $dataItem['created_at'] = date('Y-m-d H:i:s');
+      
+
+      DB::beginTransaction();
+      $isQuantityAvailable = DB::table('inventory')
+            ->select('qty')
+            ->where('barcode', $barcode[$key])      
+            ->where('product_info_id', $product_id)
+            ->sharedLock()
+            ->get();
+      
+      if($isQuantityAvailable != NULL) {
+        // echo "<pre>";
+        // var_dump($isQuantityAvailable);
+        // var_dump($isQuantityAvailable[0]->qty);
+        // echo "</pre>";
+        // echo "</br></br>";
+        $presentQty = (int)$quantity[$key];
+        $dbQty = $isQuantityAvailable[0]->qty;
+        // echo "<pre>";
+        // var_dump($presentQty);
+        // var_dump($dbQty);
+        // echo "-----------";
+        // echo "</pre>";
+        if( $dbQty >= $presentQty) {          
+          // try {
+            $upadteQtyValue = $dbQty - $presentQty;
+            if($upadteQtyValue >= 0) {
+              $dataupdate = array();
+              DB::table('inventory')
+                  ->where('barcode', $barcode[$key])
+                  ->where('inventory_id', $inventory_id[$key])
+                  ->where('product_info_id', $product_id)
+                  ->update(['qty' => $upadteQtyValue]);
+              DB::table('sale_item')
+                  ->insert($dataItem);
+              DB::commit();
+              
+            }
+          // } catch (Exception $e) {
+          //   Session::put('errMsg', $e);
+          //   return Redirect::to('/order_place/view');
+          // }
+        }
+      }
+    }
+    // echo "<pre>";
+    // var_dump($product_info_id);
+    // exit();
+    Session::put('sucMsg', 'A Sale Order Update Successfully!');
+    return Redirect::to('/order_place/view');
+  }
+  
 
   public function complete_order(Request $req) {
     $sale_id = $req->sale_id;
@@ -202,10 +425,56 @@ class SaleController extends Controller
   public function cancel_sale_order(Request $req) {
     $sale_info_id = $req->sale_info_id;
     $auto_sale_invoice = $req->auto_sale_invoice;
-    ================================
+
+    
+    $sale_item = DB::table('sale_item')
+                      ->select('inventory_id', 'product_info_id', 'qty')
+                      ->where('sale_info_id', $sale_info_id)
+                      ->get();
+
+    // echo '<pre>';
+    // print_r($sale_item);
+    // echo '</pre>';
+    $total_items = 0;
+    $row_updated = 0;
+    foreach ($sale_item as $key => $item) {
+      $inventory = DB::table('inventory')
+                    ->select('inventory_id', 'product_info_id', 'qty')
+                    ->where('inventory_id', $item->inventory_id)
+                    ->where('product_info_id', $item->product_info_id)
+                    ->get();
+
+      // echo '<pre>';
+      // print_r($inventory);
+      // echo '</pre>';
+      $updateQty = $inventory[0]->qty + $item->qty;
+      // echo '$updateQty'.$updateQty;
+      $affected = DB::table('inventory')
+              ->where('inventory_id', $item->inventory_id)
+              ->where('product_info_id', $item->product_info_id)
+              ->update(['qty' => $updateQty]);
+      $row_updated += $affected;
+      $total_items++;
+    }
+    if($total_items == $row_updated) {
+      DB::table('sale_item')
+        ->where('sale_info_id', $sale_info_id)
+        ->delete();
+
+      DB::table('sale_info')
+        ->where('sale_info_id', $sale_info_id)
+        ->delete();
+    }
+      // echo '<pre>';
+      // print_r($row_updated);
+      // print_r($i);
+      // echo '</pre>';
+    // ================================
     Session::put('sucMsg', 'A Sale Order Cancel Successfully!');
     return Redirect::to('/order_place/view');
   }
+
+  
 
   
   //ajax call
@@ -280,6 +549,7 @@ class SaleController extends Controller
     $info['vat_amount'] = $sale_info[0]->vat_amount;
     $info['paid_amount'] = $sale_info[0]->paid_amount;
     $info['due_amount'] = $sale_info[0]->due_amount;
+    $info['grand_total_sale'] = number_format($sale_info[0]->sub_total_bill - $sale_info[0]->discount + $sale_info[0]->vat_amount, 2);
     $info['saled_date'] = date("d/m/Y", strtotime(str_replace('/', '-', $sale_info[0]->saled_date)));
     if($sale_info[0]->is_delivered == 0) {
       $info['is_delivered'] = "Not Delivered";
@@ -346,9 +616,11 @@ class SaleController extends Controller
                   ->select()
                   ->where('auto_sale_invoice', $auto_sale_invoice)
                   ->get();
+    // echo "<pre>";
+    // var_dump($sale_info);
+    // exit();
     
-    
-    if($sale_info != NULL) {
+    if($sale_info != NULL && count($sale_info) > 0) {
       $data['status'] = true;
       foreach ($sale_info as $info) {
         $data['sale_info_id'] = $info->sale_info_id;
@@ -363,7 +635,7 @@ class SaleController extends Controller
         $data['paid_amount'] = $info->paid_amount;
         $data['due_amount'] = $info->due_amount;
         $data['is_delivered'] = $info->is_delivered;
-        $data['saled_date'] = $info->saled_date;
+        $data['saled_date'] = date("d/m/Y", strtotime(str_replace('/', '-', $info->saled_date)));
         $data['entry_by'] = $info->entry_by;
         $data['update_by'] = $info->update_by;
         $data['created_at'] = $info->created_at;
@@ -371,8 +643,9 @@ class SaleController extends Controller
       }
       $customer = DB::table('customer')
                     ->select()
-                    ->where('customer_id', $sale_info[0]->sale_info_id)
+                    ->where('customer_id', $sale_info[0]->customer_id)
                     ->get();
+
       foreach ($customer as $c) {
         $data['customer_name'] = $c->customer_name;
       }
@@ -381,6 +654,55 @@ class SaleController extends Controller
       $data['status'] = false;
       return response()->json($data);
     }    
+  }
+
+  public function search_status_invoice_sale(Request $req) {
+    $is_delivered = $req->is_delivered;
+    $data = array();
+    $sale_info = DB::table('sale_info')
+                  ->select()
+                  ->where('is_delivered', $is_delivered)
+                  ->get();
+    // echo "<pre>";
+    // var_dump($sale_info);
+    // exit();
+    
+    if($sale_info != NULL && count($sale_info) > 0) {      
+      $data['invoice_items'] = array();
+      foreach ($sale_info as $info) {
+
+        $invoice_item['sale_info_id'] = $info->sale_info_id;
+        $invoice_item['auto_sale_invoice'] = $info->auto_sale_invoice;
+        $invoice_item['customer_id'] = $info->customer_id;
+        $invoice_item['sub_total_bill'] = $info->sub_total_bill;
+        $invoice_item['vat_percent'] = $info->vat_percent;
+        $invoice_item['vat_amount'] = $info->vat_amount;
+        $invoice_item['discount'] = $info->discount;
+
+        $invoice_item['paid_or_due'] = $info->paid_or_due;
+        $invoice_item['paid_amount'] = $info->paid_amount;
+        $invoice_item['due_amount'] = $info->due_amount;
+        $invoice_item['is_delivered'] = $info->is_delivered;
+        $invoice_item['saled_date'] = date("d/m/Y", strtotime(str_replace('/', '-', $info->saled_date)));
+        $invoice_item['entry_by'] = $info->entry_by;
+        $invoice_item['update_by'] = $info->update_by;
+        $invoice_item['created_at'] = $info->created_at;
+        $invoice_item['updated_at'] = $info->updated_at;
+        $customer = DB::table('customer')
+                    ->select()
+                    ->where('customer_id', $sale_info[0]->customer_id)
+                    ->get();
+        foreach ($customer as $c) {
+          $invoice_item['customer_name'] = $c->customer_name;
+        }
+        array_push($data['invoice_items'], $invoice_item);
+      }
+      $data['status'] = true;
+      return response()->json($data);
+    } else {
+      $data['status'] = false;
+      return response()->json($data);
+    }
   }
 
   public function get_print_invoice(Request $req) {

@@ -99,26 +99,25 @@
                   <input type="text" class="k-field allowNumbersOnly" name="sub_total" id="sub_total" value="0.00" placeholder="Sub Total" required readonly>
                 </div>
                 <div class="k-control">
+                  <div class="k-label">Discount:</div>
+                  <input class="k-field" required name="discount" id="discount" value="0.00" placeholder="Discount Amount" onblur="saleDiscountCalc(this)">
+                </div>                
+                <div class="k-control">
+                  <div class="k-label">Grand Total:</div>
+                  <input class="k-field" required name="grand_total" id="grand_total" value="0.00" placeholder="Grand Total" required readonly>
+                </div>
+                <div class="k-control">
                   <div class="k-label">VAT:</div>
                   <div class="k-field-vat"><input type="text" name="vat_percent" id="vat_percent" class="order_input_vat allowNumbersOnly" value="5" onblur="calcSaleTotal()" placeholder="Vat Percent" required>&nbsp;%</div>
                 </div>
                 <div class="k-control">
                   <div class="k-label">VAT Amount:</div>
                   <input type="text" class="k-field allowNumbersOnly" id="vat_amount" name="vat_amount" value="0.00" placeholder="Vat Amount" required readonly>
-                </div>
-                <div class="k-control">
-                  <div class="k-label">Grand Total:</div>
-                  <input class="k-field" required name="grand_total" id="grand_total" value="0.00" placeholder="Grand Total" required readonly>
-                </div>
-                <div class="k-control">
-                  <div class="k-label">Discount:</div>
-                  <input class="k-field" required name="discount" id="discount" value="0.00" placeholder="Discount Amount" onblur="saleDiscountCalc(this)">
-                </div>
+                </div>                
                 <div class="k-control">
                   <div class="k-label">Customer Paid:</div>
                   <input class="k-field" required name="customer_paid" id="customer_paid" value="0.00" placeholder="Customer Paid" required readonly>
                 </div>
-
               </div>
             </div>
             <div class="col-md-12">

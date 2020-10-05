@@ -27,13 +27,13 @@
 					<div class="col-md-6">
 						<div class="form-group m0">
 		          <label for="">Sale Invoice (SOI)</label>
-		          <input type="text" class="form-control" id="search_sale_invoice" name="search_sale_invoice" placeholder="SOI-00000">
+		          <input type="text" class="form-control" id="search_sale_invoice" name="search_sale_invoice" placeholder="SOI-00000" autocomplete="off">
 		        </div>
 		  		</div>
 		  		<div class="col-md-6">
 		  			<div class="form-group m0">
 		          <label for="sale_order_status">Status</label>
-		          <select class="form-control" id="sale_order_status" name="sale_order_status">
+		          <select class="form-control" id="sale_order_status" name="sale_order_status" autocomplete="off">
 		            <option value="">Select one...</option>
 		            <option value="0">Processing</option>
 		            <option value="1">Complete</option>
@@ -80,7 +80,8 @@
 
 									<button class="btn btn-outline-primary btn-sm" onclick="sale_order_details('{{ $sale->sale_info_id }}','{{ $sale->auto_sale_invoice }}')">Details</button>
 
-									<button class="btn btn-outline-default btn-sm" onclick="update_sale_order('{{ $sale->sale_info_id }}','{{ $sale->auto_sale_invoice }}')">Edit</button>
+									<!-- <button class="btn btn-outline-default btn-sm" onclick="update_sale_order('{{ $sale->sale_info_id }}','{{ $sale->auto_sale_invoice }}')">Edit</button> -->
+									<a href="/order_place/update/{{ $sale->sale_info_id }}/{{ $sale->auto_sale_invoice }}" class="btn btn-outline-default btn-sm">Edit</a>
 
 									<button class="btn btn-outline-danger btn-sm" onclick="cancel_sale_order('{{ $sale->sale_info_id }}','{{ $sale->auto_sale_invoice }}')">Cancel</button>
 

@@ -33,7 +33,7 @@
                 <input type="text" class="form-control" id="brand_name" name="brand_name" placeholder="Brand Name">
               </div>
               <div class="form-group subres">
-                <input type="submit" name="saveBtn" class="btn btn-outline-primary" id="saveBtnCustomer" value="Save"/>
+                <input type="submit" name="saveBtn" class="btn btn-outline-primary" id="saveBtnBrand" value="Save"/>
                 <input type="button" class="btn btn-outline-danger" id="reset_cancel_brand" value="Reset"/>
               </div>              
               {!! Form::close() !!}

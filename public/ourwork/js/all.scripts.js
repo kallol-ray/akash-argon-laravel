@@ -78,7 +78,7 @@ $("#imageToUpload").change(function() {
 });
 
 function msgAlertAutoHide() {
-	console.log("Hide", $(".msgAlert .alert").is(":visible"));
+	// console.log("Hide", $(".msgAlert .alert").is(":visible"));
 	if($(".msgAlert").is(":visible")) {
     setTimeout(function(){
         $(".msgAlert .alert").fadeOut("slow");
@@ -809,10 +809,11 @@ function remove_order_list(elm, scanCode) {
   if(scanCode != 'blank_row') {
   	removeItemOnce(scannedSaleBarcode, scanCode);
   }
-  console.log("scanCode", scanCode);
-  console.log(scannedSaleBarcode);
-  calcSaleTotal();
-  $("#paid_or_due_sale").val("").trigger("change");
+  // console.log("scanCode", scanCode);
+  // console.log(scannedSaleBarcode);  
+  calcSaleTotal();  
+  // $("#paid_or_due_sale").val("").trigger("change");
+  
 }
 
 $(document).on("change", "#paid_or_due", function(){
@@ -929,19 +930,18 @@ function activeMenuJquery(currentPath, menuId) {
   });
 }
 function unit_price_validation(elm) {
-	let mainPrice = $(elm).attr('unit-price');
-	let inputPrice = $(elm).val();
+	let mainPrice = parseFloat($(elm).attr('unit-price'));
+	let inputPrice = parseFloat($(elm).val());
 	let qty = $(elm).closest('tr').find('td.quantity').find('.product_qty').val();
+	console.log("inputPrice", inputPrice)
+	console.log("mainPrice", mainPrice)
 	if(inputPrice < mainPrice) {
 		$(elm).val(mainPrice);
 		alert("Price can not be less than " + mainPrice + ".");
 	} else if(inputPrice > mainPrice){
-		// if(inputPrice.indexOf(".") == -1) {
-			$(elm).val(parseFloat(inputPrice).toFixed(2));
-			$(elm).closest('tr').find('td.last_price').find('.total_price').val(parseFloat(inputPrice * qty).toFixed(2));
-		// } else {
-		// 	$(elm).closest('tr').find('td.last_price').find('.total_price').val(inputPrice);
-		// }		
+		$(elm).val(parseFloat(inputPrice).toFixed(2));
+		$(elm).closest('tr').find('td.last_price').find('.total_price').val(parseFloat(inputPrice * qty).toFixed(2));
+		calcSaleTotal();
 	}
 }
 
@@ -1048,7 +1048,22 @@ $(document).on('keydown', '.productName', function(event) {
 });
 
 function calcSaleTotal(){
-	// console.log("function calcSaleTotal()");
+  // let sale_subtotal = 0;
+  // $('.total_price').each(function(k, v) {
+  //   if($(v).val() != ''){
+  //     sale_subtotal = sale_subtotal+parseFloat($(v).val());
+  //   }
+  // });
+  // let vat_percent = $("#vat_percent").val();
+  // let vat_amount = parseFloat((sale_subtotal * vat_percent)/100).toFixed(2);
+  // let grand_total = parseFloat(sale_subtotal)+parseFloat(vat_amount); 
+  // let discount = parseFloat($("#discount").val());
+    
+  // $("#sub_total").val(parseFloat(sale_subtotal).toFixed(2));
+  // $("#vat_amount").val(vat_amount);    
+  // $("#grand_total").val(parseFloat(grand_total).toFixed(2));
+  // $("#customer_paid").val(parseFloat(grand_total - discount).toFixed(2));
+
   let sale_subtotal = 0;
   $('.total_price').each(function(k, v) {
     if($(v).val() != ''){
@@ -1056,22 +1071,51 @@ function calcSaleTotal(){
     }
   });
   let vat_percent = $("#vat_percent").val();
-  let vat_amount = parseFloat((sale_subtotal * vat_percent)/100).toFixed(2);
-  let grand_total = parseFloat(sale_subtotal)+parseFloat(vat_amount); 
   let discount = parseFloat($("#discount").val());
-  // console.log("vat_amount", vat_amount);
-    
+  let grand_total = parseFloat(sale_subtotal)-parseFloat(discount);
+  let vat_amount = parseFloat((grand_total * vat_percent)/100).toFixed(2);
+  let customer_paid = parseFloat(grand_total) + parseFloat(vat_amount);
+  
+  console.log(vat_amount, customer_paid);
   $("#sub_total").val(parseFloat(sale_subtotal).toFixed(2));
   $("#vat_amount").val(vat_amount);    
   $("#grand_total").val(parseFloat(grand_total).toFixed(2));
-  $("#customer_paid").val(parseFloat(grand_total - discount).toFixed(2));
+  $("#customer_paid").val(parseFloat(customer_paid).toFixed(2));
+
+  let payment_status = $("#paid_or_due_sale").val();
+  if(payment_status == ""){
+  	$("#paid_amount_sale").val('0.00');
+  	$("#due_amount").val('0.00');
+  } else if(payment_status == 0) {
+  	//on partial payment
+  	let paid_amount = $("#paid_amount_sale").val();
+  	let due_amount = customer_paid - paid_amount;  	
+  	$("#due_amount").val(parseFloat(due_amount).toFixed(2));
+  } else if(payment_status == 1) {
+  	$("#paid_amount_sale").val('0.00');
+  	$("#due_amount").val(parseFloat(customer_paid).toFixed(2));  	
+  } else if(payment_status == 2) {
+  	$("#paid_amount_sale").val(parseFloat(customer_paid).toFixed(2));
+  	$("#due_amount").val('0.00');
+  } else {}
 }
 
 function saleDiscountCalc(elm) {
+	// let discount = $(elm).val();
+	// let paid_amount = parseFloat($("#grand_total").val()) - discount;
+	// $(elm).val(parseFloat(discount).toFixed(2));
+	// $('#customer_paid').val(parseFloat(paid_amount).toFixed(2));
+
+	let vat_percent = $("#vat_percent").val();
 	let discount = $(elm).val();
-	let paid_amount = parseFloat($("#grand_total").val()) - discount;
+	let grand_total = parseFloat($("#sub_total").val()) - discount;
 	$(elm).val(parseFloat(discount).toFixed(2));
-	$('#customer_paid').val(parseFloat(paid_amount).toFixed(2));
+	$('#grand_total').val(parseFloat(grand_total).toFixed(2));
+
+	let vat_amount = parseFloat((grand_total * vat_percent)/100).toFixed(2);
+  let customer_paid = parseFloat(grand_total) + parseFloat(vat_amount);
+	$("#vat_amount").val(vat_amount); 
+	$("#customer_paid").val(parseFloat(customer_paid).toFixed(2));
 }
 $(document).on("blur", "#paid_amount_sale", function(e) {
 	// e.preventDefault();
@@ -1193,7 +1237,7 @@ function sale_order_details(sale_id, soi) {
 					let html = 
             '<div class="pofield_set">'+
               '<div class="bar"></div>'+
-              '<div class="po-head" style="height: 250px;">'+
+              '<div class="po-head" style="height: 285px;">'+
                 '<div class="po-labels">Customer Name</div>'+
                 '<div class="po-labels" id="">'+data.customer.customer_name+'</div>'+
                 '<div class="po-labels">Company/Office</div>'+
@@ -1201,28 +1245,34 @@ function sale_order_details(sale_id, soi) {
 
                 '<div class="po-labels">Mobile</div>'+
                 '<div class="po-labels" id="">'+data.customer.phone+'</div>'+
-								'<div class="po-labels">Total Price</div>'+
+								'<div class="po-labels">Subtotal Price</div>'+
                 '<div class="po-labels" id="">'+data.sale_info.sub_total_bill+'</div>'+
 
                 '<div class="po-labels">Invoice Number</div>'+
                 '<div class="po-labels" id="">'+data.sale_info.auto_sale_invoice+'</div>'+
-                '<div class="po-labels">Vat Amount</div>'+
-                '<div class="po-labels" id="">'+data.sale_info.vat_amount+'</div>'+
-
-                '<div class="po-labels">Total Product Quantity</div>'+
-                '<div class="po-labels" id="">'+total_product_qty+'</div>'+
                 '<div class="po-labels">Discount</div>'+
                 '<div class="po-labels" id="">'+data.sale_info.discount+'</div>'+
 
+                '<div class="po-labels">Total Product Quantity</div>'+
+                '<div class="po-labels" id="">'+total_product_qty+'</div>'+
+                '<div class="po-labels">Vat Amount</div>'+
+                '<div class="po-labels" id="">'+data.sale_info.vat_amount+'</div>'+
+                
                 '<div class="po-labels">Sale Date</div>'+
                 '<div class="po-labels" id="po-purchase-date">'+data.sale_info.saled_date+'</div>'+
-                '<div class="po-labels">Due Amount</div>'+
-                '<div class="po-labels" id="">'+data.sale_info.due_amount+'</div>'+
+                '<div class="po-labels">Total Sale Amount</div>'+
+                '<div class="po-labels" id="">'+data.sale_info.grand_total_sale+'</div>'+
 
                 '<div class="po-labels">Delivery Status</div>'+
-                '<div class="po-labels" id=""><span class="'+dstatus+'">'+data.sale_info.is_delivered+'</span></div>'+ 
+                '<div class="po-labels" id=""><span class="'+dstatus+'">'+data.sale_info.is_delivered+'</span></div>'+
                 '<div class="po-labels">Paid Amount</div>'+
-                '<div class="po-labels" id="">'+data.sale_info.paid_amount+'</div>'+                
+                '<div class="po-labels" id="">'+data.sale_info.paid_amount+'</div>'+
+                
+
+                '<div class="po-labels"></div>'+
+                '<div class="po-labels" id=""></div>'+
+                '<div class="po-labels">Due Amount</div>'+
+                '<div class="po-labels" id="">'+data.sale_info.due_amount+'</div>'+
               '</div>'+
               '<div class="po-table">'+
                 '<table class="po-details-tbl">'+
@@ -1407,38 +1457,42 @@ $("#search_sale_invoice").keyup(function (e) {
 		let searchInvoice = $(this).val();
 		console.log("searchInvoice", searchInvoice);
 		$.ajax({			
-			url: "/order_place/search_invoice",
-			type: "POST",
+			url: "/order_place/search_invoice/"+searchInvoice,
+			type: "GET",
 			// cache: false,
-			data: {
-				'_token': $("meta[name='csrf-token']").attr('content'),
-				'auto_sale_invoice': searchInvoice
-			},
+			// data: {
+			// 	'_token': $("meta[name='csrf-token']").attr('content'),
+			// 	'auto_sale_invoice': searchInvoice
+			// },
 			dataType: "json",
 			success: function(data, textStatus, xhr){				
 				if(xhr.status) {
-					console.log("data", data);
-					if(data.status) {
-						$("#sale_list_tbl tbody").html("");
-						let dateFormat = data.saled_date;
+					// console.log("data", data);
+					$("#sale_list_tbl tbody").html("");
+					if(data.status) {						
 						let tableBody =  '<tr data-id="'+data.sale_info_id+'">'+
 							'<td class="">'+data.auto_sale_invoice+'</td>'+
 							'<td class="">'+data.customer_name+'</td>'+
 							'<td class="">'+data.sub_total_bill +'</td>'+
-							'<td class="">'+
-							dateFormat +
+							'<td class="">'+ data.saled_date +'</td>'+
 								// {{ date("d/m/Y", strtotime(str_replace('-', '/',  $sale->saled_date))) }}</td>'+
 							'<td>'+
-								'<button class="btn btn-outline-info btn-sm" onclick="print_invoice('+data.sale_info_id+','+data.auto_sale_invoice+')">Print Invoice</button>'+
-								'<button class="btn btn-outline-success btn-sm" onclick="complete_order('+data.sale_info_id+','+data.auto_sale_invoice+')">Make Complete</button>'+
-								'<button class="btn btn-outline-primary btn-sm" onclick="sale_order_details('+data.sale_info_id+','+data.auto_sale_invoice+')">Details</button>'+
-								'<button class="btn btn-outline-default btn-sm" onclick="update_sale_order('+data.sale_info_id+','+data.auto_sale_invoice+')">Edit</button>'+
-								'<button class="btn btn-outline-danger btn-sm" onclick="cancel_sale_order('+data.sale_info_id+','+data.auto_sale_invoice+')">Cancel</button>'+
-							'</td>'+
+								'<button class="btn btn-outline-info btn-sm" onclick="print_invoice('+data.sale_info_id+',\''+data.auto_sale_invoice+'\')">Print Invoice</button>';
+								if(data.is_delivered == 0) {
+									tableBody +='<button class="btn btn-outline-success btn-sm" onclick="complete_order('+data.sale_info_id+',\''+data.auto_sale_invoice+'\')">Make Complete</button>';
+								}								
+								tableBody += '<button class="btn btn-outline-primary btn-sm" onclick="sale_order_details('+data.sale_info_id+',\''+data.auto_sale_invoice+'\')">Details</button>';
+								if(data.is_delivered == 0) {
+									tableBody += '<button class="btn btn-outline-default btn-sm" onclick="update_sale_order('+data.sale_info_id+',\''+data.auto_sale_invoice+'\')">Edit</button>'+
+									'<button class="btn btn-outline-danger btn-sm" onclick="cancel_sale_order('+data.sale_info_id+',\''+data.auto_sale_invoice+'\')">Cancel</button>';
+								}								
+							tableBody += '</td>'+
 						'</tr>';
 						$("#sale_list_tbl tbody").append(tableBody);
 					} else {
-						console.log("Data Not Received Successfully Kallol.")
+						console.log("Data Not Received Successfully Kallol.");
+						danger_alert("This Invoice Info Not Found.");
+						msgAlertAutoHide();
 					}
 				}
 			},
@@ -1465,6 +1519,140 @@ $("#search_sale_invoice").keyup(function (e) {
 	}
 });
 
+$(document).on("change", "#sale_order_status", function() {
+	$("#search_sale_invoice").val("");
+	let status = $(this).val();
+	if(status == "") {
+		status = 0;
+	}
+	// console.log(status);
+	$.ajax({
+			url: "/order_place/status_search/"+status,
+			type: "GET",
+			dataType: "json",
+			success: function(data, textStatus, xhr){				
+				if(xhr.status) {
+					console.log("data", data);
+					$("#sale_list_tbl tbody").html("");
+					if(data.status) {
+						$.each(data.invoice_items, function(index, item) {
+							console.log(item);
+							let tableBody =  '<tr data-id="'+item.sale_info_id+'">'+
+								'<td class="">'+item.auto_sale_invoice+'</td>'+
+								'<td class="">'+item.customer_name+'</td>'+
+								'<td class="">'+item.sub_total_bill +'</td>'+
+								'<td class="">'+ item.saled_date +'</td>'+
+									// {{ date("d/m/Y", strtotime(str_replace('-', '/',  $sale->saled_date))) }}</td>'+
+								'<td>'+
+									'<button class="btn btn-outline-info btn-sm" onclick="print_invoice('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Print Invoice</button>';
+									if(item.is_delivered == 0) {
+										tableBody +='<button class="btn btn-outline-success btn-sm" onclick="complete_order('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Make Complete</button>';
+									}								
+									tableBody += '<button class="btn btn-outline-primary btn-sm" onclick="sale_order_details('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Details</button>';
+									if(item.is_delivered == 0) {
+										tableBody += '<button class="btn btn-outline-default btn-sm" onclick="update_sale_order('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Edit</button>'+
+										'<button class="btn btn-outline-danger btn-sm" onclick="cancel_sale_order('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Cancel</button>';
+									}								
+								tableBody += '</td>'+
+							'</tr>';
+							$("#sale_list_tbl tbody").append(tableBody);
+						});
+					} else {
+						console.log("Data Not Received Successfully Kallol.");
+						danger_alert("Status Wise Invoice Info Not Found.");
+						msgAlertAutoHide();
+					}
+				}
+			},
+			error: function (jqXHR, exception) {
+				var msg = '';
+				if (jqXHR.status === 0) {
+				    msg = 'Not connect.\n Verify Network.';
+				} else if (jqXHR.status == 404) {
+				    msg = 'Requested page not found. [404]';
+				} else if (jqXHR.status == 500) {
+				    msg = 'Internal Server Error [500].';
+				} else if (exception === 'parsererror') {
+				    msg = 'Requested JSON parse failed.';
+				} else if (exception === 'timeout') {
+				    msg = 'Time out error.';
+				} else if (exception === 'abort') {
+				    msg = 'Ajax request aborted.';
+				} else {
+				    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+				}
+				console.log("msg",msg);
+			},
+		});
+});
+
+
+$(document).on("change", "#auto_history_invoice_stock", function() {
+	let auto_invoice_no = $(this).val();
+	console.log(auto_invoice_no)
+	if(auto_invoice_no == "") {
+		
+	} else {
+		$.ajax({
+			url: "/product/po/store-item-details/"+auto_invoice_no,
+			type: "GET",
+			dataType: "json",
+			success: function(data, textStatus, xhr){				
+				if(xhr.status) {
+					console.log("data", data);
+					$("#stock_history_tbl tbody").html("");
+					if(data.status) {
+						// $.each(data.invoice_items, function(index, item) {
+						// 	console.log(item);
+						// 	let tableBody =  '<tr data-id="'+item.sale_info_id+'">'+
+						// 		'<td class="">'+item.auto_sale_invoice+'</td>'+
+						// 		'<td class="">'+item.customer_name+'</td>'+
+						// 		'<td class="">'+item.sub_total_bill +'</td>'+
+						// 		'<td class="">'+ item.saled_date +'</td>'+
+						// 			// {{ date("d/m/Y", strtotime(str_replace('-', '/',  $sale->saled_date))) }}</td>'+
+						// 		'<td>'+
+						// 			'<button class="btn btn-outline-info btn-sm" onclick="print_invoice('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Print Invoice</button>';
+						// 			if(item.is_delivered == 0) {
+						// 				tableBody +='<button class="btn btn-outline-success btn-sm" onclick="complete_order('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Make Complete</button>';
+						// 			}								
+						// 			tableBody += '<button class="btn btn-outline-primary btn-sm" onclick="sale_order_details('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Details</button>';
+						// 			if(item.is_delivered == 0) {
+						// 				tableBody += '<button class="btn btn-outline-default btn-sm" onclick="update_sale_order('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Edit</button>'+
+						// 				'<button class="btn btn-outline-danger btn-sm" onclick="cancel_sale_order('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Cancel</button>';
+						// 			}								
+						// 		tableBody += '</td>'+
+						// 	'</tr>';
+						// 	$("#stock_history_tbl tbody").append(tableBody);
+						// });
+					} else {
+						console.log("Data Not Received Successfully Kallol.");
+						danger_alert("Status Wise Invoice Info Not Found.");
+						msgAlertAutoHide();
+					}
+				}
+			},
+			error: function (jqXHR, exception) {
+				var msg = '';
+				if (jqXHR.status === 0) {
+				    msg = 'Not connect.\n Verify Network.';
+				} else if (jqXHR.status == 404) {
+				    msg = 'Requested page not found. [404]';
+				} else if (jqXHR.status == 500) {
+				    msg = 'Internal Server Error [500].';
+				} else if (exception === 'parsererror') {
+				    msg = 'Requested JSON parse failed.';
+				} else if (exception === 'timeout') {
+				    msg = 'Time out error.';
+				} else if (exception === 'abort') {
+				    msg = 'Ajax request aborted.';
+				} else {
+				    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+				}
+				console.log("msg",msg);
+			},
+		});
+	}	
+});
 function cancel_sale_order(sale_id, order_id) {
 	$("#yesNoAlert .alertBody").text("Are sure you want to cancel the Order ?");
 	$("#yesNoAlert .allalertCon").css({
@@ -1525,6 +1713,9 @@ function success_alert(message) {
   $(".msgAlert").html("");
   $(".msgAlert").append(html);
 }
+// function alert_auto_close() {
+
+// }
 
 function print_invoice(sale_info_id, auto_sale_invoice)
 {
@@ -1546,7 +1737,7 @@ function print_invoice(sale_info_id, auto_sale_invoice)
 				if(data.status) {
 					// console.log("1545", data);
 					$("#print_div").html("");					
-
+					let final_gt = parseFloat(data.net_sale) + parseFloat(data.vat_amount);
 					let html = '<div class="print-continer">'+
             '<div class="print-top-head">'+
               '<div class="print-invoice-no">Invoice: '+data.auto_sale_invoice+'</div>'+
@@ -1600,7 +1791,7 @@ function print_invoice(sale_info_id, auto_sale_invoice)
               '</tfoot>'+
             '</table>'+
 						'<div class="print-hisab-left-con">'+
-	            '<div class="amount-inword">'+numberToWords(data.grand_total)+' Taka Only.</div>'+
+	            '<div class="amount-inword">'+numberToWords(final_gt.toFixed(2))+' Taka Only.</div>'+
 	          '</div>'+
             '<div class="print-hisab-con">'+
               '<div class="print-indivi">'+
@@ -1616,12 +1807,12 @@ function print_invoice(sale_info_id, auto_sale_invoice)
                 '<div class="print-right">'+data.net_sale+' Tk</div>'+
               '</div>'+
               '<div class="print-indivi">'+
-                '<div class="print-left">Vat ('+data.vat_percent+'%)</div>'+
+                '<div class="print-left">Vat ('+Number(data.vat_percent)+'%)</div>'+
                 '<div class="print-right">'+data.vat_amount+' Tk</div>'+
               '</div>'+
               '<div class="print-indivi">'+
                 '<div class="print-left">Grand Total</div>'+
-                '<div class="print-right">'+data.grand_total+' Tk</div>'+
+                '<div class="print-right">'+final_gt.toFixed(2)+' Tk</div>'+
               '</div>'+
               '<div class="print-indivi">'+
                 '<div class="print-left">Paid</div>'+
@@ -1720,5 +1911,6 @@ function numberToWords(number) {
     for (var i = x + 1; i < y; i++) str += digit[n[i]] + ' ';
   }
   str = str.replace(/\number+/g, ' ');
-  return str.trim() + ".";
+  // return str.trim() + ".";
+  return str.trim();
 }
