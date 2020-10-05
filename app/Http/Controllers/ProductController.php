@@ -886,7 +886,7 @@ class ProductController extends Controller
         
         if($po_info != NULL && count($po_info) > 0) {
           $data['po_invoice_items'] = array();
-
+          $data['po_info_id'] = $po_info[0]->po_info_id;
           $data['purchase_invoice'] = $po_info[0]->purchase_invoice_no;
           $data['buyer_adnl_cost'] = $po_info[0]->buyer_adnl_cost;
           $data['supplier_adnl_cost'] = $po_info[0]->supplier_adnl_cost;
@@ -931,6 +931,7 @@ class ProductController extends Controller
                         ->where('auto_invoice_no', $auto_invoice_no)
                         ->get();
           $i= 1;
+          $total_qty = 0;
           foreach ($po_info_item as $info) {
             $single_item = array();
             $single_item['serial'] = $i;
@@ -943,7 +944,7 @@ class ProductController extends Controller
             $single_item['total_price'] = $info->total_price;
             $single_item['po_info_item_id'] = $info->po_info_item_id;
             $single_item['auto_invoice_no'] = $info->auto_invoice_no;
-
+            $total_qty += $info->product_qty;
             $product_info = DB::table('product_info')
                         ->select()
                         ->where('product_info_id', $info->product_info_id)
@@ -956,6 +957,7 @@ class ProductController extends Controller
             $i++;
             array_push($data['po_invoice_items'], $single_item);
           }
+          $data['total_qty'] = $total_qty;
           $data['status'] = true;
           return response()->json($data);
         } else {
@@ -963,6 +965,64 @@ class ProductController extends Controller
           return response()->json($data);
         }
       }
+
+      public function po_history_item_details(Request $req) {        
+        $po_info_id = $req->po_info_id;
+        $product_info_id = $req->product_info_id;
+        $auto_invoice_no = $req->po_invoice;
+        $data = array();
+
+        $pp_history = DB::table('product_purchase_history')
+                      ->select()
+                      ->where('po_info_id', $po_info_id)
+                      ->where('product_info_id', $product_info_id)
+                      ->where('auto_invoice_no', $auto_invoice_no)
+                      ->get();
+        
+        if($pp_history != NULL && count($pp_history) > 0) {
+          $data['history_items'] = array();
+          $i = 1;
+          $entry_qty = 0;
+          foreach ($pp_history as $history) {
+            $history_item = array();
+            $history_item['serial'] = $i;
+            $history_item['barcode'] = $history->barcode;
+            $history_item['quantity'] = $history->quantity;
+
+            $entry_qty += $history->quantity;            
+            $i++;
+            array_push($data['history_items'], $history_item);
+          }
+          $data['entry_qty'] = $entry_qty;
+          $product_info = DB::table('product_info')
+                        ->select()
+                        ->where('product_info_id', $product_info_id)
+                        ->get();
+
+          $data['product_name'] = $product_info[0]->title;
+          $data['model'] = $product_info[0]->model;
+          $data['brand'] = $product_info[0]->brand;
+          $data['image'] = $product_info[0]->image;
+          
+          $add_info = DB::table('po_info_item')
+                      ->select()
+                      ->where('po_info_id', $po_info_id)
+                      ->where('product_info_id', $product_info_id)
+                      ->where('auto_invoice_no', $auto_invoice_no)
+                      ->get();
+          $data['product_qty'] = $add_info[0]->product_qty;
+          $data['unit_price'] = $add_info[0]->unit_price;
+          $data['unit_adnl_price'] = $add_info[0]->unit_adnl_price;
+          $data['sale_price'] = $add_info[0]->sale_price;
+          $data['total_price'] = $add_info[0]->total_price;          
+          $data['status'] = true;
+          return response()->json($data);
+        } else {
+          $data['status'] = false;
+          return response()->json($data);
+        }
+      }
+      
 }
 
 

@@ -783,14 +783,6 @@ $(document).on("change", "#product_info_id_frm_stock", function() {
 		});
 	}
 });
-$(document).on("change", "#auto_history_invoice_stock", function() {
-	let stock_invoice = $(this).val();
-	if(stock_invoice == "") {
-		$("#stock_history_tbl").find("tbody").find("tr").remove();
-	} else {
-		// $("#stock_history_tbl").find("tbody").find("tr").remove();
-	}
-});
 
 $("#reset_cancel_customer").click(function() {
 	$("#customer_name").val("");
@@ -1591,7 +1583,38 @@ $(document).on("change", "#auto_history_invoice_stock", function() {
 	let auto_invoice_no = $(this).val();
 	console.log(auto_invoice_no)
 	if(auto_invoice_no == "") {
-		
+		$("#stock_history_tbl tbody").html("");
+		let bank_html = '<div class="col-md-3">Purchase Invoice</div>'+
+			    		'<div class="col-md-4">xxx</div>'+
+			    		'<div class="col-md-3">Subtotal Cost</div>'+
+			    		'<div class="col-md-2">0.00</div>'+
+
+			    		'<div class="col-md-3">Buyer Add. Cost</div>'+
+			    		'<div class="col-md-4">0.00</div>'+
+			    		'<div class="col-md-3">Vat Amount (x%)</div>'+
+			    		'<div class="col-md-2">0.00</div>'+
+
+			    		'<div class="col-md-3">Supplier Add. Cost</div>'+
+			    		'<div class="col-md-4">0.00</div>'+
+			    		'<div class="col-md-3">Grand Total</div>'+
+			    		'<div class="col-md-2">0.00</div>'+
+
+			    		'<div class="col-md-3">Payment Status</div>'+
+			    		'<div class="col-md-4">xxx</div>'+
+			    		'<div class="col-md-3">Due Amount</div>'+
+			    		'<div class="col-md-2">0.00</div>'+
+
+			    		'<div class="col-md-3">Supplier</div>'+
+			    		'<div class="col-md-4">xxx</div>'+
+			    		'<div class="col-md-3">Paid Amount</div>'+
+			    		'<div class="col-md-2">0.00</div>'+
+
+			    		'<div class="col-md-3">Buy Date</div>'+
+			    		'<div class="col-md-4">xx/xx/xxxx</div>'+
+			    		'<div class="col-md-3">Is Stored</div>'+
+			    		'<div class="col-md-2">xxx</div>';			  
+			    		$("#poi-info").html("").append(bank_html);
+			    		$("#total_qty_no").text("Total Quantity: xxx");
 	} else {
 		$.ajax({
 			url: "/product/po/store-item-details/"+auto_invoice_no,
@@ -1602,28 +1625,57 @@ $(document).on("change", "#auto_history_invoice_stock", function() {
 					console.log("data", data);
 					$("#stock_history_tbl tbody").html("");
 					if(data.status) {
-						// $.each(data.invoice_items, function(index, item) {
-						// 	console.log(item);
-						// 	let tableBody =  '<tr data-id="'+item.sale_info_id+'">'+
-						// 		'<td class="">'+item.auto_sale_invoice+'</td>'+
-						// 		'<td class="">'+item.customer_name+'</td>'+
-						// 		'<td class="">'+item.sub_total_bill +'</td>'+
-						// 		'<td class="">'+ item.saled_date +'</td>'+
-						// 			// {{ date("d/m/Y", strtotime(str_replace('-', '/',  $sale->saled_date))) }}</td>'+
-						// 		'<td>'+
-						// 			'<button class="btn btn-outline-info btn-sm" onclick="print_invoice('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Print Invoice</button>';
-						// 			if(item.is_delivered == 0) {
-						// 				tableBody +='<button class="btn btn-outline-success btn-sm" onclick="complete_order('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Make Complete</button>';
-						// 			}								
-						// 			tableBody += '<button class="btn btn-outline-primary btn-sm" onclick="sale_order_details('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Details</button>';
-						// 			if(item.is_delivered == 0) {
-						// 				tableBody += '<button class="btn btn-outline-default btn-sm" onclick="update_sale_order('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Edit</button>'+
-						// 				'<button class="btn btn-outline-danger btn-sm" onclick="cancel_sale_order('+item.sale_info_id+',\''+item.auto_sale_invoice+'\')">Cancel</button>';
-						// 			}								
-						// 		tableBody += '</td>'+
-						// 	'</tr>';
-						// 	$("#stock_history_tbl tbody").append(tableBody);
-						// });
+						let po_info = '<div class="col-md-3">Purchase Invoice</div>'+
+			    		'<div class="col-md-4">'+data.purchase_invoice+'</div>'+
+			    		'<div class="col-md-3">Subtotal Cost</div>'+
+			    		'<div class="col-md-2">'+data.sub_total+'</div>'+
+
+			    		'<div class="col-md-3">Buyer Add. Cost</div>'+
+			    		'<div class="col-md-4">'+data.buyer_adnl_cost+'</div>'+
+			    		'<div class="col-md-3">Vat Amount ('+data.vat_percent+'%)</div>'+
+			    		'<div class="col-md-2">'+data.vat_amount+'</div>'+
+
+			    		'<div class="col-md-3">Supplier Add. Cost</div>'+
+			    		'<div class="col-md-4">'+data.supplier_adnl_cost+'</div>'+
+			    		'<div class="col-md-3">Grand Total</div>'+
+			    		'<div class="col-md-2">'+data.grand_total+'</div>'+
+
+			    		'<div class="col-md-3">Payment Status</div>'+
+			    		'<div class="col-md-4">'+data.payment_status_text+'</div>'+
+			    		'<div class="col-md-3">Due Amount</div>'+
+			    		'<div class="col-md-2">'+data.due_amount+'</div>'+
+
+			    		'<div class="col-md-3">Supplier</div>'+
+			    		'<div class="col-md-4">'+data.supplier_name+'</div>'+
+			    		'<div class="col-md-3">Paid Amount</div>'+
+			    		'<div class="col-md-2">'+data.paid_amount+'</div>'+
+
+			    		'<div class="col-md-3">Buy Date</div>'+
+			    		'<div class="col-md-4">'+data.purchased_date+'</div>'+
+			    		'<div class="col-md-3">Is Stored</div>'+
+			    		'<div class="col-md-2">'+data.is_stored_text+'</div>';
+						$("#poi-info").html("").append(po_info);
+						$("#total_qty_no").text("Total Quantity: "+data.total_qty);
+						$.each(data.po_invoice_items, function(index, item) {
+							// console.log(item);
+							let tableBody =  
+							'<tr data-id="'+item.po_info_item_id+'">'+
+								'<td class="text-center">'+(index+1)+'</td>'+
+								'<td>'+item.product_name+'</td>'+
+								'<td><img src="/ourwork/img/product_image/'+item.image+'" width="50px" height="" alt="Product Image"></td>'+
+								'<td>'+item.brand+'</td>'+
+								'<td>'+item.model+'</td>'+
+								'<td class="text-right">'+item.product_qty+'</td>'+
+								'<td class="text-right">'+item.unit_price+'</td>'+
+								'<td class="text-right">'+item.unit_adnl_price+'</td>'+
+								'<td class="text-right">'+item.sale_price+'</td>'+
+								'<td class="text-right">'+item.total_price+'</td>'+
+								'<td>'+
+									'<button type="button" class="btn btn-outline-primary btn-sm" onclick="show_po_stock_entry_items('+data.po_info_id+','+item.product_info_id+',\''+item.auto_invoice_no+'\')">Details</button>'+
+								'</td>'+
+							'</tr>';
+							$("#stock_history_tbl tbody").append(tableBody);
+						});
 					} else {
 						console.log("Data Not Received Successfully Kallol.");
 						danger_alert("Status Wise Invoice Info Not Found.");
@@ -1653,6 +1705,92 @@ $(document).on("change", "#auto_history_invoice_stock", function() {
 		});
 	}	
 });
+function show_po_stock_entry_items(po_info_id, product_info_id, po_invoice) {
+	// console.log(po_info_id, product_info_id, po_invoice)
+	$.ajax({
+		url: "/product/po/history-item-details/"+po_info_id+"/"+product_info_id+"/"+po_invoice,
+		type: "GET",
+		dataType: "json",
+		success: function(data, textStatus, xhr){				
+			if(xhr.status) {
+				console.log("data", data);
+				if(data.status) {
+					let html = '<div class="order-details">'+
+		            '<div class="head-details">'+
+		              '<h2 class="text-center">Stock Product Items Information</h2>'+
+		              '<button type="button" class="close close-order-details" aria-label="Close" onclick="close_po()">'+
+		                '<span aria-hidden="true">&times;</span>'+
+		              '</button>'+
+		            '</div>'+
+		            '<div class="head-body">'+
+								  '<div class="pofield_set">'+
+								    '<div class="bar"></div>'+
+								    '<div class="po-head" style="height: 225px;">'+
+								      '<div class="po-labels">Product Name</div>'+
+								      '<div class="po-labels" id="">'+data.product_name+'</div>'+
+								      '<div class="po-labels">Unit Price</div>'+
+								      '<div class="po-labels" id="">'+data.unit_price+'</div>'+
+
+								      '<div class="po-labels">Brand</div>'+
+								      '<div class="po-labels" id="">'+data.brand+'</div>'+
+								      '<div class="po-labels">Aditional Price</div>'+
+								      '<div class="po-labels" id="">'+data.unit_adnl_price+'</div>'+
+
+								      '<div class="po-labels">Model</div>'+
+								      '<div class="po-labels" id="">'+data.model+'</div>'+
+								      '<div class="po-labels">Sale Price</div>'+
+								      '<div class="po-labels" id="">'+data.sale_price+'</div>'+
+
+								      '<div class="po-labels">Total Quantity</div>'+
+								      '<div class="po-labels" id="">Get '+data.entry_qty+' of '+data.product_qty+'</div>'+
+								      '<div class="po-labels">Total Buy Prie (TPI)</div>'+
+								      '<div class="po-labels" id="">'+data.total_price+'</div>'+
+
+								      '<div class="po-labels">Image</div>'+
+								      '<div class="po-labels" id=""><img src="/ourwork/img/product_image/'+data.image+'" width="50px" alt="Product Image"></div>'+
+								      '<div class="po-labels"></div>'+
+								      '<div class="po-labels" id=""></div>'+
+
+								    '</div>'+
+								    '<div class="po-table">'+
+								      '<table class="po-details-tbl">'+
+								        '<thead>'+
+								          '<tr>'+
+								            '<th>SN</th>'+
+								            '<th>Barcode Individual/Group Product</th>'+
+								            '<th>Quantity</th>'+
+								          '</tr>'+
+								        '</thead>'+
+								        '<tbody>';
+								        	$.each(data.history_items, function(index, item) {
+														console.log(item);
+														html += '<tr>'+
+													            '<td>'+item.serial+'</td>'+
+													            '<td>'+item.barcode+'</td>'+
+													            '<td>'+item.quantity+'</td>'+
+													          '</tr>';
+													});
+								        html += '</tbody>'+
+								      '</table>'+
+								      '<div class="po-footer"><button type="button" class="btn btn-outline-danger po-close-btn" onclick="close_po()">Close</button></div>'+
+								    '</div>'+
+								  '</div>'+
+		            '</div>'+
+		          '</div>';					
+					$("#purchase_order_details").html("").append(html).fadeIn();
+				} else {
+					console.log("Data Not Received Successfully Kallol.");
+					danger_alert("Info Not Found.");
+					msgAlertAutoHide();
+				}
+			}
+		},
+		error: function (jqXHR, exception) {
+			console.log("exception",exception);
+		},
+	});
+							
+}
 function cancel_sale_order(sale_id, order_id) {
 	$("#yesNoAlert .alertBody").text("Are sure you want to cancel the Order ?");
 	$("#yesNoAlert .allalertCon").css({
