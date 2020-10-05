@@ -530,3 +530,77 @@ body{
 		text-transform: capitalize;
 	}
 /*End print*/
+
+
+.p-info-fieldset{
+	position: relative;
+	border: 2px solid gray;
+	padding: 15px 15px;
+	border-radius: 5px;
+	margin-top: 20px;
+	float: left;
+}
+.p-info-search {
+	position: absolute;
+	background: gray;
+	padding: 2px 34px;
+	border-radius: 5px;
+	color: #FFF;
+	top: -16px;
+}
+.divider{
+	width: 6%;
+	float: left;
+	height: 300px;
+	margin-top: 20px;
+}
+.stock-info, .sale-info{
+	width: 47%;
+	float: left;
+	height: 330px;
+	margin-top: 20px;
+	border-radius: 5px;
+}
+.stock-info {
+	border: 1px solid var(--primary);
+}
+.sale-info {
+	border: 1px solid var(--red);
+}
+
+.stock-info-head,
+.sale-info-head {
+	width: 100%;
+	padding: 5px;
+	color:#fff;
+	text-align: center;
+}
+.stock-info-head {	
+	background-color: var(--primary);
+	opacity: 0.8;
+}
+.sale-info-head {
+	background-color: var(--red);
+	opacity: 0.8;
+}
+
+.si-body {
+	padding: 15px 30px;
+}
+.si-label {
+	width: 30%;
+	float: left;
+}
+.si-text {
+	width: 70%;
+	float: left;
+	border-bottom: 1px solid rgba(0,0,0, .2);
+}
+.si-text::before {
+	content: ":";
+	position: relative;
+	left: -10px;
+}
+.pro-search-info {
+	border: 1px solid gray;
+}

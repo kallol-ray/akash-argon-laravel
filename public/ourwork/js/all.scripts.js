@@ -2052,3 +2052,91 @@ function numberToWords(number) {
   // return str.trim() + ".";
   return str.trim();
 }
+
+function search_procuct_status_barcode(elm, e) {
+	let barcode = $(elm).val().trim();	
+	var code = e.keyCode || e.which;
+	if(code == 13) {
+		e.preventDefault();
+		console.log(barcode);
+		$.ajax({
+			url: "/product/search-details/"+barcode,
+			type: "GET",
+			dataType: "json",
+			success: function(data, textStatus, xhr){				
+				if(xhr.status) {
+					console.log("data", data);
+					if(data.status) {
+						let html = '<div class="col-md-12 p-info-fieldset">'+
+	            '<div class="p-info-search">Product Information</div>'+
+	            '<div class="stock-info">'+
+	              '<div class="stock-info-head">Stock Info</div>'+
+	              '<div class="si-body">'+
+	                // '<div class="si-label">Quantity Type</div>'+
+	                // '<div class="si-text">Single/Multiple</div>'+
+
+	                '<div class="si-label">Stock Items Qty</div>'+
+	                '<div class="si-text">'+data.stock_qty+'</div>'+
+
+	                '<div class="si-label">Buy Invoice</div>'+
+	                '<div class="si-text">'+data.buy_invoice+'</div>'+
+
+	                '<div class="si-label">Purchase Date</div>'+
+	                '<div class="si-text">'+data.buy_date+'</div>'+
+
+	                '<div class="si-label">Sale Price</div>'+
+	                '<div class="si-text">'+data.sale_price+'</div>'+
+
+	                '<div class="si-label">Product Name</div>'+
+	                '<div class="si-text">'+data.product_name+'</div>'+
+
+	                '<div class="si-label">Brand</div>'+
+	                '<div class="si-text">'+data.brand+'</div>'+
+
+	                '<div class="si-label">Model</div>'+
+	                '<div class="si-text">'+data.model+'</div>'+
+
+	                '<div class="si-label">Supplier Name</div>'+
+	                '<div class="si-text">'+data.supplier_name+'</div>'+
+
+	                '<div class="si-label" style="margin-top: 21px;">Image</div>'+
+	                '<div class="si-text" style="border:none; margin-top: 15px;">'+
+	                  '<img src="/ourwork/img/product_image/'+data.image+'" width="100px" alt="Product Image">'+
+	                '</div>'+
+	              '</div>'+
+	            '</div>'+
+	            '<div class="divider"></div>'+
+	            '<div class="sale-info">'+
+	              '<div class="sale-info-head">Sale Info</div>'+
+	              '<div class="si-body">'+
+	                '<div class="si-label">Sale Items Qty</div>'+
+	                '<div class="si-text">'+data.sale_quantity+'</div>'+
+
+	                '<div class="si-label">Sale Invoice</div>'+
+	                '<div class="si-text">'+data.auto_sale_invoice+'</div>'+
+
+	                '<div class="si-label">Sale Date</div>'+
+	                '<div class="si-text">'+data.saled_date+'</div>'+
+
+	                '<div class="si-label">Sale Price</div>'+
+	                '<div class="si-text">'+data.sale_price+'</div>'+
+
+	                '<div class="si-label">Warranty Expire</div>'+
+	                '<div class="si-text">N/A</div>'+
+	              '</div>'+
+	            '</div>'+
+	          '</div>';
+						$("#search_product_status_info").html("").append(html);
+					} else {
+						console.log("Data Not Received Successfully Kallol.");
+						danger_alert("Info Not Found.");
+						msgAlertAutoHide();
+					}
+				}
+			},
+			error: function (jqXHR, exception) {
+				console.log("exception",exception);
+			},
+		});
+	}
+}

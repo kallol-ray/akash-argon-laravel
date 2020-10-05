@@ -966,7 +966,7 @@ class ProductController extends Controller
         }
       }
 
-      public function po_history_item_details(Request $req) {        
+      public function po_history_item_details(Request $req) {       
         $po_info_id = $req->po_info_id;
         $product_info_id = $req->product_info_id;
         $auto_invoice_no = $req->po_invoice;
@@ -1022,7 +1022,89 @@ class ProductController extends Controller
           return response()->json($data);
         }
       }
-      
+      public function get_barcode_product_details(Request $req) {
+        $barcode = $req->barcode;
+        $data = array();
+        $inventory = DB::table('inventory')
+                      ->select()
+                      ->where('barcode', $barcode)
+                      ->get();
+        
+        if($inventory != NULL && count($inventory) == 1) {
+          // $data['product_info_id'] = $inventory[0]->product_info_id;
+          $data['stock_qty'] = $inventory[0]->qty;
+          $history = DB::table('product_purchase_history')
+                      ->select()
+                      ->where('barcode', $barcode)
+                      ->get();
+          if($history != NULL && count($history) == 1) {
+            // var_dump($history);
+            $autoInvoiceFromHistory = $history[0]->auto_invoice_no;
+            $data['buy_invoice'] = $history[0]->auto_invoice_no;
+
+            $data['buy_date'] = date("d/m/Y", strtotime(str_replace('/', '-', $history[0]->buy_date)));
+            $data['sale_price'] = $history[0]->sale_price;
+            $product_info = DB::table('product_info')
+                      ->select()
+                      ->where('product_info_id', $inventory[0]->product_info_id)
+                      ->get();
+            if($product_info != NULL && count($product_info) == 1) {
+              $data['product_name'] = $product_info[0]->title;
+              $data['model'] = $product_info[0]->model;
+              $data['brand'] = $product_info[0]->brand;
+              $data['image'] = $product_info[0]->image;
+              $po_info = DB::table('purchase_order_info')
+                      ->select()
+                      ->where('auto_invoice_no', $autoInvoiceFromHistory)
+                      ->get();
+              $supplier_id = $po_info[0]->supplier_id;
+              $supplier = DB::table('supplier')
+                      ->select()
+                      ->where('supplier_id', $supplier_id)
+                      ->get();
+              $data['supplier_name'] = $supplier[0]->supplier_name;
+              
+              $sale_item = DB::table('sale_item')
+                      ->select()
+                      ->where('barcode', $barcode)
+                      ->get();
+              if($sale_item != NULL && count($sale_item) == 1) {
+                $data['sale_price'] = $sale_item[0]->sale_price;
+                $data['sale_quantity'] = $sale_item[0]->qty;
+                $sale_info_id = $sale_item[0]->sale_info_id;
+                $sale_info = DB::table('sale_info')
+                      ->select()
+                      ->where('sale_info_id', $sale_info_id)
+                      ->get();
+                $data['auto_sale_invoice'] = $sale_info[0]->auto_sale_invoice;
+                $data['saled_date'] = date("d/m/Y", strtotime(str_replace('/', '-', $sale_info[0]->saled_date)));
+              } else {
+                $data['sale_price'] = "N/A";
+                $data['sale_quantity'] = "N/A";
+                $data['auto_sale_invoice'] = "Not Sale Yet";
+                $data['saled_date'] = "N/A";
+              }
+              
+              
+                      
+
+              $data['status'] = true;
+              return response()->json($data);
+            } else {
+              $data = [];
+              $data['status'] = false;
+              return response()->json($data);
+            }
+          } else {
+            $data = [];
+            $data['status'] = false;
+            return response()->json($data);
+          }
+        } else {
+          $data['status'] = false;
+          return response()->json($data);
+        }
+      }
 }
 
 

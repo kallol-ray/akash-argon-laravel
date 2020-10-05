@@ -112,6 +112,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::get('/product/po/store-item-details/{auto_invoice_no}', ['uses'=>'ProductController@po_store_item_details']);
 	Route::get('/product/po/history-item-details/{po_info_id}/{product_info_id}/{po_invoice}', ['uses'=>'ProductController@po_history_item_details']);
+	Route::get('/product/search-details/{barcode}', ['uses'=>'ProductController@get_barcode_product_details']);
 
 });
 

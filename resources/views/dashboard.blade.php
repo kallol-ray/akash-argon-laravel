@@ -1,18 +1,99 @@
 @extends('layouts.app',['title' => 'Home'])
 
 @section('content')
-    @include('layouts.headers.cards')
-    <div class="container-fluid mt--7">
-      <div class="row">
-        <div class="col-xl-12 mb-5 mb-xl-0 status-product">
-          <div class="form-group">
-            <label for="search_product_status">Search Product Status</label>
-            <input class="form-control" type="text" name="search_product_status" placeholder="Search product status">
-          </div>
-          <hr>
+  @include('layouts.headers.cards')
+  <div class="msgAlert">
+    @if(Session::has('sucMsg'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+        <span class="alert-text"><strong>{{ Session::get('sucMsg') }}{{ Session::forget('sucMsg')}}</strong></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    @endif
+    @if(Session::has('errMsg'))
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+        <span class="alert-text"><strong>{{ Session::get('errMsg') }}{{ Session::forget('errMsg')}}</strong></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    @endif
+  </div>
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col-xl-12 mb-5 mb-xl-0 status-product">
+        <div class="form-group">
+          <label for="search_product_status">Search Product Status</label>
+          <input class="form-control" type="text" name="search_product_status" placeholder="Search product status" autocomplete="off" onkeyup="search_procuct_status_barcode(this, event)">
+        </div>
+
+        <div class="row" id="search_product_status_info" style="margin: 0px;">
+          <!-- <div class="col-md-12 p-info-fieldset">
+            <div class="p-info-search">Product Information</div>
+            <div class="stock-info">
+              <div class="stock-info-head">Stock Info</div>
+              <div class="si-body">
+                <div class="si-label">Quantity Type</div>
+                <div class="si-text">Single/Multiple</div>
+
+                <div class="si-label">Stock Items Qty</div>
+                <div class="si-text">xxx</div>
+                <div class="si-label">Buy Invoice</div>
+                <div class="si-text">xxx</div>
+                <div class="si-label">Purchase Date</div>
+                <div class="si-text">xxx</div>
+
+                <div class="si-label">Sale Price</div>
+                <div class="si-text">xxx</div>
+
+                <div class="si-label">Product Name</div>
+                <div class="si-text">xxx</div>
+
+                <div class="si-label">Brand</div>
+                <div class="si-text">xxx</div>
+
+                <div class="si-label">Model</div>
+                <div class="si-text">xxx</div>                
+
+                <div class="si-label">Supplier</div>
+                <div class="si-text">xxx</div>
+
+                
+
+                <div class="si-label" style="margin-top: 21px;">Image</div>
+                <div class="si-text" style="border:none; margin-top: 15px;">
+                  <img src="/ourwork/img/product_image/default@1598295452.jpg" width="100px" alt="Product Image">
+                </div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="sale-info">
+              <div class="sale-info-head">Sale Info</div>
+              <div class="si-body">
+                <div class="si-label">Sale Items Qty</div>
+                <div class="si-text">xx</div>
+
+                <div class="si-label">Sale Invoice</div>
+                <div class="si-text">xxx</div>
+
+                <div class="si-label">Sale Date</div>
+                <div class="si-text">Not Sale yet</div>
+
+                <div class="si-label">Sale Price</div>
+                <div class="si-text">N/A</div>
+
+                <div class="si-label">Warranty Expire</div>
+                <div class="si-text">N/A</div>
+              </div>
+            </div>
+          </div> -->
         </div>
       </div>
     </div>
+  </div>
     
     <!-- <div class="container-fluid mt--7">
         <div class="row">
